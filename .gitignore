@@ -355,3 +355,7 @@ EvolutionaryAlgorithms.vcxproj
 EvolutionaryAlgorithms.vcxproj.filters
 
 out/
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
