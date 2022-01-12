@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\Benchmark.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\Cliff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\CostFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\EvolutionaryAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\GeneticAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\Jump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\LeadingOnes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\MuPlusOneEA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\OneCommaLambdaEA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\OneMax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\OnePlusLambdaCommaLambdaGA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\OnePlusOneEA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\src\TwoPlusOneGA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\Benchmark.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\Cliff.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\CostFunction.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\EvolutionaryAlgorithm.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\GeneticAlgorithm.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\Jump.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\LeadingOnes.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\MuPlusOneEA.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\OneCommaLambdaEA.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\OneMax.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\OnePlusLambdaCommaLambdaGA.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\OnePlusOneEA.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\repos\EvolutionaryAlgorithms\include\TwoPlusOneGA.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,22 @@
+﻿  Benchmark.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+C:\Users\Marton\source\repos\EvolutionaryAlgorithms\src\Benchmark.cpp(19,26): warning C4244: 'initializing': conversion from '__int64' to 'double', possible loss of data
+  Cliff.cpp
+  CostFunction.cpp
+  EvolutionaryAlgorithm.cpp
+  GeneticAlgorithm.cpp
+C:\Users\Marton\source\repos\EvolutionaryAlgorithms\src\GeneticAlgorithm.cpp(13,28): warning C4018: '<': signed/unsigned mismatch
+  Jump.cpp
+  LeadingOnes.cpp
+  main.cpp
+  MuPlusOneEA.cpp
+  OneCommaLambdaEA.cpp
+C:\Users\Marton\source\repos\EvolutionaryAlgorithms\src\OneCommaLambdaEA.cpp(34,48): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Marton\source\repos\EvolutionaryAlgorithms\src\OneCommaLambdaEA.cpp(47,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  OneMax.cpp
+  OnePlusLambdaCommaLambdaGA.cpp
+C:\Users\Marton\source\repos\EvolutionaryAlgorithms\src\OnePlusLambdaCommaLambdaGA.cpp(60,9): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  OnePlusOneEA.cpp
+  TwoPlusOneGA.cpp
+  Generating Code...
+  ThesisCode.vcxproj -> C:\Users\Marton\Dropbox\DTU\4th semester\Thesis\ThesisCode\Debug\ThesisCode.exe
