@@ -1,27 +1,22 @@
-#include "SD_RLS.h"
+#include "SDOnePlusOne.h"
 
 #include "Utilityh.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 
-SD_RLS::SD_RLS(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
+SDOnePlusOne::SDOnePlusOne(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
 {
 	mBitString = new int[mN];
-	mR = std::pow(mN, 3 + mEpsilon);
 }
 
-SD_RLS::~SD_RLS()
+SDOnePlusOne::~SDOnePlusOne()
 {
 	delete[] mBitString;
 }
 
-void SD_RLS::SetEpsilon(int aEpsilon)
-{
-	mEpsilon = aEpsilon;
-}
-
-void SD_RLS::RandomizeBitString()
+void SDOnePlusOne::RandomizeBitString()
 {
 	for(int i = 0; i < mN; ++i)
 	{
@@ -29,9 +24,22 @@ void SD_RLS::RandomizeBitString()
 	}
 }
 
-
-std::pair<long long, double> SD_RLS::RunEA()
+bool SDOnePlusOne::CalculateFlipR()
 {
+	std::uniform_real_distribution<> p(0.0, 1.0);
+
+	if(p(mRng) > (double)mR / (double)mN)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+std::pair<long long, double> SDOnePlusOne::RunEA()
+{
+	mR = 1;
 	RandomizeBitString();
 	double fitnessValue = mCostFunction->GetFitnessValue(mBitString);
 	double newFitnessValue = 0;
@@ -44,7 +52,6 @@ std::pair<long long, double> SD_RLS::RunEA()
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
 
 	int u = 0;
-	int s = 1;
 
 	auto start = std::chrono::steady_clock::now();
 
@@ -56,27 +63,27 @@ std::pair<long long, double> SD_RLS::RunEA()
 		if(!justUpdated)
 		{
 			std::copy(mBitString, mBitString + mN, bitStringPrime);
+			newFitnessValue = fitnessValue;
 		}
 		else
 		{
 			justUpdated = false;
 		}
 
-		int* selection = SelectRandomK(mN, s);
-
-		for(int i = 0; i < s; ++i)
+		for(int i = 0; i < mN; ++i)
 		{
-			if(bitStringPrime[selection[i]] == 1)
+			if(CalculateFlipR())
 			{
-				bitStringPrime[selection[i]] = 0;
-			}
-			else
-			{
-				bitStringPrime[selection[i]] = 1;
+				if(bitStringPrime[i] == 0)
+				{
+					bitStringPrime[i] = 1;
+				}
+				else
+				{
+					bitStringPrime[i] = 0;
+				}
 			}
 		}
-
-		delete[] selection;
 
 		newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
 
@@ -85,26 +92,26 @@ std::pair<long long, double> SD_RLS::RunEA()
 			fitnessValue = newFitnessValue;
 			std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 			justUpdated = true;
-			s = 1;
+			mR = 1;
 			u = 0;
 		}
 		else
 		{
-			if(newFitnessValue == fitnessValue && s == 1)
+			if(newFitnessValue == fitnessValue && mR == 1)
 			{
 				std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 				justUpdated = true;
 			}
 		}
 
-		if(u > NoverK(mN, s) * std::log(mR))
+		if(u > 2* std::pow((std::exp(1.0)*mN/mR),mR)* std::log(mN*mR))
 		{
-			s++;
-			if(s > mN)
-			{
-				s = mN;
-			}
+			mR = std::min(mR + 1, mN / 2);
 			u = 0;
+		}
+		else
+		{
+			mR++;
 		}
 	}
 

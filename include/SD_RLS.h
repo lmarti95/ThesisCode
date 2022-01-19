@@ -16,6 +16,6 @@ public:
 	std::string GetEAName() override { return "SD-RLS"; }
 private:
 	int* mBitString;
-	long long mR;
+	int mR;
 	int mEpsilon = 1;
 };

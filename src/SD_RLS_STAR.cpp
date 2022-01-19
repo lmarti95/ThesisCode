@@ -5,8 +5,6 @@
 #include <chrono>
 #include <cmath>
 
-#include <iostream>
-
 SD_RLS_STAR::SD_RLS_STAR(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
 {
 	mBitString = new int[mN];

@@ -69,20 +69,51 @@ long EvolutionaryAlgorithm::GetNextPosition(long aPos)
 
 std::pair<int*, double> EvolutionaryAlgorithm::SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations)
 {
-	int position = std::distance(aMutations->begin(), std::max_element(aMutations->begin(), aMutations->end(), [](auto a, auto b)
+	double highestFitnesssValue = 0;
+	for(auto& offspring : *aMutations)
 	{
-		return a.second < b.second;
-	}));
+		if(highestFitnesssValue < offspring.second)
+		{
+			highestFitnesssValue = offspring.second;
+		}
+	}
 
-	int* bitString = aMutations->at(position).first;
-	double fitnessValue = aMutations->at(position).second;
+	int bestOnes = 0;
 
+	for(auto& offspring : *aMutations)
+	{
+		if(highestFitnesssValue == offspring.second)
+		{
+			bestOnes++;
+		}
+	}
+
+	std::uniform_int_distribution<std::mt19937::result_type> selectOffspring(0, bestOnes-1);
+	int select = selectOffspring(mRng);
+
+	int* bitString;
+	double fitnessValue;
+
+	int bestCount = 0;
+	int deleted = 0;
 	for(unsigned int i = 0; i < aMutations->size(); ++i)
 	{
-		if(i != position)
+		if(highestFitnesssValue == aMutations->at(i).second)
 		{
-			delete[] aMutations->at(i).first;
+			if(select == bestCount)
+			{
+				bitString = aMutations->at(i).first;
+				fitnessValue = aMutations->at(i).second;
+				bestCount++;
+				continue;
+			}
+			else
+			{
+				bestCount++;
+			}
 		}
+
+		delete[] aMutations->at(i).first;
 	}
 
 	delete aMutations;
