@@ -27,7 +27,7 @@ protected:
 	long SavePosition(long aPos);
 	long GetNextPosition(long aPos);
 
-	std::pair<int*, double> SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations);
+	std::pair<int*, double> SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations, int* aRRate = nullptr);
 
 	int mN;
 

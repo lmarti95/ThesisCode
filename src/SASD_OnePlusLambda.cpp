@@ -1,6 +1,6 @@
 #include "SASD_OnePlusLambda.h"
 
-#include "include/OneMax.h"
+#include "OneMax.h"
 #include "Utilityh.h"
 
 #include <algorithm>
@@ -157,7 +157,8 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 			mDenominatorMultiplier = 2;
 			mNumeratorMultiplier = 1;
 
-			auto best = SelectBestDeleteRest(CreateOffsprings());
+			int RRate = -1;
+			auto best = SelectBestDeleteRest(CreateOffsprings(), &RRate);
 			if(best.second >= fitnessValue)
 			{
 				if(best.second > fitnessValue)
@@ -168,6 +169,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				delete[] mBitString;
 				mBitString = best.first;
 				fitnessValue = best.second;
+				mLastRRate = RRate;
 			}
 			else
 			{
@@ -183,6 +185,17 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				else
 				{
 					mR = 2 * mR;
+				}
+			}
+			else
+			{
+				if(mLastRRate == 0)
+				{
+					mR = mR / 2;
+				}
+				else
+				{
+					mR = mR * 2;
 				}
 			}
 

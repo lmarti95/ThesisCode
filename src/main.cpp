@@ -17,7 +17,7 @@
 
 int main()
 {
-	int N = 10;
+	int N = 12;
 	Jump j(N,3);
 
 	SDOnePlusOne sd(N, &j);

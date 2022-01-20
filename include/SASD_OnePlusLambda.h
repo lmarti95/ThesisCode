@@ -21,4 +21,5 @@ private:
 	int mR;
 	int mNumeratorMultiplier = 1;
 	int mDenominatorMultiplier = 1;
+	int mLastRRate = -1;
 };
