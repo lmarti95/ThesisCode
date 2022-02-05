@@ -28,6 +28,9 @@ protected:
 	long GetNextPosition(long aPos);
 
 	std::pair<int*, double> SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations, int* aRRate = nullptr);
+	
+	int* CreateRandomBitString();
+	void FlipBitBasedOnPosition(int* aBitString, int aPosition);
 
 	int mN;
 

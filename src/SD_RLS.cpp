@@ -5,30 +5,13 @@
 #include <chrono>
 #include <cmath>
 
-SD_RLS::SD_RLS(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
+SD_RLS::SD_RLS(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 {
-	mBitString = new int[mN];
-	mR = std::pow(mN, 3 + mEpsilon);
 }
 
 SD_RLS::~SD_RLS()
 {
-	delete[] mBitString;
 }
-
-void SD_RLS::SetEpsilon(int aEpsilon)
-{
-	mEpsilon = aEpsilon;
-}
-
-void SD_RLS::RandomizeBitString()
-{
-	for(int i = 0; i < mN; ++i)
-	{
-		mBitString[i] = mCoin(mRng);
-	}
-}
-
 
 std::pair<long long, double> SD_RLS::RunEA()
 {
@@ -66,14 +49,7 @@ std::pair<long long, double> SD_RLS::RunEA()
 
 		for(int i = 0; i < s; ++i)
 		{
-			if(bitStringPrime[selection[i]] == 1)
-			{
-				bitStringPrime[selection[i]] = 0;
-			}
-			else
-			{
-				bitStringPrime[selection[i]] = 1;
-			}
+			FlipBitBasedOnPosition(bitStringPrime, selection[i]);
 		}
 
 		delete[] selection;

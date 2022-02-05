@@ -131,3 +131,27 @@ std::pair<int*, double> EvolutionaryAlgorithm::SelectBestDeleteRest(std::vector<
 
 	return std::make_pair(bitString, fitnessValue);
 }
+
+int* EvolutionaryAlgorithm::CreateRandomBitString()
+{
+	int* bitString = new int[mN];
+
+	for(int i = 0; i < mN; ++i)
+	{
+		bitString[i] = mCoin(mRng);
+	}
+
+	return bitString;
+}
+
+void EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aPosition)
+{
+	if(aBitString[aPosition] == 1)
+	{
+		aBitString[aPosition] = 0;
+	}
+	else
+	{
+		aBitString[aPosition] = 1;
+	}
+}

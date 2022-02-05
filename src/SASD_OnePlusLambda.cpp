@@ -1,29 +1,18 @@
 #include "SASD_OnePlusLambda.h"
 
-#include "OneMax.h"
 #include "Utilityh.h"
 
 #include <algorithm>
 #include <chrono>
 #include <cmath>
 
-SASD_OnePlusLambda::SASD_OnePlusLambda(int aN, CostFunction* aCostFunction, int aLambda) : EvolutionaryAlgorithm(aN, aCostFunction)
+SASD_OnePlusLambda::SASD_OnePlusLambda(int aN, CostFunction* aCostFunction, int aLambda) : SD(aN, aCostFunction)
 {
-	mBitString = new int[mN];
 	mLambda = aLambda;
 }
 
 SASD_OnePlusLambda::~SASD_OnePlusLambda()
 {
-	delete[] mBitString;
-}
-
-void SASD_OnePlusLambda::RandomizeBitString()
-{
-	for(int i = 0; i < mN; ++i)
-	{
-		mBitString[i] = mCoin(mRng);
-	}
 }
 
 bool SASD_OnePlusLambda::CalculateFlipR()
@@ -44,11 +33,6 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 	std::vector<std::pair<int*, double>>* offsprings = new std::vector<std::pair<int*, double>>;
 
 	int fitnessValue = 0;
-
-	if(dynamic_cast<OneMax*>(mCostFunction) != nullptr)
-	{
-		fitnessValue = mCostFunction->GetFitnessValue(mBitString);
-	}
 
 	for(int i = 0; i < mLambda; ++i)
 	{
@@ -75,27 +59,11 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 		{
 			if(CalculateFlipR())
 			{
-				if(bitStringPrime[i] == 0)
-				{
-					bitStringPrime[i] = 1;
-					newFitnessValue++;
-				}
-				else
-				{
-					bitStringPrime[i] = 0;
-					newFitnessValue--;
-				}
+				FlipBitBasedOnPosition(bitStringPrime, i);
 			}
 		}
 
-		if(dynamic_cast<OneMax*>(mCostFunction) != nullptr)
-		{
-			offsprings->push_back(std::make_pair(bitStringPrime, newFitnessValue));
-		}
-		else
-		{
-			offsprings->push_back(std::make_pair(bitStringPrime, mCostFunction->GetFitnessValue(bitStringPrime)));
-		}
+		offsprings->push_back(std::make_pair(bitStringPrime, mCostFunction->GetFitnessValue(bitStringPrime)));
 	}
 
 	return offsprings;

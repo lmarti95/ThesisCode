@@ -6,22 +6,12 @@
 #include <chrono>
 #include <cmath>
 
-SDOnePlusOne::SDOnePlusOne(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
+SDOnePlusOne::SDOnePlusOne(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 {
-	mBitString = new int[mN];
 }
 
 SDOnePlusOne::~SDOnePlusOne()
 {
-	delete[] mBitString;
-}
-
-void SDOnePlusOne::RandomizeBitString()
-{
-	for(int i = 0; i < mN; ++i)
-	{
-		mBitString[i] = mCoin(mRng);
-	}
 }
 
 bool SDOnePlusOne::CalculateFlipR()
@@ -74,14 +64,7 @@ std::pair<long long, double> SDOnePlusOne::RunEA()
 		{
 			if(CalculateFlipR())
 			{
-				if(bitStringPrime[i] == 0)
-				{
-					bitStringPrime[i] = 1;
-				}
-				else
-				{
-					bitStringPrime[i] = 0;
-				}
+				FlipBitBasedOnPosition(bitStringPrime, i);
 			}
 		}
 

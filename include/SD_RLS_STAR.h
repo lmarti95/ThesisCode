@@ -1,21 +1,15 @@
 #pragma once
 
 #include "CostFunction.h"
-#include "EvolutionaryAlgorithm.h"
+#include "SD.h"
 
-class SD_RLS_STAR : public EvolutionaryAlgorithm
+class SD_RLS_STAR : public SD
 {
 public:
 	SD_RLS_STAR(int aN, CostFunction* aCostFunction);
 	~SD_RLS_STAR();
 
-	void SetEpsilon(int aEpsilon);
-	void RandomizeBitString();
-
 	std::pair<long long, double> RunEA() override;
-	std::string GetEAName() override { return "SD-RLS"; }
+	std::string GetEAName() override { return "SD-RLS-STAR"; }
 private:
-	int* mBitString;
-	int mR;
-	int mEpsilon = 1;
 };
