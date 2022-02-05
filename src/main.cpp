@@ -4,40 +4,39 @@
 #include "CostFunction.h"
 #include "HybridGA.h"
 #include "Jump.h"
-#include "LeadingOnes.h"
-#include "MuPlusOneEA.h"
 #include "MuPlusOneGA.h"
-#include "OneCommaLambdaEA.h"
-#include "OneMax.h"
-#include "OnePlusLambdaCommaLambdaGA.h"
-#include "OnePlusOneEA.h"
 #include "SASD_OnePlusLambda.h"
 #include "SDOnePlusOne.h"
 #include "SD_RLS.h"
 #include "SD_RLS_m.h"
 #include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
-#include "TwoPlusOneGA.h"
 
 
 int main()
 {
-	int N = 12;
+	int N = 30;
 	Jump j(N,3);
 
 	Benchmark b;
 
-	SD_RLS sd(N, &j);
+	cGA sd(N, &j, 4);
 
-	SD_RLS_m sd2(N, &j);
+	HybridGA sd2(N, &j);
 
-	SD_RLS_r sd3(N, &j);
+	MuPlusOneGA sd3(N, &j, 4);
 
-	SD_RLS_STAR sd4(N, &j);
+	SASD_OnePlusLambda sd4(N, &j, 4);
 
-	SASD_OnePlusLambda sd5(N, &j, 10);
+	SD_RLS sd5(N, &j);
 
-	SDOnePlusOne sd6(N, &j);
+	SD_RLS_m sd6(N, &j);
+
+	SD_RLS_r sd7(N, &j);
+
+	SD_RLS_STAR sd8(N, &j);
+
+	SDOnePlusOne sd9(N, &j);
 
 	b.RunEA(&sd);
 	b.RunEA(&sd2);
@@ -45,4 +44,7 @@ int main()
 	b.RunEA(&sd4);
 	b.RunEA(&sd5);
 	b.RunEA(&sd6);
+	b.RunEA(&sd7);
+	b.RunEA(&sd8);
+	b.RunEA(&sd9);
 }
