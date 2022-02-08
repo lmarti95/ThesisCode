@@ -15,8 +15,8 @@
 
 int main()
 {
-	int N = 50;
-	Jump j(N,5, JumpType::OffsetSpike);
+	int N = 12;
+	Jump j(N,3, JumpType::Original);
 
 	Benchmark b;
 
