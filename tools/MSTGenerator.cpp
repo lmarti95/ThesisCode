@@ -81,113 +81,59 @@ std::vector<Edge> GenerateVectors(int N, int edges)
     std::random_device dev;
     std::mt19937 rng(dev());
 
-    std::vector<Edge> vectors;
-    std::vector<int> edgePossiblities;
-
-    for(int i = 0; i < edges; ++i)
-    {
-        Edge e;
-        e.n1 = -1;
-        e.n2 = -1;
-        vectors.push_back(e);
-        edgePossiblities.push_back(i);
-    }
-
-    std::shuffle(edgePossiblities.begin(), edgePossiblities.end(), rng);
+    std::vector<Edge> selectedEdges;
+    std::vector<Edge> possibleEdges;
 
     for(int i = 0; i < N; ++i)
     {
-        int edge;
-        if(i > edges - 1)
+        for(int j = i + 1; j < N; ++j)
         {
-            edge = edgePossiblities.at(0);
+            Edge e;
+            e.n1 = i;
+            e.n2 = j;
+            possibleEdges.push_back(e);
         }
-        else
-        {
-            edge = edgePossiblities.at(i);
-        }
+    }
 
-        while(vectors.at(edge).n1 != -1 && vectors.at(edge).n2 != -1)
+    std::shuffle(possibleEdges.begin(), possibleEdges.end(), rng);
+    
+    int* found = new int[N];
+    for(int i = 0; i < N; ++i)
+    {
+        found[i] = 0;
+    }
+    for(int i = 0; i < N; ++i)
+    {
+        if(found[i] == 1)
         {
-            edge = randomEdge(rng);
-        }
-
-        if(vectors.at(edge).n1 == -1)
-        {
-            vectors.at(edge).n1 = i;
             continue;
         }
 
-        if(vectors.at(edge).n2 == -1)
+        for(unsigned int j = 0; j < possibleEdges.size(); ++j)
         {
-            vectors.at(edge).n2 = i;
-            edgePossiblities.erase(edgePossiblities.begin());
-        }
-    }
-
-    for(auto& v : vectors)
-    {
-        if(v.n1 == -1)
-        {
-            v.n1 = randomN(rng);
-        }
-    }
-
-    int* available = new int[N];
-
-    for(auto& v : vectors)
-    {
-        if(v.n2 == -1)
-        {
-            bool regenerate = true;
-            while(regenerate)
+            if(i == possibleEdges.at(j).n1 || i == possibleEdges.at(j).n2)
             {
-                regenerate = false;
-                std::vector<int> availableVector;
-                SetAvailable(available, N);
-                available[v.n1] = 0;
-                for(auto& v2 : vectors)
-                {
-                    if(v.n1 == v2.n1)
-                    {
-                        if(v2.n2 != -1)
-                        {
-                            available[v2.n2] = 0;
-                        }
-                    }
-                    if(v.n1 == v2.n2)
-                    {
-                        available[v2.n1] = 0;
-                    }
-                }
-
-                for(int i = 0; i < N; ++i)
-                {
-                    if(available[i] == 1)
-                    {
-                        availableVector.push_back(i);
-                    }
-                }
-
-                std::shuffle(availableVector.begin(), availableVector.end(), rng);
-
-                if(availableVector.size() == 0)
-                {
-                    regenerate = true;
-                    v.n1 = randomN(rng);
-                }
-                else
-                {
-                    v.n2 = availableVector.at(0);
-                }
-                
+                Edge e = possibleEdges.at(j);
+                found[e.n1] = 1;
+                found[e.n2] = 1;
+                selectedEdges.push_back(e);
+                possibleEdges.erase(possibleEdges.begin() + j);
+                j--;
+                break;
             }
         }
     }
 
-    delete[] available;
+    int i = 0;
+    while(selectedEdges.size() != edges)
+    {
+        selectedEdges.push_back(possibleEdges.at(i));
+        i++;
+    }
 
-    return vectors;
+    delete[] found;
+
+    return selectedEdges;
 }
 
 std::vector<Edge> GenerateGraph(int N, int edges)
@@ -266,8 +212,8 @@ int CalculateLowestMSTWeight(std::vector<Edge>* edges)
 
 int main()
 {
-    int nodesNum = 10;
-    int edgesNum = 9;
+    int nodesNum = 100;
+    int edgesNum = 800;
     std::vector<Edge> edges = GenerateGraph(nodesNum, edgesNum);
 
     GenerateWeights(&edges, 0, 100);
