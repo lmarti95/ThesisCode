@@ -32,7 +32,7 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 {
 	std::vector<std::pair<int*, double>>* offsprings = new std::vector<std::pair<int*, double>>;
 
-	int fitnessValue = 0;
+	double fitnessValue = 0;
 
 	for(int i = 0; i < mLambda; ++i)
 	{
@@ -53,7 +53,7 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 		int* bitStringPrime = new int[mN];
 
 		std::copy(mBitString, mBitString + mN, bitStringPrime);
-		int newFitnessValue = fitnessValue;
+		double newFitnessValue = fitnessValue;
 
 		for(int i = 0; i < mN; ++i)
 		{

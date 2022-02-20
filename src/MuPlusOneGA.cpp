@@ -66,7 +66,7 @@ int* MuPlusOneGA::Mutate(int* aBitString)
 
 void MuPlusOneGA::DeleteWorst()
 {
-	int worstFitnessValue = mPopulation.at(0).second;
+	double worstFitnessValue = mPopulation.at(0).second;
 
 	for(auto& p : mPopulation)
 	{

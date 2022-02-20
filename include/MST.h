@@ -20,9 +20,13 @@ public:
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
 	std::string GetCostFunctionName() override { return "MST"; }
+
+	void visitEdge(int* aBitString, int aEdge, int* aConnected);
+	int ConnectedComponents(int* aBitString);
 private:
 	int mNodesNum;
 	int mEdgesNum;
 	int mMinimumSum;
 	std::vector<Edge> mEdges;
+	int mM = 10000;
 };

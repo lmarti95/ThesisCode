@@ -4,6 +4,7 @@
 #include "CostFunction.h"
 #include "HybridGA.h"
 #include "Jump.h"
+#include "MST.h"
 #include "MuPlusOneGA.h"
 #include "SASD_OnePlusLambda.h"
 #include "SDOnePlusOne.h"
@@ -12,13 +13,15 @@
 #include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
 
-
 int main()
 {
-	int N = 12;
-	Jump j(N,3, JumpType::Original);
+	int N = 21;
+	//Jump j(N,3, JumpType::Original);
+
+	MST j(N, "7_21.mst");
 
 	Benchmark b;
+	b.SetRepeat(50);
 
 	cGA sd(N, &j, 4);
 
@@ -39,9 +42,9 @@ int main()
 	SDOnePlusOne sd9(N, &j);
 
 	b.RunEA(&sd);
-	b.RunEA(&sd2);
+	//b.RunEA(&sd2);
 	b.RunEA(&sd3);
-	b.RunEA(&sd4);
+	//b.RunEA(&sd4);
 	b.RunEA(&sd5);
 	b.RunEA(&sd6);
 	b.RunEA(&sd7);

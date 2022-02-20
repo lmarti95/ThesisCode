@@ -48,8 +48,8 @@ std::pair<long long, double> cGA::RunEA()
 	double fitnessValue = 0;
 	int* X1;
 	int* X2;
-	int fitnessValueX1;
-	int fitnessValueX2;
+	double fitnessValueX1;
+	double fitnessValueX2;
 	int* Y1;
 	int* Y2;
 
