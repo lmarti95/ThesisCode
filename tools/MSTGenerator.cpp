@@ -173,7 +173,7 @@ void GenerateWeights(std::vector<Edge>* edges, int from, int to)
     }
 }
 
-int CalculateLowestMSTWeight(std::vector<Edge>* edges)
+int CalculateLowestMSTWeight(std::vector<Edge>* edges, int nodesNum)
 {
     std::sort(edges->begin(), edges->end(), [](Edge e1, Edge e2)
     {
@@ -184,36 +184,45 @@ int CalculateLowestMSTWeight(std::vector<Edge>* edges)
 
     int sum = 0;
 
-    for(auto& e : *edges)
+    added.push_back(edges->at(0).n1);
+    added.push_back(edges->at(0).n2);
+    sum += edges->at(0).weight;
+
+    while(added.size() != nodesNum)
     {
-        bool n1 = !(std::find(added.begin(), added.end(), e.n1) == added.end());
-        bool n2 = !(std::find(added.begin(), added.end(), e.n2) == added.end());
-
-        if(n1 && n2)
+        for(auto& e : *edges)
         {
-            continue;
-        }
+            bool n1 = !(std::find(added.begin(), added.end(), e.n1) == added.end());
+            bool n2 = !(std::find(added.begin(), added.end(), e.n2) == added.end());
 
-        if(!n2)
-        {
-            added.push_back(e.n2);
-        }
+            if(n1 && n2)
+            {
+                continue;
+            }
 
-        if(!n1)
-        {
-            added.push_back(e.n1);
-        }
+            if(!n2 && n1)
+            {
+                added.push_back(e.n2);
+                sum += e.weight;
+                break;
+            }
 
-        sum += e.weight;
-    }
+            if(!n1 && n2)
+            {
+                added.push_back(e.n1);
+                sum += e.weight;
+                break;
+            }
+        }
+    }   
 
     return sum;
 }
 
 int main()
 {
-    int nodesNum = 100;
-    int edgesNum = 800;
+    int nodesNum = 7;
+    int edgesNum = 21;
     std::vector<Edge> edges = GenerateGraph(nodesNum, edgesNum);
 
     GenerateWeights(&edges, 0, 100);
@@ -223,7 +232,7 @@ int main()
         std::cout << e.n1 << "\t" << e.n2 << "\t" << e.weight << std::endl;
     }
 
-    int sum = CalculateLowestMSTWeight(&edges);
+    int sum = CalculateLowestMSTWeight(&edges, nodesNum);
 
     std::cout << "Minimum sum: " << sum << std::endl;
 
@@ -234,6 +243,11 @@ int main()
     file << nodesNum << std::endl;
     file << edgesNum << std::endl;
     file << sum << std::endl;
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+
+    std::shuffle(edges.begin(), edges.end(), rng);
 
     for(auto& e : edges)
     {
