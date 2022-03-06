@@ -361,3 +361,5 @@ out/
 *.vcxproj.filters
 
 *.mst
+
+output.txt
