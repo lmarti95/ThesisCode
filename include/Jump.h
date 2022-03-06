@@ -20,6 +20,9 @@ public:
 
 	void SetJumpType(JumpType aType);
 	JumpType GetJumpType();
+	std::string GetJumpTypeString();
+
+	int GetGapSize() { return mGapSize; }
 
 	void CheckGapSize();
 private:

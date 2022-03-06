@@ -102,6 +102,21 @@ JumpType Jump::GetJumpType()
 	return mType;
 }
 
+std::string Jump::GetJumpTypeString()
+{
+	switch(mType)
+	{
+	case JumpType::Original:
+		return "Original";
+	case JumpType::Offset:
+		return "Offset";
+	case JumpType::OffsetSpike:
+		return "OffsetSpike";
+	default:
+		return "Original";
+	}
+}
+
 void Jump::CheckGapSize()
 {
 	if((mType == JumpType::Offset || mType == JumpType::OffsetSpike) && mGapSize >= mN / 4)

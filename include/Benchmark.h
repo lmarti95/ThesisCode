@@ -1,15 +1,43 @@
 #pragma once
 
 #include "EvolutionaryAlgorithm.h"
+#include "Result.h"
+
+#include <atomic>
+#include <mutex>
+#include <thread>
 
 class Benchmark {
 public:
+	~Benchmark();
+	void Shutdown();
 	int GetRepeat() { return mRepeat; }
 	void SetRepeat(int aRepeat) { mRepeat = aRepeat; }
 
-	std::pair<double, double> RunEA( EvolutionaryAlgorithm* aEA);
+	int GetActiveThreads() { return mActiveThreads; }
+
+	int GetMaximumThreads() { return mMaximumThreads; }
+	void SetMaximumThreads(int aMaximumThreads) { mMaximumThreads = aMaximumThreads; }
+
+	void ScheduleEA( EvolutionaryAlgorithm* aEA);
 
 	void SavePlot(std::vector<int> aX, std::vector<double> aY, std::string aXLabel, std::string aYLabel, std::string aTitle);
+
+	void SaveResults();
 private:
+	void RunEA(EvolutionaryAlgorithm* aEA);
+
 	int mRepeat = 100;
+
+	std::mutex mActiveThreadsMutex;
+	int mActiveThreads = 0;
+	int mMaximumThreads = std::thread::hardware_concurrency();
+
+	std::vector<std::thread*> mThreads;
+
+	std::mutex mResultsMutex;
+	std::vector<Result*> mResults;
+
+	std::atomic<int> mPlanToRun = 0;
+	std::atomic<int> mFinished = 0;
 };

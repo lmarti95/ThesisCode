@@ -13,15 +13,19 @@
 #include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
 
+#include <iostream>
+
 int main()
 {
-	int N = 21;
-	//Jump j(N,3, JumpType::Original);
+	std::cout << "Maximum number of threads used: " << std::thread::hardware_concurrency() << std::endl;
 
-	MST j(N, "7_21.mst");
+	int N = 15;
+	Jump j(N,3, JumpType::Original);
+
+	//MST j(N, "7_21.mst");
 
 	Benchmark b;
-	b.SetRepeat(50);
+	b.SetRepeat(1);
 
 	cGA sd(N, &j, 4);
 
@@ -41,13 +45,17 @@ int main()
 
 	SDOnePlusOne sd9(N, &j);
 
-	b.RunEA(&sd);
-	//b.RunEA(&sd2);
-	b.RunEA(&sd3);
-	//b.RunEA(&sd4);
-	b.RunEA(&sd5);
-	b.RunEA(&sd6);
-	b.RunEA(&sd7);
-	b.RunEA(&sd8);
-	b.RunEA(&sd9);
+	b.ScheduleEA(&sd);
+	b.ScheduleEA(&sd2);
+	b.ScheduleEA(&sd3);
+	b.ScheduleEA(&sd4);
+	b.ScheduleEA(&sd5);
+	b.ScheduleEA(&sd6);
+	b.ScheduleEA(&sd7);
+	b.ScheduleEA(&sd8);
+	b.ScheduleEA(&sd9);
+
+	b.SaveResults();
+
+	b.Shutdown();
 }
