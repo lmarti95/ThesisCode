@@ -2,6 +2,7 @@
 
 #include "CostFunction.h"
 
+#include <algorithm>
 #include <chrono>
 
 MuPlusOneGA::MuPlusOneGA(int aN, CostFunction* aCostFunction, int aPopulation) : GeneticAlgorithm(aN, aCostFunction)

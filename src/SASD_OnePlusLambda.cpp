@@ -32,8 +32,6 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 {
 	std::vector<std::pair<int*, double>>* offsprings = new std::vector<std::pair<int*, double>>;
 
-	double fitnessValue = 0;
-
 	for(int i = 0; i < mLambda; ++i)
 	{
 		if(mNumeratorMultiplier != 1 || mDenominatorMultiplier != 1)
@@ -53,7 +51,6 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 		int* bitStringPrime = new int[mN];
 
 		std::copy(mBitString, mBitString + mN, bitStringPrime);
-		double newFitnessValue = fitnessValue;
 
 		for(int i = 0; i < mN; ++i)
 		{
@@ -75,10 +72,8 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 	bool stagnationDetection = false;
 	RandomizeBitString();
 	double fitnessValue = mCostFunction->GetFitnessValue(mBitString);
-	double newFitnessValue = 0;
 
 	long long iterations = 0;
-	bool justUpdated = false;
 
 	int* bitStringPrime = new int[mN];
 

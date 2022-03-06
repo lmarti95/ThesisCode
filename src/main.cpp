@@ -25,7 +25,7 @@ int main()
 	//MST j(N, "7_21.mst");
 
 	Benchmark b;
-	b.SetRepeat(1);
+	b.SetRepeat(30);
 
 	cGA sd(N, &j, 4);
 
@@ -48,7 +48,7 @@ int main()
 	b.ScheduleEA(&sd);
 	b.ScheduleEA(&sd2);
 	b.ScheduleEA(&sd3);
-	b.ScheduleEA(&sd4);
+	//b.ScheduleEA(&sd4);
 	b.ScheduleEA(&sd5);
 	b.ScheduleEA(&sd6);
 	b.ScheduleEA(&sd7);

@@ -143,9 +143,13 @@ void Benchmark::SavePlot(std::vector<int> aX, std::vector<double> aY, std::strin
 
 void Benchmark::SaveResults()
 {
-	std::time_t now = time(0);
+	while(mPlanToRun > mFinished)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	/*std::time_t now = time(0);
 	char str[26];
-	ctime_s(str, sizeof str, &now);
+	ctime_s(str, sizeof str, &now);*/
 
 	std::ofstream file;
 	//file.open(std::string(str) + ".txt");

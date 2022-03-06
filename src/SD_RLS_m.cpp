@@ -5,6 +5,7 @@
 #include <chrono>
 #include <climits>
 #include <cmath>
+#include <float.h>
 
 SD_RLS_m::SD_RLS_m(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 {

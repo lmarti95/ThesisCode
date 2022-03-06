@@ -2,6 +2,7 @@
 
 #include "CostFunction.h"
 
+#include <algorithm>
 #include <chrono>
 
 HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, aCostFunction)

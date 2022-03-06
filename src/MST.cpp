@@ -1,5 +1,6 @@
 #include "MST.h"
 
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
