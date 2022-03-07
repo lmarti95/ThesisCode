@@ -30,6 +30,12 @@ int main()
 	testNs.push_back(40);
 	testNs.push_back(50);
 
+	Benchmark b;
+
+	b.SetRepeat(100);
+
+	//MST j(N, "7_21.mst");
+
 	for(auto& N : testNs)
 	{
 		for(int gapSize = 2; gapSize < 7; ++gapSize)
@@ -39,12 +45,7 @@ int main()
 				break;
 			}
 
-			Jump j(N, 3, JumpType::Original);
-
-			//MST j(N, "7_21.mst");
-
-			Benchmark b;
-			b.SetRepeat(100);
+			Jump j(N, gapSize, JumpType::Original);
 
 			cGA sd(N, &j, 4);
 
@@ -74,8 +75,8 @@ int main()
 			b.ScheduleEA(&sd8);
 			b.ScheduleEA(&sd9);
 
-			b.SaveResults("Jump(" + std::to_string(gapSize) + ").txt");
-
 		}
-	}	
+	}
+
+	b.SaveResults("JumpOriginal.txt");
 }

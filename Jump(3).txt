@@ -1,9 +1,9 @@
-4061 0.0003 100 Jump(3) Hybrid GA 10 3 Original
-658 0.0006 100 Jump(3) (4 + 1) GA 10 3 Original
-467 0.0009 100 Jump(3) cGA with hypothetical population size: 4 10 3 Original
-633 0.0017 100 Jump(3) SD-RLS 10 3 Original
-722 0.0020 100 Jump(3) SD-RLS^r 10 3 Original
-717 0.0020 100 Jump(3) SD-RLS-STAR 10 3 Original
-1226 0.0031 100 Jump(3) SD-RLS^m 10 3 Original
-1826 0.0067 100 Jump(3) SASD-(1+4) 10 3 Original
-2736 0.0020 100 Jump(3) SD-(1+1) 10 3 Original
+2382 0.0002 100 Jump(3) Hybrid GA 12 3 Original
+1134 0.0012 100 Jump(3) (4 + 1) GA 12 3 Original
+733 0.0019 100 Jump(3) cGA with hypothetical population size: 4 12 3 Original
+979 0.0026 100 Jump(3) SD-RLS 12 3 Original
+1107 0.0031 100 Jump(3) SD-RLS^r 12 3 Original
+1140 0.0031 100 Jump(3) SD-RLS-STAR 12 3 Original
+1917 0.0047 100 Jump(3) SD-RLS^m 12 3 Original
+6113 0.0053 100 Jump(3) SD-(1+1) 12 3 Original
+10138 0.0398 100 Jump(3) SASD-(1+4) 12 3 Original
