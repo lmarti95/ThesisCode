@@ -10,7 +10,7 @@
 class Benchmark {
 public:
 	~Benchmark();
-	void Shutdown();
+	void FinishThreads();
 	int GetRepeat() { return mRepeat; }
 	void SetRepeat(int aRepeat) { mRepeat = aRepeat; }
 
@@ -23,7 +23,7 @@ public:
 
 	void SavePlot(std::vector<int> aX, std::vector<double> aY, std::string aXLabel, std::string aYLabel, std::string aTitle);
 
-	void SaveResults();
+	void SaveResults(std::string aFilename);
 private:
 	void RunEA(EvolutionaryAlgorithm* aEA);
 

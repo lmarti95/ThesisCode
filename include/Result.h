@@ -4,7 +4,7 @@
 
 class Result {
 public:
-	Result(double aIterations, double aTime, int aRepeat, std::string aCostFunctionName, std::string aEAName, double aN, int aGap = 0, std::string aJumpType = "");
+	Result(double aIterations, double aTime, int aRepeat, std::string aCostFunctionName, std::string aEAName, int aN, int aGap = 0, std::string aJumpType = "");
 
 	std::string GetResult();
 private:
@@ -14,7 +14,7 @@ private:
 	
 	std::string mCostFunctionName;
 	std::string mEAName;
-	double mN;
+	int mN;
 	int mGap;
 	std::string mJumpType;
 };

@@ -4,7 +4,9 @@
 
 #include <chrono>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <thread>
 #include <time.h>
 
@@ -16,7 +18,7 @@ Benchmark::~Benchmark()
 	}
 }
 
-void Benchmark::Shutdown()
+void Benchmark::FinishThreads()
 {
 	while(mPlanToRun > mFinished)
 	{
@@ -26,6 +28,9 @@ void Benchmark::Shutdown()
 	{
 		t->join();
 	}
+
+	mPlanToRun = 0;
+	mFinished = 0;
 }
 
 void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
@@ -40,10 +45,14 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 		time += result.second;
 	}
 
-	double averageIteration = iterations / mRepeat;
+	double averageIteration = iterations / (double)mRepeat;
 	double averageTime = time / (double)mRepeat;
 
-	std::cout << averageIteration << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
+	std::stringstream streamIterations;
+	streamIterations << std::fixed << std::setprecision(0) << averageIteration;
+	std::string iterationsString = streamIterations.str();
+
+	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
 
 	Result* res;
 	
@@ -140,19 +149,12 @@ void Benchmark::SavePlot(std::vector<int> aX, std::vector<double> aY, std::strin
 	std::cout << aTitle << ".txt was created" << std::endl;
 }
 
-void Benchmark::SaveResults()
+void Benchmark::SaveResults(std::string aFilename)
 {
-	while(mPlanToRun > mFinished)
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-	}
-	/*std::time_t now = time(0);
-	char str[26];
-	ctime_s(str, sizeof str, &now);*/
+	FinishThreads();
 
 	std::ofstream file;
-	//file.open(std::string(str) + ".txt");
-	file.open("output.txt");
+	file.open(aFilename);
 	for(auto& res : mResults)
 	{
 		file << res->GetResult();
