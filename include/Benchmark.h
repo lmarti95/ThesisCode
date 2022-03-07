@@ -38,6 +38,6 @@ private:
 	std::mutex mResultsMutex;
 	std::vector<Result*> mResults;
 
-	std::atomic<int> mPlanToRun = 0;
-	std::atomic<int> mFinished = 0;
+	std::atomic_int  mPlanToRun = {0};
+	std::atomic_int mFinished = {0};
 };

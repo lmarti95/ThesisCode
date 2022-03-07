@@ -122,7 +122,7 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 
 	auto start = std::chrono::steady_clock::now();
 
-	while(maximumFitnessValue != std::max_element(mPopulation.begin(), mPopulation.end(), [](auto a, auto b)
+	while(maximumFitnessValue != std::max_element(mPopulation.begin(), mPopulation.end(), [](std::pair<int*, double> a, std::pair<int*, double> b)
 		{
 			return a.second < b.second;
 		})->second)
