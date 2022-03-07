@@ -3,11 +3,11 @@
 #include "CostFunction.h"
 #include "SD.h"
 
-class SDOnePlusOne : public SD
+class SD_OnePlusOne : public SD
 {
 public:
-	SDOnePlusOne(int aN, CostFunction* aCostFunction);
-	~SDOnePlusOne();
+	SD_OnePlusOne(int aN, CostFunction* aCostFunction);
+	~SD_OnePlusOne();
 
 	bool CalculateFlipR();
 

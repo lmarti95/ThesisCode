@@ -7,7 +7,7 @@
 #include "MST.h"
 #include "MuPlusOneGA.h"
 #include "SASD_OnePlusLambda.h"
-#include "SDOnePlusOne.h"
+#include "SD_OnePlusOne.h"
 #include "SD_RLS.h"
 #include "SD_RLS_m.h"
 #include "SD_RLS_r.h"
@@ -18,6 +18,9 @@
 int main()
 {
 	std::cout << "Maximum number of threads used: " << std::thread::hardware_concurrency() << std::endl;
+
+	std::vector<CostFunction*> toDeleteCostFunctions;
+	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
 	std::vector<int> testNs;
 	testNs.push_back(10);
@@ -45,38 +48,59 @@ int main()
 				break;
 			}
 
-			Jump j(N, gapSize, JumpType::Original);
+			Jump* j = new Jump(N, gapSize, JumpType::Original);
+			toDeleteCostFunctions.push_back(j);
 
-			cGA sd(N, &j, 4);
+			cGA* sd = new cGA(N, j, 4);
 
-			HybridGA sd2(N, &j);
+			HybridGA* sd2 = new HybridGA(N, j);
 
-			MuPlusOneGA sd3(N, &j, 4);
+			MuPlusOneGA* sd3 = new MuPlusOneGA(N, j, 4);
 
-			SASD_OnePlusLambda sd4(N, &j, 4);
+			SASD_OnePlusLambda* sd4 = new SASD_OnePlusLambda(N, j, 4);
 
-			SD_RLS sd5(N, &j);
+			SD_RLS* sd5 = new SD_RLS(N, j);
 
-			SD_RLS_m sd6(N, &j);
+			SD_RLS_m* sd6 = new SD_RLS_m(N, j);
 
-			SD_RLS_r sd7(N, &j);
+			SD_RLS_r* sd7 = new SD_RLS_r(N, j);
 
-			SD_RLS_STAR sd8(N, &j);
+			SD_RLS_STAR* sd8 = new SD_RLS_STAR(N, j);
 
-			SDOnePlusOne sd9(N, &j);
+			SD_OnePlusOne* sd9 = new SD_OnePlusOne(N, j);
 
-			b.ScheduleEA(&sd);
-			b.ScheduleEA(&sd2);
-			b.ScheduleEA(&sd3);
-			b.ScheduleEA(&sd4);
-			b.ScheduleEA(&sd5);
-			b.ScheduleEA(&sd6);
-			b.ScheduleEA(&sd7);
-			b.ScheduleEA(&sd8);
-			b.ScheduleEA(&sd9);
+			toDeleteEvolutionaryAlgorithms.push_back(sd);
+			toDeleteEvolutionaryAlgorithms.push_back(sd2);
+			toDeleteEvolutionaryAlgorithms.push_back(sd3);
+			toDeleteEvolutionaryAlgorithms.push_back(sd4);
+			toDeleteEvolutionaryAlgorithms.push_back(sd5);
+			toDeleteEvolutionaryAlgorithms.push_back(sd6);
+			toDeleteEvolutionaryAlgorithms.push_back(sd7);
+			toDeleteEvolutionaryAlgorithms.push_back(sd8);
+			toDeleteEvolutionaryAlgorithms.push_back(sd9);
+
+			b.ScheduleEA(sd);
+			b.ScheduleEA(sd2);
+			b.ScheduleEA(sd3);
+			b.ScheduleEA(sd4);
+			b.ScheduleEA(sd5);
+			b.ScheduleEA(sd6);
+			b.ScheduleEA(sd7);
+			b.ScheduleEA(sd8);
+			b.ScheduleEA(sd9);
 
 		}
 	}
 
 	b.SaveResults("JumpOriginal.txt");
+
+	for(auto& c : toDeleteCostFunctions)
+	{
+		delete c;
+	}
+
+	for(auto& ea : toDeleteEvolutionaryAlgorithms)
+	{
+		delete ea;
+	}
 }

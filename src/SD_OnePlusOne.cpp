@@ -1,4 +1,4 @@
-#include "SDOnePlusOne.h"
+#include "SD_OnePlusOne.h"
 
 #include "Utilityh.h"
 
@@ -6,15 +6,15 @@
 #include <chrono>
 #include <cmath>
 
-SDOnePlusOne::SDOnePlusOne(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
+SD_OnePlusOne::SD_OnePlusOne(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 {
 }
 
-SDOnePlusOne::~SDOnePlusOne()
+SD_OnePlusOne::~SD_OnePlusOne()
 {
 }
 
-bool SDOnePlusOne::CalculateFlipR()
+bool SD_OnePlusOne::CalculateFlipR()
 {
 	std::uniform_real_distribution<> p(0.0, 1.0);
 
@@ -27,7 +27,7 @@ bool SDOnePlusOne::CalculateFlipR()
 }
 
 
-std::pair<long long, double> SDOnePlusOne::RunEA()
+std::pair<long long, double> SD_OnePlusOne::RunEA()
 {
 	mR = 1;
 	RandomizeBitString();
