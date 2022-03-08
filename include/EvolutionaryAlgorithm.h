@@ -8,10 +8,12 @@ class EvolutionaryAlgorithm
 {
 public:
 	EvolutionaryAlgorithm(int N, CostFunction* aCostFunction);
+	~EvolutionaryAlgorithm();
 
 	EvolutionaryAlgorithm(const EvolutionaryAlgorithm&) = delete;
 	EvolutionaryAlgorithm& operator= (const EvolutionaryAlgorithm&) = delete;
 
+	void CopyCostFunction(CostFunction* aCostFunction);
 	CostFunction* GetCostFunction(){ return mCostFunction; }
 	void SetCostFunction(CostFunction* aCostFunction) { mCostFunction = aCostFunction; }
 
@@ -30,7 +32,7 @@ protected:
 	std::pair<int*, double> SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations, int* aRRate = nullptr);
 	
 	int* CreateRandomBitString();
-	void FlipBitBasedOnPosition(int* aBitString, int aPosition);
+	inline int FlipBitBasedOnPosition(int* aBitString, int aPosition);
 
 	int mN;
 
@@ -44,3 +46,16 @@ protected:
 	CostFunction* mCostFunction;
 };
 
+inline int EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aPosition)
+{
+	if(aBitString[aPosition] == 1)
+	{
+		aBitString[aPosition] = 0;
+		return 0;
+	}
+	else
+	{
+		aBitString[aPosition] = 1;
+		return 1;
+	}
+}

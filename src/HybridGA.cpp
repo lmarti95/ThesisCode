@@ -1,6 +1,8 @@
 #include "HybridGA.h"
 
+#include "Cliff.h"
 #include "CostFunction.h"
+#include "Jump.h"
 
 #include <algorithm>
 #include <chrono>
@@ -73,11 +75,22 @@ std::pair<long long, double> HybridGA::RunEA()
 				for(auto& position : mPermutation)
 				{
 					iterations++;
-					FlipBitBasedOnPosition(bitString, position);
+					int change = FlipBitBasedOnPosition(bitString, position);
 
-					int newFitnessValue = mCostFunction->GetFitnessValue(bitString);
+					double newFitnessValue;
+
+					if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+					{
+						newFitnessValue = mCostFunction->GetFitnessValue(change);
+					}
+					else
+					{
+						newFitnessValue = mCostFunction->GetFitnessValue(bitString);
+					}
+
 					if(newFitnessValue > fitnessValue)
 					{
+						mCostFunction->ApplyChange(change);
 						fitnessValue = newFitnessValue;
 						updated = true;
 					}

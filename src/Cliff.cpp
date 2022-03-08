@@ -18,6 +18,20 @@ double Cliff::GetFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
+	mSum = sum;
+
+	if(sum < 2 * mN / 3)
+	{
+		return  sum;
+	}
+
+	return sum - mN / 3 + 1 / 2;
+}
+
+double Cliff::GetFitnessValue(int aChange)
+{
+	double sum = mSum + aChange;
+
 	if(sum < 2 * mN / 3)
 	{
 		return  sum;

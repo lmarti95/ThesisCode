@@ -1,5 +1,7 @@
 #include "SD_RLS_STAR.h"
 
+#include "Cliff.h"
+#include "Jump.h"
 #include "Utilityh.h"
 
 #include <chrono>
@@ -48,17 +50,27 @@ std::pair<long long, double> SD_RLS_STAR::RunEA()
 
 		int* selection = SelectRandomK(mN, s);
 
+		int change = 0;
+
 		for(int i = 0; i < s; ++i)
 		{
-			FlipBitBasedOnPosition(bitStringPrime, selection[i]);
+			change += FlipBitBasedOnPosition(bitStringPrime, selection[i]);
 		}
 
 		delete[] selection;
 
-		newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
+		if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+		{
+			newFitnessValue = mCostFunction->GetFitnessValue(change);
+		}
+		else
+		{
+			newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
+		}
 
 		if(newFitnessValue > fitnessValue)
 		{
+			mCostFunction->ApplyChange(change);
 			fitnessValue = newFitnessValue;
 			std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 			justUpdated = true;

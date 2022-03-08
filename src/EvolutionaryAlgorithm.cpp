@@ -1,5 +1,9 @@
 #include "EvolutionaryAlgorithm.h"
 
+#include "Cliff.h"
+#include "Jump.h"
+#include "MST.h"
+
 #include<algorithm>
 
 EvolutionaryAlgorithm::EvolutionaryAlgorithm(int aN, CostFunction* aCostFunction)
@@ -13,7 +17,29 @@ EvolutionaryAlgorithm::EvolutionaryAlgorithm(int aN, CostFunction* aCostFunction
 	std::uniform_int_distribution<std::mt19937::result_type> tempRandomN(1, mN);
 	mRandomN = tempRandomN;
 
-	mCostFunction = aCostFunction;
+	
+	CopyCostFunction(aCostFunction);
+}
+
+EvolutionaryAlgorithm::~EvolutionaryAlgorithm()
+{
+	delete mCostFunction;
+}
+
+void EvolutionaryAlgorithm::CopyCostFunction(CostFunction* aCostFunction)
+{
+	if(dynamic_cast<Jump*>(aCostFunction) != nullptr)
+	{
+		mCostFunction = new Jump(*dynamic_cast<Jump*>(aCostFunction));
+	}
+	if(dynamic_cast<Cliff*>(aCostFunction) != nullptr)
+	{
+		mCostFunction = new Cliff(*dynamic_cast<Cliff*>(aCostFunction));
+	}
+	if(dynamic_cast<MST*>(aCostFunction) != nullptr)
+	{
+		mCostFunction = new MST(*dynamic_cast<MST*>(aCostFunction));
+	}
 }
 
 double EvolutionaryAlgorithm::FlipBits(int* aBitString, int aNext)
@@ -141,16 +167,4 @@ int* EvolutionaryAlgorithm::CreateRandomBitString()
 	}
 
 	return bitString;
-}
-
-void EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aPosition)
-{
-	if(aBitString[aPosition] == 1)
-	{
-		aBitString[aPosition] = 0;
-	}
-	else
-	{
-		aBitString[aPosition] = 1;
-	}
 }

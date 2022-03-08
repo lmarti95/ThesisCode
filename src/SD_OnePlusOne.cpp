@@ -1,5 +1,7 @@
 #include "SD_OnePlusOne.h"
 
+#include "Cliff.h"
+#include "Jump.h"
 #include "Utilityh.h"
 
 #include <algorithm>
@@ -60,18 +62,28 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 			justUpdated = false;
 		}
 
+		int change = 0;
+
 		for(int i = 0; i < mN; ++i)
 		{
 			if(CalculateFlipR())
 			{
-				FlipBitBasedOnPosition(bitStringPrime, i);
+				change+=FlipBitBasedOnPosition(bitStringPrime, i);
 			}
 		}
 
-		newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
+		if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+		{
+			newFitnessValue = mCostFunction->GetFitnessValue(change);
+		}
+		else
+		{
+			newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
+		}
 
 		if(newFitnessValue > fitnessValue)
 		{
+			mCostFunction->ApplyChange(change);
 			fitnessValue = newFitnessValue;
 			std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 			justUpdated = true;

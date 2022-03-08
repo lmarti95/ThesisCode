@@ -35,6 +35,21 @@ double Jump::GetFitnessValue(int* aBitString)
 	}
 }
 
+double Jump::GetFitnessValue(int aChange)
+{
+	switch(mType)
+	{
+	case JumpType::Original:
+		return GetOriginalFitnessValue(aChange);
+	case JumpType::Offset:
+		return GetOffsetFitnessValue(aChange);
+	case JumpType::OffsetSpike:
+		return GetOffsetSpikeFitnessValue(aChange);
+	default:
+		return GetOriginalFitnessValue(aChange);
+	}
+}
+
 double Jump::GetOriginalFitnessValue(int* aBitString)
 {
 	double sum = 0;
@@ -43,6 +58,20 @@ double Jump::GetOriginalFitnessValue(int* aBitString)
 	{
 		sum += aBitString[i];
 	}
+
+	mSum = sum;
+
+	if(sum > mN - mGapSize && sum != mN)
+	{
+		return  mN - sum;
+	}
+
+	return sum + mGapSize;
+}
+
+double Jump::GetOriginalFitnessValue(int aChange)
+{
+	double sum = mSum + aChange;
 
 	if(sum > mN - mGapSize && sum != mN)
 	{
@@ -61,12 +90,26 @@ double Jump::GetOffsetFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
+	mSum = sum;
+
 	if(sum < 3*mN/4 || sum >= 3*mN/4+mGapSize)
 	{
 		return  sum + mGapSize;
 	}
 
 	return 3*mN/4+mGapSize-sum;
+}
+
+double Jump::GetOffsetFitnessValue(int aChange)
+{
+	double sum = mSum + aChange;
+
+	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	{
+		return  sum + mGapSize;
+	}
+
+	return 3 * mN / 4 + mGapSize - sum;
 }
 
 double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
@@ -77,6 +120,25 @@ double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
 	{
 		sum += aBitString[i];
 	}
+
+	mSum = sum;
+
+	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	{
+		return sum + mGapSize;
+	}
+
+	if(sum == 3 * mN / 4 + mGapSize / 2)
+	{
+		return mN + mGapSize + 1;
+	}
+
+	return 3 * mN / 4 + mGapSize - sum;
+}
+
+double Jump::GetOffsetSpikeFitnessValue(int aChange)
+{
+	double sum = mSum + aChange;
 
 	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
 	{

@@ -178,5 +178,5 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 	delete[] bitStringPrime;
 
-	return std::make_pair(iterations, elapsedSeconds.count());
+	return std::make_pair(iterations*mLambda, elapsedSeconds.count());
 }

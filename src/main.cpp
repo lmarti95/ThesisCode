@@ -19,7 +19,6 @@ int main()
 {
 	std::cout << "Maximum number of threads used: " << std::thread::hardware_concurrency() << std::endl;
 
-	std::vector<CostFunction*> toDeleteCostFunctions;
 	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
 	std::vector<int> testNs;
@@ -37,8 +36,6 @@ int main()
 
 	b.SetRepeat(100);
 
-	//MST j(N, "7_21.mst");
-
 	for(auto& N : testNs)
 	{
 		for(int gapSize = 2; gapSize < 7; ++gapSize)
@@ -48,26 +45,25 @@ int main()
 				break;
 			}
 
-			Jump* j = new Jump(N, gapSize, JumpType::Original);
-			toDeleteCostFunctions.push_back(j);
+			Jump j(N, gapSize, JumpType::Original);
 
-			cGA* sd = new cGA(N, j, 4);
+			cGA* sd = new cGA(N, &j, 4);
 
-			HybridGA* sd2 = new HybridGA(N, j);
+			HybridGA* sd2 = new HybridGA(N, &j);
 
-			MuPlusOneGA* sd3 = new MuPlusOneGA(N, j, 4);
+			MuPlusOneGA* sd3 = new MuPlusOneGA(N, &j, 4);
 
-			SASD_OnePlusLambda* sd4 = new SASD_OnePlusLambda(N, j, 4);
+			SASD_OnePlusLambda* sd4 = new SASD_OnePlusLambda(N, &j, 4);
 
-			SD_RLS* sd5 = new SD_RLS(N, j);
+			SD_RLS* sd5 = new SD_RLS(N, &j);
 
-			SD_RLS_m* sd6 = new SD_RLS_m(N, j);
+			SD_RLS_m* sd6 = new SD_RLS_m(N, &j);
 
-			SD_RLS_r* sd7 = new SD_RLS_r(N, j);
+			SD_RLS_r* sd7 = new SD_RLS_r(N, &j);
 
-			SD_RLS_STAR* sd8 = new SD_RLS_STAR(N, j);
+			SD_RLS_STAR* sd8 = new SD_RLS_STAR(N, &j);
 
-			SD_OnePlusOne* sd9 = new SD_OnePlusOne(N, j);
+			SD_OnePlusOne* sd9 = new SD_OnePlusOne(N, &j);
 
 			toDeleteEvolutionaryAlgorithms.push_back(sd);
 			toDeleteEvolutionaryAlgorithms.push_back(sd2);
@@ -93,11 +89,6 @@ int main()
 	}
 
 	b.SaveResults("JumpOriginal.txt");
-
-	for(auto& c : toDeleteCostFunctions)
-	{
-		delete c;
-	}
 
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{

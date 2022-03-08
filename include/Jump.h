@@ -11,11 +11,17 @@ public:
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
+	double GetFitnessValue(int aChange) override;
 
 	double GetOriginalFitnessValue(int* aBitString);
 	double GetOffsetFitnessValue(int* aBitString);
 	double GetOffsetSpikeFitnessValue(int* aBitString);
+	double GetOriginalFitnessValue(int aChange);
+	double GetOffsetFitnessValue(int aChange);
+	double GetOffsetSpikeFitnessValue(int aChange);
 
+	void ApplyChange(int aChange) override { mSum += aChange; }
+	
 	std::string GetCostFunctionName() override { return "Jump(" +std::to_string(mGapSize) + ")" ; }
 
 	void SetJumpType(JumpType aType);
@@ -23,9 +29,11 @@ public:
 	std::string GetJumpTypeString();
 
 	int GetGapSize() { return mGapSize; }
-
 	void CheckGapSize();
+
+	void SetSum(double aSum) { mSum = aSum; }
 private:
 	int mGapSize;
+	double mSum = 0;
 	JumpType mType;
 };

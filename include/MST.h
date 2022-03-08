@@ -19,6 +19,8 @@ public:
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
+	double GetFitnessValue(int aChange) { return -1; };
+	void ApplyChange(int aChange) override {}
 	std::string GetCostFunctionName() override { return "MST"; }
 
 	void visitEdge(int* aBitString, int aEdge, int* aConnected);
