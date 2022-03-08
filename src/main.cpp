@@ -22,15 +22,16 @@ int main()
 	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
 	std::vector<int> testNs;
-	testNs.push_back(10);
-	testNs.push_back(12);
-	testNs.push_back(15);
-	testNs.push_back(18);
-	testNs.push_back(21);
-	testNs.push_back(25);
-	testNs.push_back(30);
-	testNs.push_back(40);
-	testNs.push_back(50);
+	testNs.push_back(100);
+	testNs.push_back(200);
+	testNs.push_back(300);
+	testNs.push_back(400);
+	testNs.push_back(500);
+	testNs.push_back(600);
+	testNs.push_back(700);
+	testNs.push_back(800);
+	testNs.push_back(900);
+	testNs.push_back(1000);	
 
 	Benchmark b;
 
