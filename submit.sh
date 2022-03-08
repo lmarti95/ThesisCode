@@ -2,9 +2,9 @@
 
 #BSUB -J ThesisCodeEA
 
-#BSUB -n 24
-#BSUB -R "span[ptile=24]"
-#BSUB -W 00:59
+#BSUB -n 32
+#BSUB -R "span[ptile=32]"
+#BSUB -W 11:00
 #BSUB -q hpc
 #BSUB -R "rusage[mem=1GB]"
 #BSUB -o build/Output_%J.out 
