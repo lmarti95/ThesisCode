@@ -12,6 +12,26 @@
 #include <thread>
 #include <vector>
 
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) GLClearError(); \
+    x;\
+    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+void GLClearError()
+{
+    while(glGetError() != GL_NO_ERROR);
+}
+
+bool GLLogCall(const char* function, const char* file, int line)
+{
+    while(GLenum error = glGetError())
+    {
+        std::cout << "[OpenGL Error](" << error << "): " << function << " " << file << ":" << line << std::endl;
+        return false;
+    }
+    return true;
+}
+
 // Shaders
 const GLchar* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 position;\n"
@@ -32,25 +52,24 @@ const GLchar* fragmentShaderSource = "#version 330 core\n"
 "fragColor.z = vcolor.z;"
 "}\n\0";
 
+
 const int scaleX = 20;
 const int scaleY = 30;
 const int circleTriangles = 20;
-const int numberOfTriangles = 6+scaleX*2 +scaleY*2+ circleTriangles*3+4;
+
+int numberOfTriangles = 0;
+int numberOfLines = 0;
 
 const GLfloat pi = 3.14159265f;
 
-GLfloat location15X;
-GLfloat location21Y;
-
-GLfloat location16X;
-GLfloat location5Y;
-
-GLfloat location6Y;
-
-GLfloat locationMaxX;
-GLfloat locationMaxY;
-
 const GLuint width = 800, height = 800;
+
+const GLfloat XCoordinateXStart = -0.91f;
+const GLfloat XCoordinateYStart = -0.95f;
+const GLfloat YCoordinateXStart = -0.98f;
+const GLfloat YCoordinateYStart = -0.87f;
+
+int RedCircleStart = -1;
 
 struct Text{
     GLTtext* gltText;
@@ -63,16 +82,22 @@ public:
     Shape(GLfloat* aColor)
     {
         std::copy(aColor, aColor + 3, mColor);
-        std::copy(aColor, aColor + 3, mColor+3);
-        std::copy(aColor, aColor + 3, mColor+6);
+        std::copy(aColor, aColor + 3, mColor + 3);
+        std::copy(aColor, aColor + 3, mColor + 6);
     }
+
+    virtual ~Shape() {}
     
-    virtual GLfloat* GetColor() = 0;
-    virtual GLfloat* GetPoints() = 0;
+    virtual std::vector<GLfloat>* GetColor() = 0;
+    virtual std::vector<GLfloat>* GetPoints() = 0;
     virtual int GetNumberOfTriangles() = 0;
+
+    void SetID(int aID) { mID = aID; }
+    int GetiD() { return mID; }
 
 protected:
     GLfloat mColor[9];
+    int mID = -1;
 };
 
 class Triangle : Shape{
@@ -82,9 +107,14 @@ public:
         std::copy(aPoints, aPoints + 9, mPoints);
     }
 
-    GLfloat* GetPoints()
+    std::vector<GLfloat>* GetPoints()
     {
-        return mPoints;
+        std::vector<GLfloat>* points = new std::vector<GLfloat>;
+        for(int i = 0; i < 9; ++i)
+        {
+            points->push_back(mPoints[i]);
+        }
+        return points;
     }
 
     int GetNumberOfTriangles()
@@ -92,15 +122,20 @@ public:
         return 1;
     }
 
-    GLfloat* GetColor()
+    std::vector<GLfloat>* GetColor()
     {
-        return mColor;
+        std::vector<GLfloat>* pointsColor = new std::vector<GLfloat>;
+        for(int i = 0; i < 9; ++i)
+        {
+            pointsColor->push_back(mColor[i]);
+        }
+        return pointsColor;
     }
 private:
     GLfloat mPoints[9];
 };
 
-class Rectangle : Shape{
+class Rectangle : public Shape{
 public:
     Rectangle(GLfloat* aPoints, GLfloat* aColor) : Shape(aColor)
     {
@@ -122,12 +157,17 @@ public:
         delete t2;
     }
 
-    GLfloat* GetPoints()
+    std::vector<GLfloat>* GetPoints()
     {
-        GLfloat points[18];
-        std::copy(t1->GetPoints(), t1->GetPoints() + 9, points);
-        std::copy(t2->GetPoints(), t2->GetPoints() + 9, points+9);
-        return points;
+        auto t1points = t1->GetPoints();
+        auto t2points = t2->GetPoints();
+        for(int i = 0; i < 9; ++i)
+        {
+            t1points->push_back(t2points->at(i));
+        }
+
+        delete t2points;
+        return t1points;
     }
 
     int GetNumberOfTriangles()
@@ -135,19 +175,24 @@ public:
         return 2;
     }
 
-    GLfloat* GetColor()
+    std::vector<GLfloat>* GetColor()
     {
-        GLfloat color[18];
-        std::copy(t1->GetColor(), t1->GetColor() + 9, color);
-        std::copy(t2->GetColor(), t2->GetColor() + 9, color + 9);
-        return color;
+        auto t1pointsColor = t1->GetColor();
+        auto t2pointsColor = t2->GetColor();
+        for(int i = 0; i < 9; ++i)
+        {
+            t1pointsColor->push_back(t2pointsColor->at(i));
+        }
+
+        delete t2pointsColor;
+        return t1pointsColor;
     }
 private:
     Triangle* t1;
     Triangle* t2;
 };
 
-class Circle : Shape{
+class Circle : public Shape{
 public:
     Circle(GLfloat aX, GLfloat aY, GLfloat aR, GLfloat* aColor) : Shape(aColor)
     {
@@ -182,14 +227,18 @@ public:
         }
     }
 
-    GLfloat* GetPoints()
+    std::vector<GLfloat>* GetPoints()
     {
-        GLfloat points[circleTriangles*9];
-        int i = 0;
+        std::vector<GLfloat>* points = new std::vector<GLfloat>;
         for(auto& t : mTriangles)
         {
-            std::copy(t->GetPoints(), t->GetPoints() + 9, points+i*9);
-            i++;
+            auto pointsTriangle = t->GetPoints();
+            for(int i = 0; i < 9; ++i)
+            {
+                points->push_back(pointsTriangle->at(i));
+            }
+
+            delete pointsTriangle;
         }
         return points;
     }
@@ -199,20 +248,78 @@ public:
         return circleTriangles;
     }
 
-    GLfloat* GetColor()
+    std::vector<GLfloat>* GetColor()
     {
-        GLfloat color[circleTriangles * 9];
-        int i = 0;
+        std::vector<GLfloat>* pointsColor = new std::vector<GLfloat>;
         for(auto& t : mTriangles)
         {
-            std::copy(t->GetColor(), t->GetColor() + 9, color + i * 9);
-            i++;
+            auto colorPointsTriangle = t->GetColor();
+            for(int i = 0; i < 9; ++i)
+            {
+                pointsColor->push_back(colorPointsTriangle->at(i));
+            }
+
+            delete colorPointsTriangle;
         }
-        return color;
+        return pointsColor;
     }
 private:
     std::vector<Triangle*> mTriangles;
 };
+
+class Line : public Shape{
+public:
+    Line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat* aColor) : Shape(aColor)
+    {
+        mPoints[0] = x1;
+        mPoints[1] = y1;
+        mPoints[2] = 0.0f;
+        mPoints[3] = x2;
+        mPoints[4] = y2;
+        mPoints[5] = 0.0f;
+    }
+
+    std::vector<GLfloat>* GetPoints()
+    {
+        std::vector<GLfloat>* points = new std::vector<GLfloat>;
+        for(int i = 0; i < 6; ++i)
+        {
+            points->push_back(mPoints[i]);
+        }
+        return points;
+    }
+
+    int GetNumberOfTriangles()
+    {
+        return 1;
+    }
+
+    std::vector<GLfloat>* GetColor()
+    {
+        std::vector<GLfloat>* pointsColor = new std::vector<GLfloat>;
+        for(int i = 0; i < 4; ++i)
+        {
+            pointsColor->push_back(mColor[i]);
+        }
+        return pointsColor;
+    }
+private:
+    GLfloat mPoints[6];
+};
+
+GLfloat GetLocationXOnCoordinate(int aX)
+{
+    GLfloat step = (0.88f + 0.86f) / scaleX;
+
+    return XCoordinateXStart + step * aX+0.02;
+}
+
+GLfloat GetLocationYOnCoordinate(int aY)
+{
+    GLfloat step = (0.88f + 0.86f) / scaleY;
+
+    return YCoordinateYStart + step * aY-0.02;
+}
 
 std::vector<Shape*>* CreateX()
 {
@@ -295,33 +402,29 @@ std::vector<Shape*>* CreateOnBoardShapes()
     std::vector<Shape*>* shapes = new std::vector<Shape*>;
 
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
-    Circle* c = new Circle(0.03f, 0.09, 0.03f, red);
+    Circle* c = new Circle(GetLocationXOnCoordinate(3), GetLocationYOnCoordinate(9), 0.03f, red);
+    c->SetID(1);
     shapes->push_back((Shape*)(c));
 
     GLfloat black[3] = {0.0f, 0.0f, 0.0f};
-    Circle* c2 = new Circle(locationMaxX, locationMaxY, 0.02f, black);
+    Circle* c2 = new Circle(GetLocationXOnCoordinate(scaleX), GetLocationYOnCoordinate(26), 0.02f, black);
     shapes->push_back((Shape*)(c2));
 
-    GLfloat points[12] = {
-        -0.9f,  location6Y-0.05, 0.0f,
-        -0.905f,  location6Y+0.005f-0.05, 0.0f,
-        location15X-0.005f,  location21Y, 0.0f,
-        location15X,  location21Y - 0.005f, 0.0f
-    };
-
-    shapes->push_back((Shape*)(new Rectangle(points, black)));
-
-    GLfloat points2[12] = {
-        locationMaxX - 0.003f,  -0.9f, 0.0f,
-        location16X - 0.005f,  location5Y+0.045, 0.0f,
-        location16X,  location5Y + 0.05f, 0.0f,
-        locationMaxX+0.003,  -0.895f, 0.0f
-    };
-
-    shapes->push_back((Shape*)(new Rectangle(points2, black)));
-
-
     return shapes;
+}
+
+std::vector<Shape*>* CreateLines()
+{
+    std::vector<Shape*>* lines = new std::vector<Shape*>;
+    GLfloat black[3] = {0.0f, 0.0f, 0.0f};
+
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(6), GetLocationXOnCoordinate(15), GetLocationYOnCoordinate(21), black);
+    lines->push_back((Shape*)line1);
+
+    Line* line2 = new Line(GetLocationXOnCoordinate(16), GetLocationYOnCoordinate(4), GetLocationXOnCoordinate(scaleX), GetLocationYOnCoordinate(0), black);
+    lines->push_back((Shape*)line2);
+
+    return lines;
 }
 
 GLfloat* CreateVertices()
@@ -341,20 +444,46 @@ GLfloat* CreateVertices()
         shapes->push_back(s);
     }
     delete onboardShapes;
-    
 
-    GLfloat* vertices = new GLfloat[numberOfTriangles*9];
+    GLfloat* vertices = new GLfloat[numberOfTriangles*9+numberOfLines*6];
 
     int copied = 0;
 
     for(auto& s : *shapes)
     {
+        if(s->GetiD() == 1)
+        {
+            RedCircleStart = copied;
+        }
+        auto points = s->GetPoints();
         for(int i = 0; i < s->GetNumberOfTriangles() * 9; ++i)
         {
-            vertices[copied+i] = s->GetPoints()[i];
+            vertices[copied+i] =points->at(i);
         }
         copied += s->GetNumberOfTriangles() * 9;
+
+        delete points;
     }
+
+    auto lines = CreateLines();
+
+    for(auto& l : *lines)
+    {
+        auto points = l->GetPoints();
+        for(int i = 0; i < 6; ++i)
+        {
+            vertices[copied + i] = points->at(i);
+        }
+        copied += 6;
+
+        delete points;
+    }
+
+    for(auto& l : *lines)
+    {
+        delete l;
+    }
+    delete lines;
 
     for(auto& s : *shapes)
     {
@@ -365,7 +494,125 @@ GLfloat* CreateVertices()
     return vertices;
 }
 
+GLfloat* CreateLinesColor()
+{
+    auto lines = CreateLines();
+
+    GLfloat* color = new GLfloat[numberOfLines * 6];
+
+    int copied = 0;
+
+    for(auto& l : *lines)
+    {
+        auto colorPoints = l->GetColor();
+        for(int i = 0; i < numberOfLines*6; ++i)
+        {
+            color[copied + i] = colorPoints->at(i);
+        }
+        copied += 6;
+
+        delete colorPoints;
+    }
+
+    for(auto& l : *lines)
+    {
+        delete l;
+    }
+    delete lines;
+
+    return color;
+}
+
 GLfloat* CreateColor()
+{
+    auto* shapes = CreateX();
+    auto* y = CreateY();
+    auto onboardShapes = CreateOnBoardShapes();
+
+    //GLfloat* linesColor = CreateLinesColor();
+
+    for(auto& s : *y)
+    {
+        shapes->push_back(s);
+    }
+    delete y;
+
+    for(auto& s : *onboardShapes)
+    {
+        shapes->push_back(s);
+    }
+    delete onboardShapes;
+
+    GLfloat* color = new GLfloat[numberOfTriangles * 9];
+
+    int copied = 0;
+
+    for(auto& s : *shapes)
+    {
+        auto colorPoints = s->GetColor();
+        for(int i = 0; i < s->GetNumberOfTriangles() * 9; ++i)
+        {
+            color[copied + i] = colorPoints->at(i);
+        }
+        copied += s->GetNumberOfTriangles() * 9;
+
+        delete colorPoints;
+    }
+
+    for(int i = 0; i < numberOfLines * 6; ++i)
+    {
+        //color[copied + i] = linesColor[i];
+    }
+
+    for(auto& s : *shapes)
+    {
+        delete s;
+    }
+    delete shapes;
+
+    return color;
+}
+
+GLfloat* CreateLinesVertices()
+{
+    auto lines = CreateLines();
+
+    GLfloat* vertices = new GLfloat[numberOfLines * 6];
+
+    int copied = 0;
+
+    for(auto& l : *lines)
+    {
+        auto points = l->GetPoints();
+        for(int i = 0; i < 6; ++i)
+        {
+            vertices[copied + i] = points->at(i);
+        }
+        copied += 6;
+
+        delete points;
+    }
+
+    for(auto& l : *lines)
+    {
+        delete l;
+    }
+    delete lines;
+
+    return vertices;
+}
+
+float TranslateCoordinateX(double aX)
+{
+    return (aX + 1) / 2 * width;
+}
+
+float TranslateCoordinateY(double aY)
+{
+    return (-aY + 1) / 2 * height;
+}
+
+void CalculateTriangles()
 {
     auto* shapes = CreateX();
     auto* y = CreateY();
@@ -383,41 +630,62 @@ GLfloat* CreateColor()
     }
     delete onboardShapes;
 
-    GLfloat red[3] = {1.0f, 0.0f, 0.0f};
-    Circle* c = new Circle(0.0f, 0.0f, 0.03f, red);
-
-    shapes->push_back((Shape*)(c));
-
-    GLfloat* color = new GLfloat[numberOfTriangles * 9];
-
-    int copied = 0;
+    int triangles = 0;
 
     for(auto& s : *shapes)
     {
-        for(int i = 0; i < s->GetNumberOfTriangles() * 9; ++i)
-        {
-            color[copied + i] = s->GetColor()[i];
-        }
-        copied += s->GetNumberOfTriangles() * 9;
+        triangles += s->GetNumberOfTriangles();
     }
+
+    numberOfTriangles = triangles;
 
     for(auto& s : *shapes)
     {
         delete s;
     }
     delete shapes;
-
-    return color;
 }
 
-float TranslateCoordinateX(double aX)
+void CalculateLines()
 {
-    return (aX + 1) / 2 * width;
+    auto* shapes = CreateLines();
+
+    numberOfLines = shapes->size();
+
+    for(auto& s : *shapes)
+    {
+        delete s;
+    }
+    delete shapes;
 }
 
-float TranslateCoordinateY(double aY)
+void ModifyCircle(int iterations)
 {
-    return (-aY + 1) / 2 * height;
+    iterations = iterations % 21;
+    int y;
+    if(iterations < 16 || iterations == 20)
+    {
+        y = iterations + 6;
+    }
+    else
+    {
+        y = 20-iterations;
+    }
+    GLfloat red[3] = {1.0f, 0.0f, 0.0f};
+    Circle* c = new Circle(GetLocationXOnCoordinate(iterations), GetLocationYOnCoordinate(y), 0.03f, red);
+    auto points = c->GetPoints();
+
+    GLfloat* arrayPoints = new GLfloat[c->GetNumberOfTriangles() * 9];
+
+    for(int i = 0; i < c->GetNumberOfTriangles() * 9; ++i)
+    {
+        arrayPoints[i] = points->at(i);
+    }
+
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat)*RedCircleStart, sizeof(GLfloat) * c->GetNumberOfTriangles() * 9, arrayPoints));
+
+    delete c;
+    delete arrayPoints;
 }
 
 std::vector<Text> CreateXValuesText()
@@ -431,21 +699,8 @@ std::vector<Text> CreateXValuesText()
         GLTtext* t = gltCreateText();
         gltSetText(t, std::to_string(i).c_str());
 
-        GLfloat x = -0.91f + step * i;
-        GLfloat y = -0.95f;
-
-        if(i == 15)
-        {
-            location15X = x;
-        }
-        if(i == 16)
-        {
-            location16X = x;
-        }
-        if(i == scaleX)
-        {
-            locationMaxX = x;
-        }
+        GLfloat x = XCoordinateXStart + step * i;
+        GLfloat y = XCoordinateYStart;
 
         XValuesText.push_back(Text{t, TranslateCoordinateX(x), TranslateCoordinateY(y)});
     }
@@ -464,32 +719,14 @@ std::vector<Text> CreateYValuesText()
         GLTtext* t = gltCreateText();
         gltSetText(t, std::to_string(i).c_str());
 
-        GLfloat x = -0.98f;
-        GLfloat y = -0.87f + step * i;
-
-        if(i == 5)
-        {
-            location5Y = y;
-        }
-        if(i == 6)
-        {
-            location6Y = y;
-        }
-        if(i == 21)
-        {
-            location21Y = y;
-        }
-        if(i == scaleY)
-        {
-            locationMaxY = y;
-        }
+        GLfloat x = YCoordinateXStart;
+        GLfloat y = YCoordinateYStart + step * i;
 
         YValuesText.push_back(Text{t, TranslateCoordinateX(x), TranslateCoordinateY(y)});
     }
 
     return YValuesText;
 }
-
 
 int main()
 {
@@ -525,6 +762,12 @@ int main()
     }
 
     glViewport(0, 0, screenWidth, screenHeight);
+
+    std::cout << glGetString(GL_VERSION) << std::endl;
+
+    /*glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(MessageCallback, 0);*/
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -578,27 +821,28 @@ int main()
     std::vector<Text> XValuesText = CreateXValuesText();
     std::vector<Text> YValuesText = CreateYValuesText();
 
+    CalculateTriangles();
+    CalculateLines();
 
     GLfloat* vertices = CreateVertices();
     GLfloat* color = CreateColor();
 
     GLuint VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
+    GLCall(glGenVertexArrays(1, &VAO));
+    GLCall(glGenBuffers(1, &VBO));
+    GLCall(glBindVertexArray(VAO));
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)*numberOfTriangles*9, vertices, GL_STATIC_DRAW);
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)*(numberOfTriangles*9+numberOfLines*6), vertices, GL_STREAM_DRAW));
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0* sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
+    GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0* sizeof(GLfloat), (GLvoid*)0));
+    GLCall(glEnableVertexAttribArray(0));
 
     GLuint colorbufferID;
     glGenBuffers(1, &colorbufferID);
    
-
     glBindBuffer(GL_ARRAY_BUFFER, colorbufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)*numberOfTriangles*9, color, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)*(numberOfTriangles*9), color, GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
@@ -610,38 +854,42 @@ int main()
 
     auto start = std::chrono::steady_clock::now();
     int fps = 0;
-
+    int iterations = 0;
     while(!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
     {
         auto start2 = std::chrono::steady_clock::now();
         fps++;
         glfwPollEvents();
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3*numberOfTriangles);
-        glBindVertexArray(0);
+        GLCall(glUseProgram(shaderProgram));
+        GLCall(glBindVertexArray(VAO));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+        ModifyCircle(iterations);
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, numberOfTriangles*3));
+        GLCall(glDrawArrays(GL_LINES, numberOfTriangles*3, numberOfLines*2));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        GLCall(glBindVertexArray(0));
 
-        gltBeginDraw();
+        GLCall(gltBeginDraw());
 
         gltColor(1.0f, 1.0f, 1.0f, 1.0f);
-        gltDrawText2D(Y, TranslateCoordinateX(-0.9), TranslateCoordinateY(0.97), 1);
-        gltDrawText2D(X, TranslateCoordinateX(0.95), TranslateCoordinateY(-0.87), 1);
+        GLCall(gltDrawText2D(Y, TranslateCoordinateX(-0.9), TranslateCoordinateY(0.97), 1));
+        GLCall(gltDrawText2D(X, TranslateCoordinateX(0.95), TranslateCoordinateY(-0.87), 1));
 
         for(auto& t : XValuesText)
         {
-            gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1);
+            GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
         }
 
         for(auto& t : YValuesText)
         {
-            gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1);
+            GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
         }
 
-        gltEndDraw();
+        GLCall(gltEndDraw());
 
         glfwSwapBuffers(window);
 
@@ -660,6 +908,7 @@ int main()
 
         if(elapsedSeconds.count() > 1)
         {
+            iterations++;
             std::cout << fps << std::endl;
             fps = 0;
             start = std::chrono::steady_clock::now();
@@ -684,7 +933,15 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 
+    /*glDeleteVertexArrays(1, &VAO2);
+    glDeleteBuffers(1, &VBO2);
+
+    glDeleteBuffers(1, &colorbufferID);*/
+
     glfwTerminate();
+
+    delete vertices;
+    delete color;
 
     return EXIT_SUCCESS;
 }
