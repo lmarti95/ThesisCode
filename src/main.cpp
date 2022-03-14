@@ -6,6 +6,7 @@
 #include "Jump.h"
 #include "MST.h"
 #include "MuPlusOneGA.h"
+#include "OpenGL.h"
 #include "SASD_OnePlusLambda.h"
 #include "SD_OnePlusOne.h"
 #include "SD_RLS.h"
@@ -31,7 +32,7 @@ int main()
 	testNs.push_back(700);
 	testNs.push_back(800);
 	testNs.push_back(900);
-	testNs.push_back(1000);	
+	testNs.push_back(1000);
 
 	Benchmark b;
 
@@ -39,7 +40,7 @@ int main()
 
 	for(auto& N : testNs)
 	{
-		for(int gapSize = 2; gapSize < 7; ++gapSize)
+		for(int gapSize = 2; gapSize < 2; ++gapSize)
 		{
 			if(N / 3 < gapSize)
 			{
@@ -95,4 +96,10 @@ int main()
 	{
 		delete ea;
 	}
+
+
+	OpenGL og;
+	og.Setup();
+	og.Draw();
+	og.ShutDown();
 }
