@@ -90,7 +90,7 @@ int main()
 		}
 	}
 
-	b.SaveResults("JumpOriginal.txt");
+	//b.SaveResults("JumpOriginal.txt");
 
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{
@@ -98,11 +98,11 @@ int main()
 	}
 
 	{
-		int N = 15;
+		int N = 2500;
 		Jump j(N, 2, JumpType::Original);
 		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, &j);
 
-		sd5->SetDelay(200);
+		sd5->SetDelay(0);
 
 		b.SetRepeat(1);
 		b.ScheduleEA(sd5);

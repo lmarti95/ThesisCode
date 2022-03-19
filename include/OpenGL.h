@@ -57,6 +57,7 @@ private:
 	GLTtext* mCostFunctionName;
 	GLTtext* mBitStringText;
 	GLTtext* mIterationsText;
+	GLTtext* mFitnessValueText;
 
 	double mInfoXValue;
 

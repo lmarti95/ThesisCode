@@ -55,6 +55,8 @@ void OpenGL::SetText()
     {
         mInfoXValue = 0.5;
     }
+
+    mFitnessValueText = gltCreateText();
 }
 
 void OpenGL::SetWindow()
@@ -288,13 +290,18 @@ void OpenGL::UpdateText()
         std::string str = GetBitString();
 
         gltSetText(mBitStringText, str.c_str());
-        GLCall(gltDrawText2D(mBitStringText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.80), 1));
+        GLCall(gltDrawText2D(mBitStringText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.75), 1));
     }
 
     std::string iterations = "Iterations: " + std::to_string(mCoordinateSystem->GetEvolutionaryAlgorithm()->GetIterations());
 
     gltSetText(mIterationsText, iterations.c_str());
     GLCall(gltDrawText2D(mIterationsText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.85), 1));
+
+    int roundedFitnessValue = mEA->GetFitnessValue();
+    std::string fitness = "Fitness: " + std::to_string(roundedFitnessValue);
+    gltSetText(mFitnessValueText, fitness.c_str());
+    GLCall(gltDrawText2D(mFitnessValueText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.80), 1));
 }
 
 void OpenGL::ShutDown()

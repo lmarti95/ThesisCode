@@ -19,6 +19,12 @@ CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
     mScaleX = mEA->GetN();
     mScaleY = (mEA->GetN()+ mGapSize)*1.2;
 
+    bool finished = false;
+    int i = 1;
+
+    mXCoordinateOffset = mScaleX / 10;
+    mYCoordinateOffset = mScaleY / 10;
+
     CalculateTriangles();
     CalculateLines();
 }
@@ -60,8 +66,13 @@ std::vector<Shape*>* CoordinateSystem::CreateX()
 
     //go from -0.86 to +0.88
     GLfloat step = (0.88f + 0.86f) / mScaleX;
-    for(int i = 1; i < mScaleX + 1; ++i)
+    for(int i = 0; i < mScaleX + 1; i=i + mXCoordinateOffset)
     {
+        if(i == 0)
+        {
+            continue;
+        }
+
         GLfloat pointsScale[12] = {
         -0.9f + step * i, -0.93f,  0.0f,
         -0.9f + step * i, -0.85f,  0.0f,
@@ -98,8 +109,13 @@ std::vector<Shape*>* CoordinateSystem::CreateY()
 
     //go from -0.86 to +0.88
     GLfloat step = (0.88f + 0.86f) / mScaleY;
-    for(int i = 1; i < mScaleY + 1; ++i)
+    for(int i = 0; i < mScaleY + 1; i = i + mYCoordinateOffset)
     {
+        if(i == 0)
+        {
+            continue;
+        }
+
         GLfloat pointsScale[12] = {
         -0.93f, -0.9f + step * i,  0.0f,
         -0.93f, -0.89f + step * i,  0.0f,
@@ -403,8 +419,13 @@ std::vector<Text> CoordinateSystem::CreateXValuesText()
 
     //go from -0.86 to +0.88
     GLfloat step = (0.88f + 0.86f) / mScaleX;
-    for(int i = 1; i < mScaleX + 1; ++i)
+    for(int i = 0; i < mScaleX + 1; i = i + mXCoordinateOffset)
     {
+        if(i == 0)
+        {
+            continue;
+        }
+
         GLTtext* t = gltCreateText();
         gltSetText(t, std::to_string(i).c_str());
 
@@ -423,8 +444,13 @@ std::vector<Text> CoordinateSystem::CreateYValuesText()
 
     //go from -0.86 to +0.88
     GLfloat step = (0.88f + 0.86f) / mScaleY;
-    for(int i = 1; i < mScaleY + 1; ++i)
+    for(int i = 0; i < mScaleY + 1; i = i + mYCoordinateOffset)
     {
+        if(i == 0)
+        {
+            continue;
+        }
+
         GLTtext* t = gltCreateText();
         gltSetText(t, std::to_string(i).c_str());
 

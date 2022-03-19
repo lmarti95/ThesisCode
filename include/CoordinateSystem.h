@@ -55,4 +55,7 @@ private:
     int mRedCircleStart = -1;
 
     EvolutionaryAlgorithm* mEA;
+
+    int mXCoordinateOffset = 1;
+    int mYCoordinateOffset = 1;
 };
