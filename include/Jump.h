@@ -20,6 +20,8 @@ public:
 	double GetOffsetFitnessValue(int aChange);
 	double GetOffsetSpikeFitnessValue(int aChange);
 
+	int FitnessValueToSum(double aFitnessValue) override;
+
 	void ApplyChange(int aChange) override { mSum += aChange; }
 	
 	std::string GetCostFunctionName() override { return "Jump(" +std::to_string(mGapSize) + ")" ; }

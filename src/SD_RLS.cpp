@@ -4,8 +4,10 @@
 #include "Jump.h"
 #include "Utilityh.h"
 
+#include <iostream>
 #include <chrono>
 #include <cmath>
+#include <thread>
 
 SD_RLS::SD_RLS(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 {
@@ -18,11 +20,11 @@ SD_RLS::~SD_RLS()
 std::pair<long long, double> SD_RLS::RunEA()
 {
 	RandomizeBitString();
-	double fitnessValue = mCostFunction->GetFitnessValue(mBitString);
+	mFitnessValue = mCostFunction->GetFitnessValue(mBitString);
 	double newFitnessValue = 0;
 
-	long long iterations = 0;
 	bool justUpdated = false;
+	mIterations = 0;
 
 	int* bitStringPrime = new int[mN];
 
@@ -33,13 +35,17 @@ std::pair<long long, double> SD_RLS::RunEA()
 
 	auto start = std::chrono::steady_clock::now();
 
-	while(fitnessValue != maximumFitnessValue)
+	while(mFitnessValue != maximumFitnessValue)
 	{
-		iterations++;
+		mIterations++;
 		u++;
 
 		if(!justUpdated)
 		{
+			#ifdef GRAPHICS
+				std::lock_guard<std::mutex> lg{mBitStringMutex};
+			#endif
+			
 			std::copy(mBitString, mBitString + mN, bitStringPrime);
 		}
 		else
@@ -58,7 +64,7 @@ std::pair<long long, double> SD_RLS::RunEA()
 
 		delete[] selection;
 
-		if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+		if(mFitnessChangePossible)
 		{
 			newFitnessValue = mCostFunction->GetFitnessValue(change);
 		}
@@ -67,10 +73,14 @@ std::pair<long long, double> SD_RLS::RunEA()
 			newFitnessValue = mCostFunction->GetFitnessValue(bitStringPrime);
 		}
 
-		if(newFitnessValue > fitnessValue)
+		if(newFitnessValue > mFitnessValue)
 		{
+			#ifdef GRAPHICS
+				std::lock_guard<std::mutex> lg{mBitStringMutex};
+			#endif
+
 			mCostFunction->ApplyChange(change);
-			fitnessValue = newFitnessValue;
+			mFitnessValue = newFitnessValue;
 			std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 			justUpdated = true;
 			s = 1;
@@ -78,8 +88,12 @@ std::pair<long long, double> SD_RLS::RunEA()
 		}
 		else
 		{
-			if(newFitnessValue == fitnessValue && s == 1)
+			if(newFitnessValue == mFitnessValue && s == 1)
 			{
+				#ifdef GRAPHICS
+					std::lock_guard<std::mutex> lg{mBitStringMutex};
+				#endif
+
 				std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 				justUpdated = true;
 			}
@@ -94,12 +108,18 @@ std::pair<long long, double> SD_RLS::RunEA()
 			}
 			u = 0;
 		}
+
+		#ifdef GRAPHICS
+			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
+		#endif
 	}
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
 
 	delete[] bitStringPrime;
+
+	long long iterations = mIterations;
 
 	return std::make_pair(iterations, elapsedSeconds.count());
 }

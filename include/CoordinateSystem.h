@@ -1,11 +1,12 @@
 #pragma once
 
+#include "EvolutionaryAlgorithm.h"
 #include "Shape.h"
 
 class CoordinateSystem 
 {
 public:
-    CoordinateSystem();
+    CoordinateSystem(EvolutionaryAlgorithm* aEA);
 
     GLfloat GetLocationXOnCoordinate(int aX);
     GLfloat GetLocationYOnCoordinate(int aY);
@@ -31,14 +32,17 @@ public:
     int GetNumberOfTriangles() { return mNumberOfTriangles; }
     int GetNumberOfLines() { return mNumberOfLines; }
 
-    GLfloat* ModifyCircle(int iterations);
+    GLfloat* ModifyCircle();
     int GetRedCircleStart() { return mRedCircleStart; }
 
     std::vector<Text> CreateXValuesText();
     std::vector<Text> CreateYValuesText();
+
+    EvolutionaryAlgorithm* GetEvolutionaryAlgorithm() { return mEA; }
 private:
-    int mScaleX = 20;
-    int mScaleY = 30;
+    int mScaleX;
+    int mScaleY;
+    int mGapSize;
 
     int mNumberOfTriangles = 0;
     int mNumberOfLines = 0;
@@ -49,4 +53,6 @@ private:
     GLfloat mYCoordinateYStart = -0.87f;
 
     int mRedCircleStart = -1;
+
+    EvolutionaryAlgorithm* mEA;
 };

@@ -113,7 +113,7 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 {
 	CreateInitialPopulation();
 
-	long long iterations = 0;
+	mIterations = 0;
 
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
 
@@ -127,7 +127,7 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 			return a.second < b.second;
 		})->second)
 	{
-		iterations++;
+		mIterations++;
 
 		if(mPc == 1 || p(mRng) < mPc)
 		{
@@ -157,10 +157,48 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 		}
 
 		DeleteWorst();
+
+		#ifdef GRAPHICS
+			UpdateBitString();
+			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
+		#endif
 	}
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
 
+	long long iterations = mIterations;
+
 	return std::make_pair(iterations, elapsedSeconds.count());
+}
+
+void MuPlusOneGA::UpdateBitString()
+{
+	mFitnessValue = mPopulation.at(0).second;
+
+	int* bitString = mPopulation.at(0).first;
+
+	for(auto& p : mPopulation)
+	{
+		if(mFitnessValue < p.second)
+		{
+			mFitnessValue = p.second;
+			bitString = p.first;
+		}
+	}
+
+	mBitString = bitString;
+}
+
+std::vector<int>* MuPlusOneGA::GetBitString()
+{
+	std::lock_guard<std::mutex> lg{mBitStringMutex};
+	std::vector<int>* bitString = new std::vector<int>;
+
+	for(int i = 0; i < mN; ++i)
+	{
+		bitString->push_back(mBitString[i]);
+	}
+
+	return bitString;
 }

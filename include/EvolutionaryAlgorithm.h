@@ -2,6 +2,8 @@
 
 #include "CostFunction.h"
 
+#include <atomic>
+#include <thread>
 #include <random>
 
 class EvolutionaryAlgorithm
@@ -21,7 +23,14 @@ public:
 	virtual std::string GetEAName() = 0;
 	std::string GetCostFunctionName() { return mCostFunction->GetCostFunctionName(); }
 
+	void SetDelay(int aDelay) { mDelay = aDelay; }
+
 	int GetN() { return mN; }
+
+	double GetFitnessValue() { return mFitnessValue; }
+	long GetIterations() { return mIterations; }
+
+	virtual std::vector<int>* GetBitString() = 0;
 
 protected:
 
@@ -36,6 +45,16 @@ protected:
 
 	int mN;
 
+#ifdef GRAPHICS
+	std::atomic_long mFitnessValue = {0};
+	std::atomic_long mIterations = {0};
+#else
+	double mFitnessValue = 0;
+	long long mIterations = 0;
+#endif
+
+	int mDelay = 200;
+
 	long mNextPosition = -1;
 	std::random_device mDev;
 	std::mt19937 mRng;
@@ -44,6 +63,8 @@ protected:
 	std::uniform_int_distribution<std::mt19937::result_type> mRandomN;
 
 	CostFunction* mCostFunction;
+
+	bool mFitnessChangePossible = false;
 };
 
 inline int EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aPosition)
@@ -51,7 +72,7 @@ inline int EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aP
 	if(aBitString[aPosition] == 1)
 	{
 		aBitString[aPosition] = 0;
-		return 0;
+		return -1;
 	}
 	else
 	{

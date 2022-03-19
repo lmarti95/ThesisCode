@@ -2,6 +2,7 @@
 
 #include "GeneticAlgorithm.h"
 
+#include <mutex>
 #include <string>
 
 class HybridGA : public GeneticAlgorithm
@@ -14,6 +15,12 @@ public:
 
 	std::pair<long long, double> RunEA() override;
 	std::string GetEAName() override { return "Hybrid GA"; }
+	std::vector<int>* GetBitString() override;
 private:
 	std::vector<int> mPermutation;
+
+#ifdef GRAPHICS
+	std::mutex mBitStringMutex;
+	int* mBitString;
+#endif
 };

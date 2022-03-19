@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "GeneticAlgorithm.h"
 
 class cGA : public GeneticAlgorithm
@@ -9,12 +11,17 @@ public:
 	~cGA();
 
 	std::pair<long long, double> RunEA() override;
-	std::string GetEAName() override { return "cGA with hypothetical population size: " + std::to_string(mMu); }
+	std::string GetEAName() override { return "cGA(" + std::to_string(mMu) + ")"; }
+	std::vector<int>* GetBitString() override;
 
 	void SetF();
 	int* Sample();
-
 private:
 	int mMu;
 	double* mF;
+
+#ifdef GRAPHICS
+	std::mutex mBitStringMutex;
+	int* mBitString;
+#endif
 };

@@ -71,9 +71,9 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 	mR = 1;
 	bool stagnationDetection = false;
 	RandomizeBitString();
-	double fitnessValue = mCostFunction->GetFitnessValue(mBitString);
+	mFitnessValue = mCostFunction->GetFitnessValue(mBitString);
 
-	long long iterations = 0;
+	mIterations = 0;
 
 	int* bitStringPrime = new int[mN];
 
@@ -83,9 +83,9 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 	auto start = std::chrono::steady_clock::now();
 
-	while(fitnessValue != maximumFitnessValue)
+	while(mFitnessValue != maximumFitnessValue)
 	{
-		iterations++;
+		mIterations++;
 		u++;
 
 		if(stagnationDetection)
@@ -95,11 +95,15 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 			auto best = SelectBestDeleteRest(CreateOffsprings());
 
-			if(best.second > fitnessValue)
+			if(best.second > mFitnessValue)
 			{
+				#ifdef GRAPHICS
+					std::lock_guard<std::mutex> lg{mBitStringMutex};
+				#endif
+
 				delete[] mBitString;
 				mBitString = best.first;
-				fitnessValue = best.second;
+				mFitnessValue = best.second;
 				mR = 1;
 				stagnationDetection = false;
 				u = 0;
@@ -122,16 +126,19 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 			int RRate = -1;
 			auto best = SelectBestDeleteRest(CreateOffsprings(), &RRate);
-			if(best.second >= fitnessValue)
+			if(best.second >= mFitnessValue)
 			{
-				if(best.second > fitnessValue)
+				if(best.second > mFitnessValue)
 				{
 					u = 0;
 				}
+				#ifdef GRAPHICS
+					std::lock_guard<std::mutex> lg{mBitStringMutex};
+				#endif
 
 				delete[] mBitString;
 				mBitString = best.first;
-				fitnessValue = best.second;
+				mFitnessValue = best.second;
 				mLastRRate = RRate;
 			}
 			else
@@ -171,12 +178,18 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				stagnationDetection = true;
 			}
 		}
+
+		#ifdef GRAPHICS
+			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
+		#endif
 	}
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
 
 	delete[] bitStringPrime;
+
+	long long iterations = mIterations;
 
 	return std::make_pair(iterations*mLambda, elapsedSeconds.count());
 }

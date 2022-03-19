@@ -13,6 +13,8 @@ public:
 	void ApplyChange(int aChange) override { mSum += aChange; }
 	std::string GetCostFunctionName() override { return "Cliff"; }
 
+	int FitnessValueToSum(double aFitnessValue) override { return -1; }
+
 	void SetSum(double aSum) { mSum = aSum; }
 private:
 	double mSum;

@@ -153,6 +153,16 @@ double Jump::GetOffsetSpikeFitnessValue(int aChange)
 	return 3 * mN / 4 + mGapSize - sum;
 }
 
+int Jump::FitnessValueToSum(double aFitnessValue)
+{
+	if(aFitnessValue >= mGapSize || aFitnessValue == GetMaximumFitnessValue())
+	{
+		return aFitnessValue - mGapSize;
+	}
+
+	return mN - aFitnessValue;
+}
+
 void Jump::SetJumpType(JumpType aType)
 {
 	CheckGapSize();

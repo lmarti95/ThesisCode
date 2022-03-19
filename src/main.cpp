@@ -97,9 +97,23 @@ int main()
 		delete ea;
 	}
 
+	{
+		int N = 15;
+		Jump j(N, 2, JumpType::Original);
+		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, &j);
 
-	OpenGL og;
-	og.Setup();
-	og.Draw();
-	og.ShutDown();
+		sd5->SetDelay(200);
+
+		b.SetRepeat(1);
+		b.ScheduleEA(sd5);
+
+		OpenGL og;
+		og.Setup(sd5);
+		og.Draw();
+		og.ShutDown();
+
+		b.FinishThreads();
+
+		delete sd5;
+	}
 }

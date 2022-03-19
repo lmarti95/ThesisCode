@@ -2,6 +2,8 @@
 
 #include "EvolutionaryAlgorithm.h"
 
+#include <mutex>
+
 class SD : public EvolutionaryAlgorithm
 {
 public:
@@ -10,8 +12,11 @@ public:
 
 	void SetEpsilon(int aEpsilon);
 	void RandomizeBitString();
+	std::vector<int>* GetBitString();
 protected:
 	int* mBitString;
 	int mR;
 	int mEpsilon = 1;
+
+	std::mutex mBitStringMutex;
 };

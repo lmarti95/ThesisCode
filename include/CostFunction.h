@@ -13,6 +13,8 @@ public:
 	virtual void ApplyChange(int aChange) = 0;
 	virtual std::string GetCostFunctionName() = 0;
 
+	virtual int FitnessValueToSum(double aFitnessValue) = 0;
+
 	void SetN(int aN) { mN = aN; }
 	int GetN() { return mN; }
 protected:

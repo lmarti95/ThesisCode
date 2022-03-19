@@ -1,11 +1,24 @@
 #include "CoordinateSystem.h"
 
+#include <iostream>
 #include <string>
 
+#include "Jump.h"
 #include "OpenGL.h"
 
-CoordinateSystem::CoordinateSystem()
+CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
 {
+    mEA = aEA;
+
+    mGapSize = 0;
+    if(dynamic_cast<Jump*>(mEA->GetCostFunction()) != nullptr)
+    {
+        mGapSize = dynamic_cast<Jump*>(mEA->GetCostFunction())->GetGapSize();
+    }
+
+    mScaleX = mEA->GetN();
+    mScaleY = (mEA->GetN()+ mGapSize)*1.2;
+
     CalculateTriangles();
     CalculateLines();
 }
@@ -105,12 +118,12 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
     std::vector<Shape*>* shapes = new std::vector<Shape*>;
 
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
-    Circle* c = new Circle(GetLocationXOnCoordinate(3), GetLocationYOnCoordinate(9), 0.03f, red);
+    Circle* c = new Circle(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(0), 0.03f, red);
     c->SetID(1);
     shapes->push_back((Shape*)(c));
 
     GLfloat black[3] = {0.0f, 0.0f, 0.0f};
-    Circle* c2 = new Circle(GetLocationXOnCoordinate(mScaleX), GetLocationYOnCoordinate(26), 0.02f, black);
+    Circle* c2 = new Circle(GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN() + mGapSize), 0.02f, black);
     shapes->push_back((Shape*)(c2));
 
     return shapes;
@@ -119,12 +132,12 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
 std::vector<Shape*>* CoordinateSystem::CreateLines()
 {
     std::vector<Shape*>* lines = new std::vector<Shape*>;
-    GLfloat black[3] = {0.0f, 0.0f, 0.0f};
+    GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(6), GetLocationXOnCoordinate(15), GetLocationYOnCoordinate(21), black);
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()-mGapSize), GetLocationYOnCoordinate(mEA->GetN()), black);
     lines->push_back((Shape*)line1);
 
-    Line* line2 = new Line(GetLocationXOnCoordinate(16), GetLocationYOnCoordinate(4), GetLocationXOnCoordinate(mScaleX), GetLocationYOnCoordinate(0), black);
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() - mGapSize +1), GetLocationYOnCoordinate(mGapSize -1), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(0), black);
     lines->push_back((Shape*)line2);
 
     return lines;
@@ -208,7 +221,7 @@ GLfloat* CoordinateSystem::CreateLinesColor()
     for(auto& l : *lines)
     {
         auto colorPoints = l->GetColor();
-        for(int i = 0; i < mNumberOfLines * 6; ++i)
+        for(int i = 0; i < 6; ++i)
         {
             color[copied + i] = colorPoints->at(i);
         }
@@ -232,7 +245,7 @@ GLfloat* CoordinateSystem::CreateColor()
     auto* y = CreateY();
     auto onboardShapes = CreateOnBoardShapes();
 
-    //GLfloat* linesColor = CreateLinesColor();
+    GLfloat* linesColor = CreateLinesColor();
 
     for(auto& s : *y)
     {
@@ -246,7 +259,7 @@ GLfloat* CoordinateSystem::CreateColor()
     }
     delete onboardShapes;
 
-    GLfloat* color = new GLfloat[mNumberOfTriangles * 9];
+    GLfloat* color = new GLfloat[mNumberOfTriangles * 9 + mNumberOfLines*6];
 
     int copied = 0;
 
@@ -264,7 +277,7 @@ GLfloat* CoordinateSystem::CreateColor()
 
     for(int i = 0; i < mNumberOfLines * 6; ++i)
     {
-        //color[copied + i] = linesColor[i];
+        color[copied + i] = linesColor[i];
     }
 
     for(auto& s : *shapes)
@@ -362,20 +375,13 @@ void CoordinateSystem::CalculateLines()
     delete shapes;
 }
 
-GLfloat* CoordinateSystem::ModifyCircle(int iterations)
+GLfloat* CoordinateSystem::ModifyCircle()
 {
-    iterations = iterations % 21;
-    int y;
-    if(iterations < 16 || iterations == 20)
-    {
-        y = iterations + 6;
-    }
-    else
-    {
-        y = 20 - iterations;
-    }
+    double fitnessValue = mEA->GetFitnessValue();
+    int sum = mEA->GetCostFunction()->FitnessValueToSum(fitnessValue);
+
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
-    Circle* c = new Circle(GetLocationXOnCoordinate(iterations), GetLocationYOnCoordinate(y), 0.03f, red);
+    Circle* c = new Circle(GetLocationXOnCoordinate(sum), GetLocationYOnCoordinate(fitnessValue), 0.03f, red);
     auto points = c->GetPoints();
 
     GLfloat* arrayPoints = new GLfloat[c->GetNumberOfTriangles() * 9];
@@ -385,6 +391,7 @@ GLfloat* CoordinateSystem::ModifyCircle(int iterations)
         arrayPoints[i] = points->at(i);
     }
 
+    delete points;
     delete c;
 
     return arrayPoints;

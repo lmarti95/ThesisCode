@@ -10,6 +10,10 @@
 HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, aCostFunction)
 {
 	SetUpPermutation();
+
+#ifdef GRAPHICS
+	mBitString = new int[mN];
+#endif
 }
 
 void HybridGA::SetUpPermutation()
@@ -18,6 +22,10 @@ void HybridGA::SetUpPermutation()
 	{
 		mPermutation.push_back(i);
 	}
+
+#ifdef GRAPHICS
+	delete[] mBitString;
+#endif
 }
 
 int* HybridGA::MajorityVoting(std::vector<int*> aParents)
@@ -50,21 +58,19 @@ int* HybridGA::MajorityVoting(std::vector<int*> aParents)
 
 std::pair<long long, double> HybridGA::RunEA()
 {
-	long long iterations = 0;
+	mIterations = 0;
 
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
-
-	double fitnessValue = 0;
 	std::vector<int*> parents;
 
 	auto start = std::chrono::steady_clock::now();
 
-	while(maximumFitnessValue != fitnessValue)
+	while(maximumFitnessValue != mFitnessValue)
 	{
 		for(int i = 0; i < 3; ++i)
 		{
 			int* bitString = CreateRandomBitString();
-			fitnessValue = mCostFunction->GetFitnessValue(bitString);
+			mFitnessValue = mCostFunction->GetFitnessValue(bitString);
 			bool updated = true;
 
 			while(updated)
@@ -74,12 +80,12 @@ std::pair<long long, double> HybridGA::RunEA()
 
 				for(auto& position : mPermutation)
 				{
-					iterations++;
+					mIterations++;
 					int change = FlipBitBasedOnPosition(bitString, position);
 
 					double newFitnessValue;
 
-					if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+					if(mFitnessChangePossible)
 					{
 						newFitnessValue = mCostFunction->GetFitnessValue(change);
 					}
@@ -88,10 +94,10 @@ std::pair<long long, double> HybridGA::RunEA()
 						newFitnessValue = mCostFunction->GetFitnessValue(bitString);
 					}
 
-					if(newFitnessValue > fitnessValue)
+					if(newFitnessValue > mFitnessValue)
 					{
 						mCostFunction->ApplyChange(change);
-						fitnessValue = newFitnessValue;
+						mFitnessValue = newFitnessValue;
 						updated = true;
 					}
 					else
@@ -106,8 +112,15 @@ std::pair<long long, double> HybridGA::RunEA()
 
 		int* offspring = MajorityVoting(parents);
 
-		iterations++;
-		fitnessValue = mCostFunction->GetFitnessValue(offspring);
+		#ifdef GRAPHICS
+		{
+			std::lock_guard<std::mutex> lg{mBitStringMutex};
+			std::copy(offspring, offspring + mN, mBitString);
+		}
+		#endif
+
+		mIterations++;
+		mFitnessValue = mCostFunction->GetFitnessValue(offspring);
 		
 		delete[] offspring;
 		for(auto& p : parents)
@@ -115,10 +128,29 @@ std::pair<long long, double> HybridGA::RunEA()
 			delete[] p;
 		}
 		parents.clear();
+
+		#ifdef GRAPHICS
+			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
+		#endif
 	}
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
 
+	long long iterations = mIterations;
+
 	return std::make_pair(iterations, elapsedSeconds.count());
+}
+
+std::vector<int>* HybridGA::GetBitString()
+{
+	std::lock_guard<std::mutex> lg{mBitStringMutex};
+	std::vector<int>* bitString = new std::vector<int>;
+
+	for(int i = 0; i < mN; ++i)
+	{
+		bitString->push_back(mBitString[i]);
+	}
+
+	return bitString;
 }

@@ -17,7 +17,11 @@ EvolutionaryAlgorithm::EvolutionaryAlgorithm(int aN, CostFunction* aCostFunction
 	std::uniform_int_distribution<std::mt19937::result_type> tempRandomN(1, mN);
 	mRandomN = tempRandomN;
 
-	
+	if(dynamic_cast<Jump*>(mCostFunction) != nullptr || dynamic_cast<Cliff*>(mCostFunction) != nullptr)
+	{
+		mFitnessChangePossible = true;
+	}
+
 	CopyCostFunction(aCostFunction);
 }
 

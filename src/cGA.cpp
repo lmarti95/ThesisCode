@@ -6,11 +6,19 @@ cGA::cGA(int N, CostFunction* aCostFunction, int aMu) : GeneticAlgorithm(N, aCos
 {
 	mMu = aMu;
 	mF = new double[mN];
+
+#ifdef GRAPHICS
+	mBitString = new int[mN];
+#endif
 }
 
 cGA::~cGA()
 {
 	delete[] mF;
+
+#ifdef GRAPHICS
+	delete[] mBitString;
+#endif
 }
 
 void cGA::SetF()
@@ -43,9 +51,9 @@ int* cGA::Sample()
 
 std::pair<long long, double> cGA::RunEA()
 {
-	long long iterations = 0;
+	mIterations = 0;
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
-	double fitnessValue = 0;
+	mFitnessValue = 0;
 	int* X1;
 	int* X2;
 	double fitnessValueX1;
@@ -57,9 +65,9 @@ std::pair<long long, double> cGA::RunEA()
 
 	auto start = std::chrono::steady_clock::now();
 
-	while(fitnessValue != maximumFitnessValue)
+	while(mFitnessValue != maximumFitnessValue)
 	{
-		iterations++;
+		mIterations++;
 		X1 = Sample();
 		X2 = Sample();
 
@@ -70,14 +78,21 @@ std::pair<long long, double> cGA::RunEA()
 		{
 			Y1 = X1;
 			Y2 = X2;
-			fitnessValue = fitnessValueX1;
+			mFitnessValue = fitnessValueX1;
 		}
 		else
 		{
 			Y1 = X2;
 			Y2 = X1;
-			fitnessValue = fitnessValueX2;
+			mFitnessValue = fitnessValueX2;
 		}
+
+		#ifdef GRAPHICS
+		{
+			std::lock_guard<std::mutex> lg{mBitStringMutex};
+			std::copy(Y1, Y1 + mN, mBitString);
+		}
+		#endif
 
 		for(int i = 0; i < mN; ++i)
 		{
@@ -91,10 +106,29 @@ std::pair<long long, double> cGA::RunEA()
 
 		delete[] X1;
 		delete[] X2;
+
+		#ifdef GRAPHICS
+			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
+		#endif
 	}
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
 
+	long long iterations = mIterations;
+
 	return std::make_pair(iterations, elapsedSeconds.count());
+}
+
+std::vector<int>* cGA::GetBitString()
+{
+	std::lock_guard<std::mutex> lg{mBitStringMutex};
+	std::vector<int>* bitString = new std::vector<int>;
+
+	for(int i = 0; i < mN; ++i)
+	{
+		bitString->push_back(mBitString[i]);
+	}
+
+	return bitString;
 }

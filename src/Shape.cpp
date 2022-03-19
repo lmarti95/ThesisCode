@@ -176,7 +176,7 @@ std::vector<GLfloat>* Line::GetPoints()
 std::vector<GLfloat>* Line::GetColor()
 {
     std::vector<GLfloat>* pointsColor = new std::vector<GLfloat>;
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0; i < 6; ++i)
     {
         pointsColor->push_back(mColor[i]);
     }
