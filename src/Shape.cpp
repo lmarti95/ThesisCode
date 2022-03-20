@@ -1,3 +1,5 @@
+#ifdef GRAPHICS
+
 #include "Shape.h"
 
 //Shape
@@ -182,3 +184,5 @@ std::vector<GLfloat>* Line::GetColor()
     }
     return pointsColor;
 }
+
+#endif

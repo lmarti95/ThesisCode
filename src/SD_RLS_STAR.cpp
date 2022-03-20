@@ -18,7 +18,8 @@ SD_RLS_STAR::~SD_RLS_STAR()
 std::pair<long long, double> SD_RLS_STAR::RunEA()
 {
 	RandomizeBitString();
-	mFitnessValue = mCostFunction->GetFitnessValue(mBitString);
+	mCostFunction->CalculateSum(mBitString);
+	mFitnessValue = mCostFunction->GetFitnessValue(0);
 	double newFitnessValue = 0;
 
 	mIterations = 0;

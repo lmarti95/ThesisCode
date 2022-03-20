@@ -23,7 +23,8 @@ public:
 	void ApplyChange(int aChange) override {}
 	std::string GetCostFunctionName() override { return "MST"; }
 
-	int FitnessValueToSum(double aFitnessValue) override { return -1; }
+	void CalculateSum(int* aBitString) override{}
+	double GetSum() override { return -1; }
 
 	void visitEdge(int* aBitString, int aEdge, int* aConnected);
 	int ConnectedComponents(int* aBitString);

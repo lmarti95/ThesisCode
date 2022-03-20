@@ -1,5 +1,7 @@
 #pragma once 
 
+#ifdef GRAPHICS
+
 #include <chrono>
 
 #include "CoordinateSystem.h"
@@ -69,3 +71,5 @@ private:
 	std::chrono::steady_clock::time_point mStart;
 	std::chrono::steady_clock::time_point mEnd;
 };
+
+#endif

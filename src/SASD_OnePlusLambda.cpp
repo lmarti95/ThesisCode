@@ -71,7 +71,8 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 	mR = 1;
 	bool stagnationDetection = false;
 	RandomizeBitString();
-	mFitnessValue = mCostFunction->GetFitnessValue(mBitString);
+	mCostFunction->CalculateSum(mBitString);
+	mFitnessValue = mCostFunction->GetFitnessValue(0);
 
 	mIterations = 0;
 
@@ -104,6 +105,11 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				delete[] mBitString;
 				mBitString = best.first;
 				mFitnessValue = best.second;
+
+				#ifdef GRAPHICS
+					mCostFunction->CalculateSum(mBitString);
+				#endif
+				
 				mR = 1;
 				stagnationDetection = false;
 				u = 0;
@@ -138,6 +144,11 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 				delete[] mBitString;
 				mBitString = best.first;
+
+				#ifdef GRAPHICS
+					mCostFunction->CalculateSum(mBitString);
+				#endif
+
 				mFitnessValue = best.second;
 				mLastRRate = RRate;
 			}

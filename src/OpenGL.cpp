@@ -1,3 +1,5 @@
+#ifdef GRAPHICS
+
 #include "OpenGL.h"
 
 #include <chrono>
@@ -347,5 +349,9 @@ std::string OpenGL::GetBitString()
         }
     }
 
+    delete bitString;
+
     return str;
 }
+
+#endif

@@ -188,6 +188,7 @@ void MuPlusOneGA::UpdateBitString()
 	}
 
 	mBitString = bitString;
+	mCostFunction->CalculateSum(mBitString);
 }
 
 std::vector<int>* MuPlusOneGA::GetBitString()

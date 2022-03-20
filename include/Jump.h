@@ -2,12 +2,16 @@
 
 #include "CostFunction.h"
 
+#include <atomic>
+
 enum class JumpType{ Original, Offset, OffsetSpike };
 
 class Jump : public CostFunction
 {
 public:
 	Jump(int aN, int aGapSize, JumpType aType = JumpType::Original);
+
+	Jump(const Jump& aOld);
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
@@ -20,9 +24,9 @@ public:
 	double GetOffsetFitnessValue(int aChange);
 	double GetOffsetSpikeFitnessValue(int aChange);
 
-	int FitnessValueToSum(double aFitnessValue) override;
-
 	void ApplyChange(int aChange) override { mSum += aChange; }
+
+	void CalculateSum(int* aBitString) override;
 	
 	std::string GetCostFunctionName() override { return "Jump(" +std::to_string(mGapSize) + ")" ; }
 
@@ -34,8 +38,15 @@ public:
 	void CheckGapSize();
 
 	void SetSum(double aSum) { mSum = aSum; }
+	double GetSum() override { return mSum; }
 private:
 	int mGapSize;
+
+#ifdef GRAPHICS
+	std::atomic_long mSum = {0};
+#else
 	double mSum = 0;
+#endif	
+
 	JumpType mType;
 };

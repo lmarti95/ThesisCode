@@ -4,6 +4,12 @@ Cliff::Cliff(int aN) : CostFunction(aN)
 {
 }
 
+Cliff::Cliff(const Cliff& aOld) : CostFunction(aOld)
+{
+	double temp = aOld.mSum;
+	mSum = temp;
+}
+
 double Cliff::GetMaximumFitnessValue()
 {
 	return mN - mN / 3 + 1 / 2;
@@ -38,4 +44,16 @@ double Cliff::GetFitnessValue(int aChange)
 	}
 
 	return sum - mN / 3 + 1 / 2;
+}
+
+void Cliff::CalculateSum(int* aBitString)
+{
+	double sum = 0;
+
+	for(int i = 0; i < mN; ++i)
+	{
+		sum += aBitString[i];
+	}
+
+	mSum = sum;
 }

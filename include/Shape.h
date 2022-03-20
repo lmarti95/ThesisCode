@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef GRAPHICS
+
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -91,3 +93,5 @@ struct Text{
     float pixelPositionX;
     float pixelPositionY;
 };
+
+#endif

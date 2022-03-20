@@ -6,13 +6,16 @@
 #include "Jump.h"
 #include "MST.h"
 #include "MuPlusOneGA.h"
-#include "OpenGL.h"
 #include "SASD_OnePlusLambda.h"
 #include "SD_OnePlusOne.h"
 #include "SD_RLS.h"
 #include "SD_RLS_m.h"
 #include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
+
+#ifdef GRAPHICS
+	#include "OpenGL.h"
+#endif
 
 #include <iostream>
 
@@ -97,12 +100,14 @@ int main()
 		delete ea;
 	}
 
-	{
-		int N = 2500;
-		Jump j(N, 2, JumpType::Original);
-		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, &j);
+#ifdef GRAPHICS
 
-		sd5->SetDelay(0);
+	{
+		int N = 30;
+		Jump j(N, 2, JumpType::Original);
+		SD_RLS_r* sd5 = new SD_RLS_r(N, &j);
+
+		sd5->SetDelay(200);
 
 		b.SetRepeat(1);
 		b.ScheduleEA(sd5);
@@ -116,4 +121,5 @@ int main()
 
 		delete sd5;
 	}
+#endif
 }

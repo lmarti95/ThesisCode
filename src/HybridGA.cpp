@@ -70,7 +70,8 @@ std::pair<long long, double> HybridGA::RunEA()
 		for(int i = 0; i < 3; ++i)
 		{
 			int* bitString = CreateRandomBitString();
-			mFitnessValue = mCostFunction->GetFitnessValue(bitString);
+			mCostFunction->CalculateSum(mBitString);
+			mFitnessValue = mCostFunction->GetFitnessValue(0);
 			bool updated = true;
 
 			while(updated)
@@ -120,7 +121,8 @@ std::pair<long long, double> HybridGA::RunEA()
 		#endif
 
 		mIterations++;
-		mFitnessValue = mCostFunction->GetFitnessValue(offspring);
+		mCostFunction->CalculateSum(offspring);
+		mFitnessValue = mCostFunction->GetFitnessValue(0);
 		
 		delete[] offspring;
 		for(auto& p : parents)

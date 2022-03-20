@@ -91,6 +91,7 @@ std::pair<long long, double> cGA::RunEA()
 		{
 			std::lock_guard<std::mutex> lg{mBitStringMutex};
 			std::copy(Y1, Y1 + mN, mBitString);
+			mCostFunction->CalculateSum(mBitString);
 		}
 		#endif
 

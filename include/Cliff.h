@@ -2,10 +2,14 @@
 
 #include "CostFunction.h"
 
+#include <atomic>
+
 class Cliff : public CostFunction
 {
 public:
 	Cliff(int aN);
+
+	Cliff(const Cliff& aOld);
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
@@ -13,9 +17,15 @@ public:
 	void ApplyChange(int aChange) override { mSum += aChange; }
 	std::string GetCostFunctionName() override { return "Cliff"; }
 
-	int FitnessValueToSum(double aFitnessValue) override { return -1; }
+	void CalculateSum(int* aBitString) override;
 
 	void SetSum(double aSum) { mSum = aSum; }
+	double GetSum() override { return mSum; }
+
 private:
-	double mSum;
+#ifdef GRAPHICS
+	std::atomic_long mSum = {0};
+#else
+	double mSum = 0;
+#endif
 };

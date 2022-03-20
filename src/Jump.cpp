@@ -10,6 +10,14 @@ Jump::Jump(int aN, int aGapSize, JumpType aType) : CostFunction(aN)
 	CheckGapSize();
 }
 
+Jump::Jump(const Jump& aOld) : CostFunction(aOld)
+{
+	double temp = aOld.mSum;
+	mSum = temp;
+	mGapSize = aOld.mGapSize;
+	mType = aOld.mType;
+}
+
 double Jump::GetMaximumFitnessValue()
 {
 	if(mType == JumpType::OffsetSpike)
@@ -59,8 +67,6 @@ double Jump::GetOriginalFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
-	mSum = sum;
-
 	if(sum > mN - mGapSize && sum != mN)
 	{
 		return  mN - sum;
@@ -90,9 +96,7 @@ double Jump::GetOffsetFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
-	mSum = sum;
-
-	if(sum < 3*mN/4 || sum >= 3*mN/4+mGapSize)
+	if(sum <= 3*mN/4 || sum >= 3*mN/4+mGapSize)
 	{
 		return  sum + mGapSize;
 	}
@@ -104,7 +108,7 @@ double Jump::GetOffsetFitnessValue(int aChange)
 {
 	double sum = mSum + aChange;
 
-	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
 	{
 		return  sum + mGapSize;
 	}
@@ -120,8 +124,6 @@ double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
 	{
 		sum += aBitString[i];
 	}
-
-	mSum = sum;
 
 	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
 	{
@@ -153,14 +155,16 @@ double Jump::GetOffsetSpikeFitnessValue(int aChange)
 	return 3 * mN / 4 + mGapSize - sum;
 }
 
-int Jump::FitnessValueToSum(double aFitnessValue)
+void Jump::CalculateSum(int* aBitString)
 {
-	if(aFitnessValue >= mGapSize || aFitnessValue == GetMaximumFitnessValue())
+	double sum = 0;
+
+	for(int i = 0; i < mN; ++i)
 	{
-		return aFitnessValue - mGapSize;
+		sum += aBitString[i];
 	}
 
-	return mN - aFitnessValue;
+	mSum = sum;
 }
 
 void Jump::SetJumpType(JumpType aType)

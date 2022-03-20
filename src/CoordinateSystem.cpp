@@ -1,3 +1,5 @@
+#ifdef GRAPHICS
+
 #include "CoordinateSystem.h"
 
 #include <iostream>
@@ -24,6 +26,16 @@ CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
 
     mXCoordinateOffset = mScaleX / 10;
     mYCoordinateOffset = mScaleY / 10;
+
+    if(mXCoordinateOffset < 1)
+    {
+        mXCoordinateOffset = 1;
+    }
+
+    if(mYCoordinateOffset < 1)
+    {
+        mYCoordinateOffset = 1;
+    }
 
     CalculateTriangles();
     CalculateLines();
@@ -147,14 +159,52 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
 
 std::vector<Shape*>* CoordinateSystem::CreateLines()
 {
+    if(dynamic_cast<Jump*>(mEA->GetCostFunction()) != nullptr)
+    {
+        if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::Original)
+        {
+            return CreateLinesJumpOriginal();
+        }
+
+        if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::Offset)
+        {
+            return CreateLinesJumpOffset();
+        }
+    }
+
+    return nullptr;
+}
+
+
+std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOriginal()
+{
     std::vector<Shape*>* lines = new std::vector<Shape*>;
     GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()-mGapSize), GetLocationYOnCoordinate(mEA->GetN()), black);
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN() - mGapSize), GetLocationYOnCoordinate(mEA->GetN()), black);
     lines->push_back((Shape*)line1);
 
-    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() - mGapSize +1), GetLocationYOnCoordinate(mGapSize -1), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(0), black);
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() - mGapSize), GetLocationYOnCoordinate(mGapSize - 1), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(0), black);
     lines->push_back((Shape*)line2);
+
+    return lines;
+}
+
+std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOffset()
+{
+    std::vector<Shape*>* lines = new std::vector<Shape*>;
+    GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+
+    mEA->GetCostFunction();
+
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mEA->GetN()*3/4+ mGapSize), black);
+    lines->push_back((Shape*)line1);
+
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mGapSize - 1), GetLocationXOnCoordinate(mEA->GetN()*3/4+mGapSize), GetLocationYOnCoordinate(0), black);
+    lines->push_back((Shape*)line2);
+
+    Line* line3 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 3 / 4 + mGapSize), GetLocationYOnCoordinate(mEA->GetN() * 3 / 4+mGapSize+mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN()+mGapSize), black);
+    lines->push_back((Shape*)line3);
 
     return lines;
 }
@@ -394,7 +444,7 @@ void CoordinateSystem::CalculateLines()
 GLfloat* CoordinateSystem::ModifyCircle()
 {
     double fitnessValue = mEA->GetFitnessValue();
-    int sum = mEA->GetCostFunction()->FitnessValueToSum(fitnessValue);
+    int sum = mEA->GetCostFunction()->GetSum();
 
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
     Circle* c = new Circle(GetLocationXOnCoordinate(sum), GetLocationYOnCoordinate(fitnessValue), 0.03f, red);
@@ -462,3 +512,5 @@ std::vector<Text> CoordinateSystem::CreateYValuesText()
 
     return YValuesText;
 }
+
+#endif

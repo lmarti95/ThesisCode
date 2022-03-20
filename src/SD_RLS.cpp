@@ -20,7 +20,8 @@ SD_RLS::~SD_RLS()
 std::pair<long long, double> SD_RLS::RunEA()
 {
 	RandomizeBitString();
-	mFitnessValue = mCostFunction->GetFitnessValue(mBitString);
+	mCostFunction->CalculateSum(mBitString);
+	mFitnessValue = mCostFunction->GetFitnessValue(0);
 	double newFitnessValue = 0;
 
 	bool justUpdated = false;
