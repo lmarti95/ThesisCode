@@ -1,6 +1,6 @@
 #pragma once 
 
-#ifdef GRAPHICS
+#if GRAPHICS
 
 #include <chrono>
 
@@ -41,7 +41,7 @@ public:
 
 	std::string GetBitString();
 
-	static OpenGLMode GetOpenGLMode() { return mMode; }
+	OpenGLMode GetOpenGLMode() { return mMode; }
 
 	float TranslateCoordinateX(double aX);
 	float TranslateCoordinateY(double aY);
@@ -49,7 +49,7 @@ public:
 private:
 	static const int mWidth = 800;
 	static const int mHeight = 800;
-	static const OpenGLMode mMode = OpenGLMode::MST;
+	OpenGLMode mMode = OpenGLMode::MST;
 
 	GLFWwindow* mWindow;
 	GLuint mShaderProgram;

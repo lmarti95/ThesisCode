@@ -108,7 +108,7 @@ std::pair<long long, double> cGA::RunEA()
 		delete[] X1;
 		delete[] X2;
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif
 	}

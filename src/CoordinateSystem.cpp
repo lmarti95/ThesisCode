@@ -1,4 +1,4 @@
-#ifdef GRAPHICS
+#if GRAPHICS
 
 #include "CoordinateSystem.h"
 

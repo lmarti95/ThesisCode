@@ -23,7 +23,9 @@ public:
 	virtual std::string GetEAName() = 0;
 	std::string GetCostFunctionName() { return mCostFunction->GetCostFunctionName(); }
 
+#if GRAPHICS
 	void SetDelay(int aDelay) { mDelay = aDelay; }
+#endif
 
 	int GetN() { return mN; }
 
@@ -45,7 +47,7 @@ protected:
 
 	int mN;
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	std::atomic<double> mFitnessValue = 0;
 	std::atomic_long mIterations = {0};
 	int mDelay = 0;

@@ -55,7 +55,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 
 		if(!justUpdated)
 		{
-			#ifdef GRAPHICS
+			#if GRAPHICS
 				std::lock_guard<std::mutex> lg{mBitStringMutex};
 			#endif
 
@@ -88,7 +88,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 
 		if(newFitnessValue > mFitnessValue)
 		{
-			#ifdef GRAPHICS
+			#if GRAPHICS
 				std::lock_guard<std::mutex> lg{mBitStringMutex};
 			#endif
 
@@ -103,7 +103,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 		{
 			if(newFitnessValue == mFitnessValue && mR == 1)
 			{
-				#ifdef GRAPHICS
+				#if GRAPHICS
 					std::lock_guard<std::mutex> lg{mBitStringMutex};
 				#endif
 
@@ -122,7 +122,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 			mR++;
 		}
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif
 	}

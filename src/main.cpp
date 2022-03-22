@@ -14,7 +14,7 @@
 #include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	#include "OpenGL.h"
 #endif
 
@@ -44,7 +44,7 @@ int main()
 
 	for(auto& N : testNs)
 	{
-		for(int gapSize = 2; gapSize < 2; ++gapSize)
+		for(int gapSize = 2; gapSize < 3; ++gapSize)
 		{
 			if(N / 3 < gapSize)
 			{
@@ -101,7 +101,7 @@ int main()
 		delete ea;
 	}
 
-#ifdef GRAPHICS
+#if GRAPHICS
 
 	/*{
 		int N = 30;

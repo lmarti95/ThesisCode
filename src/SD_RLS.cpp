@@ -110,7 +110,7 @@ std::pair<long long, double> SD_RLS::RunEA()
 			u = 0;
 		}
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif
 	}

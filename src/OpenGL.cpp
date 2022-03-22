@@ -1,4 +1,4 @@
-#ifdef GRAPHICS
+#if GRAPHICS
 
 #include "OpenGL.h"
 
@@ -227,6 +227,15 @@ void OpenGL::SetColorBuffer()
 void OpenGL::Setup(EvolutionaryAlgorithm* aEA)
 {
     mEA = aEA;
+    if(dynamic_cast<MST*>(mEA->GetCostFunction()) != nullptr)
+    {
+        mMode = OpenGLMode::MST;
+    }
+    else
+    {
+        mMode = OpenGLMode::CoordinateSystem;
+    }
+
     if(mMode == OpenGLMode::CoordinateSystem)
     {
         mCoordinateSystem = new CoordinateSystem(mEA);

@@ -42,7 +42,7 @@ public:
 private:
 	int mGapSize;
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	std::atomic_long mSum = {0};
 #else
 	double mSum = 0;

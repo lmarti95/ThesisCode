@@ -1,5 +1,7 @@
 #pragma once
 
+#if GRAPHICS
+
 #include "EvolutionaryAlgorithm.h"
 #include "Shape.h"
 #include "MST.h"
@@ -36,3 +38,5 @@ private:
 
 	EvolutionaryAlgorithm* mEA;
 };
+
+#endif

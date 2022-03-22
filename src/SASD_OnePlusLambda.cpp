@@ -190,7 +190,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 			}
 		}
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif
 	}

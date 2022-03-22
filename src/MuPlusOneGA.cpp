@@ -158,7 +158,7 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 
 		DeleteWorst();
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			UpdateBitString();
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif

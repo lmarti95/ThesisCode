@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef GRAPHICS
+#if GRAPHICS
 
 #define GLEW_STATIC
 #include <GL/glew.h>

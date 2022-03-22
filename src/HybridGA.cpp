@@ -131,7 +131,7 @@ std::pair<long long, double> HybridGA::RunEA()
 		}
 		parents.clear();
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 			std::this_thread::sleep_for(std::chrono::milliseconds(mDelay));
 		#endif
 	}

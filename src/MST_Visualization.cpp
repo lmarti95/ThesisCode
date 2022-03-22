@@ -1,5 +1,7 @@
 #include "MST_Visualization.h"
 
+#if GRAPHICS
+
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -250,3 +252,5 @@ Circle* MST_Visualization::GetCircle(int aID)
 
 	return nullptr;
 }
+
+#endif
