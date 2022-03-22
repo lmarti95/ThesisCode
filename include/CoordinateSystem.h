@@ -19,7 +19,6 @@ public:
 
     std::vector<Shape*>* CreateLinesJumpOriginal();
     std::vector<Shape*>* CreateLinesJumpOffset();
-    std::vector<Shape*>* CreateLinesJumpOffsetSpike();
 
     GLfloat* CreateVertices();
     GLfloat* CreateLinesColor();

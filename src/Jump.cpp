@@ -125,7 +125,7 @@ double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
-	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
 	{
 		return sum + mGapSize;
 	}
@@ -142,7 +142,7 @@ double Jump::GetOffsetSpikeFitnessValue(int aChange)
 {
 	double sum = mSum + aChange;
 
-	if(sum < 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
 	{
 		return sum + mGapSize;
 	}

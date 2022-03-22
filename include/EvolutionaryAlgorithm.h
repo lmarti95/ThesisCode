@@ -46,14 +46,14 @@ protected:
 	int mN;
 
 #ifdef GRAPHICS
-	std::atomic_long mFitnessValue = {0};
+	std::atomic<double> mFitnessValue = 0;
 	std::atomic_long mIterations = {0};
+	int mDelay = 0;
 #else
 	double mFitnessValue = 0;
 	long long mIterations = 0;
 #endif
-
-	int mDelay = 200;
+	
 
 	long mNextPosition = -1;
 	std::random_device mDev;

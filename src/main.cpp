@@ -5,6 +5,7 @@
 #include "HybridGA.h"
 #include "Jump.h"
 #include "MST.h"
+#include "MST_Visualization.h"
 #include "MuPlusOneGA.h"
 #include "SASD_OnePlusLambda.h"
 #include "SD_OnePlusOne.h"
@@ -102,12 +103,12 @@ int main()
 
 #ifdef GRAPHICS
 
-	{
+	/*{
 		int N = 30;
-		Jump j(N, 2, JumpType::Original);
-		SD_RLS_r* sd5 = new SD_RLS_r(N, &j);
+		Jump j(N, 4, JumpType::OffsetSpike);
+		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, &j);
 
-		sd5->SetDelay(200);
+		sd5->SetDelay(0);
 
 		b.SetRepeat(1);
 		b.ScheduleEA(sd5);
@@ -120,6 +121,28 @@ int main()
 		b.FinishThreads();
 
 		delete sd5;
+	}*/
+
+
+
+	{
+		int N = 50;
+		MST* mst = new MST(N, "20_50.mst");
+		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, mst);
+
+		sd5->SetDelay(0);
+
+		b.SetRepeat(1);
+		b.ScheduleEA(sd5);
+
+		OpenGL og;
+		og.Setup(sd5);
+		og.Draw();
+		og.ShutDown();
+
+		delete mst;
+		
 	}
+
 #endif
 }

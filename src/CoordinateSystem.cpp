@@ -151,7 +151,14 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
     shapes->push_back((Shape*)(c));
 
     GLfloat black[3] = {0.0f, 0.0f, 0.0f};
-    Circle* c2 = new Circle(GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN() + mGapSize), 0.02f, black);
+
+    int XLocation = mEA->GetN();
+    if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::OffsetSpike)
+    {
+        XLocation = mEA->GetN() * 3 / 4 + mGapSize / 2;
+    }
+
+    Circle* c2 = new Circle(GetLocationXOnCoordinate(XLocation), GetLocationYOnCoordinate(mEA->GetCostFunction()->GetMaximumFitnessValue()), 0.02f, black);
     shapes->push_back((Shape*)(c2));
 
     return shapes;
@@ -167,6 +174,11 @@ std::vector<Shape*>* CoordinateSystem::CreateLines()
         }
 
         if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::Offset)
+        {
+            return CreateLinesJumpOffset();
+        }
+
+        if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::OffsetSpike)
         {
             return CreateLinesJumpOffset();
         }

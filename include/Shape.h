@@ -71,7 +71,10 @@ public:
 
     int GetNumberOfTriangles() { return circleTriangles; }
 
+    std::pair<GLfloat, GLfloat> GetCenter(){ return mCenter; }
+
 private:
+    std::pair<GLfloat, GLfloat> mCenter;
     std::vector<Triangle*> mTriangles;
 };
 

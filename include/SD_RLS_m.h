@@ -10,6 +10,6 @@ public:
 	~SD_RLS_m();
 
 	std::pair<long long, double> RunEA() override;
-	std::string GetEAName() override { return "SD-RLS^m"; }
+	std::string GetEAName() override { return "SD-RLS_m"; }
 private:
 };

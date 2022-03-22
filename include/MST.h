@@ -28,6 +28,12 @@ public:
 
 	void visitEdge(int* aBitString, int aEdge, int* aConnected);
 	int ConnectedComponents(int* aBitString);
+
+	int GetNodesNum() { return mNodesNum; }
+	int GetEdgesNum() { return mEdgesNum; }
+	int GetMinimumSum() { return mMinimumSum; }
+	std::vector<Edge>* GetEdges() { return &mEdges; }
+
 private:
 	int mNodesNum;
 	int mEdgesNum;

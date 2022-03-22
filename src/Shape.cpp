@@ -90,6 +90,8 @@ std::vector<GLfloat>* Rectangle::GetColor()
 
 Circle::Circle(GLfloat aX, GLfloat aY, GLfloat aR, GLfloat* aColor) : Shape(aColor)
 {
+    mCenter = std::make_pair(aX, aY);
+
     for(int i = 0; i < circleTriangles; ++i)
     {
         int next;

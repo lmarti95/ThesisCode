@@ -8,6 +8,7 @@
 #include <thread>
 
 #include "CoordinateSystem.h"
+#include "MST.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCall(x) GLClearError(); \
@@ -32,11 +33,16 @@ bool GLLogCall(const char* function, const char* file, int line)
 void OpenGL::SetText()
 {
     gltInit();
-    mYText = gltCreateText();
-    gltSetText(mYText, "Y");
-    mXText = gltCreateText();
-    gltSetText(mXText, "X");
 
+    SetInfoText();
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        SetCoordinateSystemText();
+    }
+}
+
+void OpenGL::SetInfoText()
+{
     mEAName = gltCreateText();
     gltSetText(mEAName, mEA->GetEAName().c_str());
 
@@ -45,9 +51,6 @@ void OpenGL::SetText()
 
     mBitStringText = gltCreateText();
     mIterationsText = gltCreateText();
-
-    mXValuesText = mCoordinateSystem->CreateXValuesText();
-    mYValuesText = mCoordinateSystem->CreateYValuesText();
 
     if(mEA->GetN() <= 30)
     {
@@ -59,6 +62,17 @@ void OpenGL::SetText()
     }
 
     mFitnessValueText = gltCreateText();
+}
+
+void OpenGL::SetCoordinateSystemText()
+{
+    mYText = gltCreateText();
+    gltSetText(mYText, "Y");
+    mXText = gltCreateText();
+    gltSetText(mXText, "X");
+
+    mXValuesText = mCoordinateSystem->CreateXValuesText();
+    mYValuesText = mCoordinateSystem->CreateYValuesText();
 }
 
 void OpenGL::SetWindow()
@@ -162,13 +176,22 @@ void OpenGL::SetShaders()
 
 void OpenGL::SetVerticeBuffer()
 {
-    mVertices = mCoordinateSystem->CreateVertices();
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        mVertices = mCoordinateSystem->CreateVertices();
+        mVerticeSize = mCoordinateSystem->GetNumberOfTriangles() * 9 + mCoordinateSystem->GetNumberOfLines() * 6;
+    }
+    if(mMode == OpenGLMode::MST)
+    {
+        mVertices = mMST->GetVertices();
+        mVerticeSize = mMST->GetNumberOfTriangles()*9+mMST->GetNumberOfLines()*6;
+    }
 
     GLCall(glGenBuffers(1, &mVBO));
     GLCall(glBindVertexArray(mVAO));
 
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * (mCoordinateSystem->GetNumberOfTriangles() * 9 + mCoordinateSystem->GetNumberOfLines() * 6), mVertices, GL_STREAM_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * (mVerticeSize), mVertices, GL_STREAM_DRAW));
 
     GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0 * sizeof(GLfloat), (GLvoid*)0));
     GLCall(glEnableVertexAttribArray(0));
@@ -177,12 +200,21 @@ void OpenGL::SetVerticeBuffer()
 
 void OpenGL::SetColorBuffer()
 {
-    mColor = mCoordinateSystem->CreateColor();
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        mColor = mCoordinateSystem->CreateColor();
+        mColorSize = mCoordinateSystem->GetNumberOfTriangles() * 9 + mCoordinateSystem->GetNumberOfLines() * 6;
+    }
+    if(mMode == OpenGLMode::MST)
+    {
+        mColor = mMST->GetColor();
+        mColorSize = mMST->GetNumberOfTriangles()*9 + mMST->GetNumberOfLines() * 6;
+    }
 
     glGenBuffers(1, &mColorbufferID);
 
     glBindBuffer(GL_ARRAY_BUFFER, mColorbufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * (mCoordinateSystem->GetNumberOfTriangles() * 9 + mCoordinateSystem->GetNumberOfLines() * 6), mColor, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * (mColorSize), mColor, GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
@@ -195,7 +227,15 @@ void OpenGL::SetColorBuffer()
 void OpenGL::Setup(EvolutionaryAlgorithm* aEA)
 {
     mEA = aEA;
-    mCoordinateSystem = new CoordinateSystem(mEA);
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        mCoordinateSystem = new CoordinateSystem(mEA);
+    }
+    
+    if(mMode == OpenGLMode::MST)
+    {
+        mMST = new MST_Visualization((dynamic_cast<MST*>(mEA->GetCostFunction())), mEA);
+    }
 
     SetWindow();
     SetShaders();    
@@ -235,8 +275,18 @@ void OpenGL::DrawVertices()
 
     Update();
 
-    GLCall(glDrawArrays(GL_TRIANGLES, 0, mCoordinateSystem->GetNumberOfTriangles() * 3));
-    GLCall(glDrawArrays(GL_LINES, mCoordinateSystem->GetNumberOfTriangles() * 3, mCoordinateSystem->GetNumberOfLines() * 2));
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, mCoordinateSystem->GetNumberOfTriangles() * 3));
+        GLCall(glDrawArrays(GL_LINES, mCoordinateSystem->GetNumberOfTriangles() * 3, mCoordinateSystem->GetNumberOfLines() * 2));
+    }
+
+    if(mMode == OpenGLMode::MST)
+    {
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, mMST->GetNumberOfTriangles() * 3));
+        GLCall(glDrawArrays(GL_LINES, mMST->GetNumberOfTriangles() * 3, mMST->GetNumberOfLines() * 2));
+    }
+
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
     GLCall(glBindVertexArray(0));
 }
@@ -246,25 +296,37 @@ void OpenGL::DrawText()
     GLCall(gltBeginDraw());
 
     gltColor(1.0f, 1.0f, 1.0f, 1.0f);
-    GLCall(gltDrawText2D(mYText, mCoordinateSystem->TranslateCoordinateX(-0.9), mCoordinateSystem->TranslateCoordinateY(0.97), 1));
-    GLCall(gltDrawText2D(mXText, mCoordinateSystem->TranslateCoordinateX(0.95), mCoordinateSystem->TranslateCoordinateY(-0.87), 1));
+    DrawInfoText();
 
-    GLCall(gltDrawText2D(mEAName, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.95), 1));
-    GLCall(gltDrawText2D(mCostFunctionName, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.9), 1));
-
-    UpdateText();
-
-    for(auto& t : mXValuesText)
+    if(mMode == OpenGLMode::CoordinateSystem)
     {
-        GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
+        GLCall(gltDrawText2D(mYText, mCoordinateSystem->TranslateCoordinateX(-0.9), mCoordinateSystem->TranslateCoordinateY(0.97), 1));
+        GLCall(gltDrawText2D(mXText, mCoordinateSystem->TranslateCoordinateX(0.95), mCoordinateSystem->TranslateCoordinateY(-0.87), 1));
+
+        for(auto& t : mXValuesText)
+        {
+            GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
+        }
+
+        for(auto& t : mYValuesText)
+        {
+            GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
+        }
     }
 
-    for(auto& t : mYValuesText)
+    if(mMode == OpenGLMode::MST)
     {
-        GLCall(gltDrawText2D(t.gltText, t.pixelPositionX, t.pixelPositionY, 1));
     }
 
     GLCall(gltEndDraw());
+}
+
+void OpenGL::DrawInfoText()
+{
+    GLCall(gltDrawText2D(mEAName, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.95), 1));
+    GLCall(gltDrawText2D(mCostFunctionName, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.9), 1));
+
+    UpdateInfoText();
 }
 
 void OpenGL::SetRuntime()
@@ -280,30 +342,73 @@ void OpenGL::SetRuntime()
 
 void OpenGL::Update()
 {
-    auto points = mCoordinateSystem->ModifyCircle();
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mCoordinateSystem->GetRedCircleStart(), sizeof(GLfloat) * circleTriangles * 9, points));
-    delete points;
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        auto points = mCoordinateSystem->ModifyCircle();
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mCoordinateSystem->GetRedCircleStart(), sizeof(GLfloat) * circleTriangles * 9, points));
+        delete points;
+    }
+
+    if(mMode == OpenGLMode::MST)
+    {
+        GLfloat* color = new GLfloat[mMST->GetNumberOfLines() * 6];
+        auto lines = mMST->CreateLines();
+        int copied = 0;
+        for(auto& l : *lines)
+        {
+            auto colorPoints = l->GetColor();
+            for(int i = 0; i < 6; ++i)
+            {
+                color[copied + i] = colorPoints->at(i);
+            }
+            copied += 6;
+
+            delete colorPoints;
+        }
+
+        for(auto& l : *lines)
+        {
+            delete l;
+        }
+        delete lines;
+
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, mColorbufferID));
+
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mMST->GetNumberOfTriangles()*9, sizeof(GLfloat) * mMST->GetNumberOfLines() * 6, color));
+
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+    }
 }
 
-void OpenGL::UpdateText()
+void OpenGL::UpdateInfoText()
 {
     if(mEA->GetN() <= 30)
     {
         std::string str = GetBitString();
 
         gltSetText(mBitStringText, str.c_str());
-        GLCall(gltDrawText2D(mBitStringText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.75), 1));
+        GLCall(gltDrawText2D(mBitStringText, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.75), 1));
     }
 
-    std::string iterations = "Iterations: " + std::to_string(mCoordinateSystem->GetEvolutionaryAlgorithm()->GetIterations());
+    std::string iterations = "Iterations: " + std::to_string(mEA->GetIterations());
 
     gltSetText(mIterationsText, iterations.c_str());
-    GLCall(gltDrawText2D(mIterationsText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.85), 1));
+    GLCall(gltDrawText2D(mIterationsText, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.85), 1));
 
-    int roundedFitnessValue = mEA->GetFitnessValue();
+    int roundedFitnessValue;
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        roundedFitnessValue = mEA->GetFitnessValue();
+    }
+
+    if(mMode == OpenGLMode::MST)
+    {
+        roundedFitnessValue = 1/mEA->GetFitnessValue();
+    }
+
     std::string fitness = "Fitness: " + std::to_string(roundedFitnessValue);
     gltSetText(mFitnessValueText, fitness.c_str());
-    GLCall(gltDrawText2D(mFitnessValueText, mCoordinateSystem->TranslateCoordinateX(mInfoXValue), mCoordinateSystem->TranslateCoordinateY(0.80), 1));
+    GLCall(gltDrawText2D(mFitnessValueText, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.80), 1));
 }
 
 void OpenGL::ShutDown()
@@ -322,6 +427,13 @@ void OpenGL::ShutDown()
         gltDeleteText(t.gltText);
     }
 
+    gltDeleteText(mEAName);
+    gltDeleteText(mCostFunctionName);
+    gltDeleteText(mBitStringText);
+    gltDeleteText(mIterationsText);
+    gltDeleteText(mFitnessValueText);
+
+
     gltTerminate();
 
     glDeleteVertexArrays(1, &mVAO);
@@ -337,7 +449,7 @@ void OpenGL::ShutDown()
 
 std::string OpenGL::GetBitString()
 {
-    auto bitString = mCoordinateSystem->GetEvolutionaryAlgorithm()->GetBitString();
+    auto bitString = mEA->GetBitString();
 
     std::string str;
 
@@ -352,6 +464,17 @@ std::string OpenGL::GetBitString()
     delete bitString;
 
     return str;
+}
+
+
+float OpenGL::TranslateCoordinateX(double aX)
+{
+    return (aX + 1) / 2 * OpenGL::GetWidth();
+}
+
+float OpenGL::TranslateCoordinateY(double aY)
+{
+    return (-aY + 1) / 2 * OpenGL::GetHeight();
 }
 
 #endif
