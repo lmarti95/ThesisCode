@@ -19,7 +19,7 @@ public:
 private:
 	std::vector<int> mPermutation;
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	std::mutex mBitStringMutex;
 	int* mBitString;
 #endif

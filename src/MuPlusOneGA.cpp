@@ -174,6 +174,8 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 
 void MuPlusOneGA::UpdateBitString()
 {
+#if GRAPHICS
+
 	mFitnessValue = mPopulation.at(0).second;
 
 	int* bitString = mPopulation.at(0).first;
@@ -189,10 +191,12 @@ void MuPlusOneGA::UpdateBitString()
 
 	mBitString = bitString;
 	mCostFunction->CalculateSum(mBitString);
+#endif
 }
 
 std::vector<int>* MuPlusOneGA::GetBitString()
 {
+#if GRAPHICS
 	std::lock_guard<std::mutex> lg{mBitStringMutex};
 	std::vector<int>* bitString = new std::vector<int>;
 
@@ -202,4 +206,7 @@ std::vector<int>* MuPlusOneGA::GetBitString()
 	}
 
 	return bitString;
+#else
+	return nullptr;
+#endif
 }

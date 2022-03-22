@@ -20,7 +20,7 @@ private:
 	int mMu;
 	double* mF;
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	std::mutex mBitStringMutex;
 	int* mBitString;
 #endif

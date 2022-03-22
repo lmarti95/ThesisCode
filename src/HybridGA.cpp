@@ -11,7 +11,7 @@ HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, a
 {
 	SetUpPermutation();
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	mBitString = new int[mN];
 #endif
 }
@@ -23,7 +23,7 @@ void HybridGA::SetUpPermutation()
 		mPermutation.push_back(i);
 	}
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	delete[] mBitString;
 #endif
 }
@@ -70,7 +70,7 @@ std::pair<long long, double> HybridGA::RunEA()
 		for(int i = 0; i < 3; ++i)
 		{
 			int* bitString = CreateRandomBitString();
-			mCostFunction->CalculateSum(mBitString);
+			mCostFunction->CalculateSum(bitString);
 			mFitnessValue = mCostFunction->GetFitnessValue(0);
 			bool updated = true;
 
@@ -113,7 +113,7 @@ std::pair<long long, double> HybridGA::RunEA()
 
 		int* offspring = MajorityVoting(parents);
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 		{
 			std::lock_guard<std::mutex> lg{mBitStringMutex};
 			std::copy(offspring, offspring + mN, mBitString);
@@ -146,6 +146,7 @@ std::pair<long long, double> HybridGA::RunEA()
 
 std::vector<int>* HybridGA::GetBitString()
 {
+#if GRAPHICS
 	std::lock_guard<std::mutex> lg{mBitStringMutex};
 	std::vector<int>* bitString = new std::vector<int>;
 
@@ -155,4 +156,7 @@ std::vector<int>* HybridGA::GetBitString()
 	}
 
 	return bitString;
+#else
+	return nullptr;
+#endif
 }

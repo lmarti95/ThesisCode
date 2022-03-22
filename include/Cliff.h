@@ -23,7 +23,7 @@ public:
 	double GetSum() override { return mSum; }
 
 private:
-#ifdef GRAPHICS
+#if GRAPHICS
 	std::atomic_long mSum = {0};
 #else
 	double mSum = 0;

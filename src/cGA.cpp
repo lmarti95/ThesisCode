@@ -7,7 +7,7 @@ cGA::cGA(int N, CostFunction* aCostFunction, int aMu) : GeneticAlgorithm(N, aCos
 	mMu = aMu;
 	mF = new double[mN];
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	mBitString = new int[mN];
 #endif
 }
@@ -16,7 +16,7 @@ cGA::~cGA()
 {
 	delete[] mF;
 
-#ifdef GRAPHICS
+#if GRAPHICS
 	delete[] mBitString;
 #endif
 }
@@ -87,7 +87,7 @@ std::pair<long long, double> cGA::RunEA()
 			mFitnessValue = fitnessValueX2;
 		}
 
-		#ifdef GRAPHICS
+		#if GRAPHICS
 		{
 			std::lock_guard<std::mutex> lg{mBitStringMutex};
 			std::copy(Y1, Y1 + mN, mBitString);
@@ -123,6 +123,7 @@ std::pair<long long, double> cGA::RunEA()
 
 std::vector<int>* cGA::GetBitString()
 {
+#if GRAPHICS
 	std::lock_guard<std::mutex> lg{mBitStringMutex};
 	std::vector<int>* bitString = new std::vector<int>;
 
@@ -132,4 +133,7 @@ std::vector<int>* cGA::GetBitString()
 	}
 
 	return bitString;
+#else
+	return nullptr;
+#endif
 }

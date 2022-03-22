@@ -1,5 +1,7 @@
 #pragma once
 
+#if GRAPHICS
+
 #include "EvolutionaryAlgorithm.h"
 #include "Shape.h"
 
@@ -62,3 +64,5 @@ private:
     int mXCoordinateOffset = 1;
     int mYCoordinateOffset = 1;
 };
+
+#endif
