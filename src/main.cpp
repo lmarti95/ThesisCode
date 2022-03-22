@@ -27,16 +27,10 @@ int main()
 	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
 	std::vector<int> testNs;
-	testNs.push_back(100);
-	testNs.push_back(200);
-	testNs.push_back(300);
-	testNs.push_back(400);
-	testNs.push_back(500);
-	testNs.push_back(600);
-	testNs.push_back(700);
-	testNs.push_back(800);
-	testNs.push_back(900);
-	testNs.push_back(1000);
+	testNs.push_back(12);
+	testNs.push_back(15);
+	testNs.push_back(20);
+	testNs.push_back(25);
 
 	Benchmark b;
 
@@ -44,7 +38,7 @@ int main()
 
 	for(auto& N : testNs)
 	{
-		for(int gapSize = 2; gapSize < 3; ++gapSize)
+		for(int gapSize = 2; gapSize < 5; ++gapSize)
 		{
 			if(N / 3 < gapSize)
 			{
@@ -94,7 +88,7 @@ int main()
 		}
 	}
 
-	//b.SaveResults("JumpOriginal.txt");
+	b.FinishThreads();
 
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{

@@ -38,12 +38,19 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 	long long iterations = 0;
 	double time = 0;
 
+	std::vector<long> iterationsVector;
+
 	for(int i = 0; i < mRepeat; ++i)
 	{
 		auto result = aEA->RunEA();
+		iterationsVector.push_back(result.first);
 		iterations += result.first;
 		time += result.second;
 	}
+
+	std::string filename = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".txt";
+
+	SaveEachIteration(iterationsVector, filename);
 
 	double averageIteration = iterations / (double)mRepeat;
 	double averageTime = time / (double)mRepeat;
@@ -54,7 +61,7 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 
 	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
 
-	Result* res;
+	/*Result* res;
 	
 	if(dynamic_cast<Jump*>(aEA->GetCostFunction()) == nullptr)
 	{
@@ -65,13 +72,13 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 		res = new Result(averageIteration, averageTime, mRepeat, aEA->GetCostFunctionName(), aEA->GetEAName(), aEA->GetN(), dynamic_cast<Jump*>(aEA->GetCostFunction())->GetGapSize(), dynamic_cast<Jump*>(aEA->GetCostFunction())->GetJumpTypeString());
 	}
 
-	mFinished++;
-
 	mResultsMutex.lock();
 	mResults.push_back(res);
-	mResultsMutex.unlock();
+	mResultsMutex.unlock();*/
+
 
 	mActiveThreadsMutex.lock();
+	mFinished++;
 	mActiveThreads--;
 	mActiveThreadsMutex.unlock();
 }
@@ -159,6 +166,18 @@ void Benchmark::SaveResults(std::string aFilename)
 	{
 		file << res->GetResult();
 		file << std::endl;
+	}
+
+	file.close();
+}
+
+void Benchmark::SaveEachIteration(std::vector<long> aIterations, std::string aFilename)
+{
+	std::ofstream file;
+	file.open(aFilename);
+	for(auto& it : aIterations)
+	{
+		file << it << std::endl;
 	}
 
 	file.close();

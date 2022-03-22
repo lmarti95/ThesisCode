@@ -59,7 +59,7 @@ int* HybridGA::MajorityVoting(std::vector<int*> aParents)
 std::pair<long long, double> HybridGA::RunEA()
 {
 	mIterations = 0;
-
+	mFitnessValue = 0;
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
 	std::vector<int*> parents;
 
