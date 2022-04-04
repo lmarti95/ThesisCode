@@ -39,6 +39,11 @@ void OpenGL::SetText()
     {
         SetCoordinateSystemText();
     }
+
+    if(mMode == OpenGLMode::MST)
+    {
+        SetWeightText();
+    }
 }
 
 void OpenGL::SetInfoText()
@@ -73,6 +78,11 @@ void OpenGL::SetCoordinateSystemText()
 
     mXValuesText = mCoordinateSystem->CreateXValuesText();
     mYValuesText = mCoordinateSystem->CreateYValuesText();
+}
+
+void OpenGL::SetWeightText()
+{
+    mWeightText = mMST->CreateWeighTexts();
 }
 
 void OpenGL::SetWindow()
@@ -325,6 +335,19 @@ void OpenGL::DrawText()
 
     if(mMode == OpenGLMode::MST)
     {
+        if(mMST->GetWeightVisibility())
+        {
+            auto bitString = mEA->GetBitString();
+            for(int i = 0; i < mWeightText.size();++i)
+            {
+                if(bitString->at(i) == 1)
+                {
+                    GLCall(gltDrawText2D(mWeightText.at(i).gltText, mWeightText.at(i).pixelPositionX, mWeightText.at(i).pixelPositionY, 1));
+                }
+            }
+
+            delete bitString;
+        }
     }
 
     GLCall(gltEndDraw());
@@ -361,8 +384,26 @@ void OpenGL::Update()
     if(mMode == OpenGLMode::MST)
     {
         GLfloat* color = new GLfloat[mMST->GetNumberOfLines() * 6];
+        GLfloat* vertices = new GLfloat[mMST->GetNumberOfLines() * 6];
         auto lines = mMST->CreateLines();
+
         int copied = 0;
+        for(auto& l : *lines)
+        {
+            auto verticePoints = l->GetPoints();
+            for(int i = 0; i < 6; ++i)
+            {
+                vertices[copied + i] = verticePoints->at(i);
+            }
+            copied += 6;
+
+            delete verticePoints;
+        }
+
+
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mMST->GetNumberOfTriangles() * 9, sizeof(GLfloat) * mMST->GetNumberOfLines() * 6, vertices));
+
+        copied = 0;
         for(auto& l : *lines)
         {
             auto colorPoints = l->GetColor();
@@ -432,6 +473,11 @@ void OpenGL::ShutDown()
     }
 
     for(auto& t : mYValuesText)
+    {
+        gltDeleteText(t.gltText);
+    }
+
+    for(auto& t : mWeightText)
     {
         gltDeleteText(t.gltText);
     }

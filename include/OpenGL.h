@@ -19,6 +19,7 @@ public:
 	void SetText();
 	void SetInfoText();
 	void SetCoordinateSystemText();
+	void SetWeightText();
 	void SetWindow();
 	void SetShaders();
 	void SetVerticeBuffer();
@@ -84,6 +85,8 @@ private:
 
 	std::chrono::steady_clock::time_point mStart;
 	std::chrono::steady_clock::time_point mEnd;
+
+	std::vector<Text> mWeightText;
 };
 
 #endif

@@ -27,6 +27,15 @@ public:
 
 	std::vector<Shape*>* CreateLines();
 	Circle* GetCircle(int aID);
+
+	void SetWeightVisibility(bool aWeighVisibility){ mWeighVisibility = aWeighVisibility; }
+	bool GetWeightVisibility() { return mWeighVisibility; }
+
+	std::vector<Text> CreateWeighTexts();
+
+	float TranslateCoordinateX(double aX);
+	float TranslateCoordinateY(double aY);
+
 private:
 	MST* mCostFunction;
 	std::vector<Circle*>* mCircles;
@@ -37,6 +46,8 @@ private:
 	int mNumberOfLines = 0;
 
 	EvolutionaryAlgorithm* mEA;
+
+	bool mWeighVisibility = true;
 };
 
 #endif

@@ -2,6 +2,8 @@
 
 #if GRAPHICS
 
+#include "OpenGL.h"
+
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -44,10 +46,16 @@ std::pair<GLfloat, GLfloat> MST_Visualization::GenerateRandomCoordinates()
 {
 	std::random_device dev;
 	std::mt19937 rng(dev());
-	std::uniform_real_distribution<> p(-0.9, 0.6);
+	std::uniform_real_distribution<> p(-0.95, 0.9);
 
 	GLfloat x = p(rng);
 	GLfloat y = p(rng);
+
+	while(x > 0.6 && y > 0.6)
+	{
+		x = p(rng);
+		y = p(rng);
+	}
 
 	return std::make_pair(x,y);
 }
@@ -227,7 +235,7 @@ std::vector<Shape*>* MST_Visualization::CreateLines()
 
 		if(bitString->at(i) == 0)
 		{
-			line = new Line(c1->GetCenter().first, c1->GetCenter().second, c2->GetCenter().first, c2->GetCenter().second, black);
+			line = new Line(c1->GetCenter().first+2, c1->GetCenter().second+2, c2->GetCenter().first+2, c2->GetCenter().second+2, black);
 		}
 		else
 		{
@@ -251,6 +259,97 @@ Circle* MST_Visualization::GetCircle(int aID)
 	}
 
 	return nullptr;
+}
+
+std::vector<Text> MST_Visualization::CreateWeighTexts()
+{
+	std::vector<Text> WeightText;
+
+	for(int i = 0; i < mCostFunction->GetEdges()->size(); ++i)
+	{
+		auto e = mCostFunction->GetEdges()->at(i);
+		GLTtext* t = gltCreateText();
+		gltSetText(t, std::to_string(e.weight).c_str());
+
+		auto c1 = GetCircle(e.n1);
+		auto c2 = GetCircle(e.n2);
+
+		double dx;
+		double dy;
+
+		if(c1->GetCenter().first < c2->GetCenter().first)
+		{
+			dx = c2->GetCenter().first - c1->GetCenter().first;
+			dy = c2->GetCenter().second - c1->GetCenter().second;
+		}
+		else
+		{
+			dx = c1->GetCenter().first - c2->GetCenter().first;
+			dy = c1->GetCenter().second - c2->GetCenter().second;
+		}
+
+		if(dx > dy && dx > dy * -1)
+		{
+			if(dx > 0)
+			{
+				dy = dy / dx*0.05;
+				dx = 0.05;
+			}
+			else
+			{
+				dy = dy / dx * -0.05;
+				dx = -0.05;
+			}
+		}
+		else
+		{
+			if(dy > 0)
+			{
+				dx = dx / dy * 0.05;
+				dy = 0.05;
+			}
+			else
+			{
+				dx = dx / dy * -0.05;
+				dy = -0.05;
+			}
+		}
+
+		double dx2 = dx;
+		double dy2 = dy;
+
+		if(c1->GetCenter().first < c2->GetCenter().first)
+		{
+			dx = (c2->GetCenter().first - c1->GetCenter().first)/2 + c1->GetCenter().first -dy2;
+		}
+		else
+		{
+			dx = (c1->GetCenter().first - c2->GetCenter().first) / 2 + c2->GetCenter().first - dy2;
+		}
+
+		if(c1->GetCenter().second < c2->GetCenter().second)
+		{
+			dy = (c2->GetCenter().second - c1->GetCenter().second) / 2 + c1->GetCenter().second + dx2;
+		}
+		else
+		{
+			dy = (c1->GetCenter().second - c2->GetCenter().second) / 2 + c2->GetCenter().second + dx2;
+		}
+
+		WeightText.push_back(Text{t, TranslateCoordinateX(dx), TranslateCoordinateY(dy)});
+	}
+
+	return WeightText;
+}
+
+float MST_Visualization::TranslateCoordinateX(double aX)
+{
+	return (aX + 1) / 2 * OpenGL::GetWidth();
+}
+
+float MST_Visualization::TranslateCoordinateY(double aY)
+{
+	return (-aY + 1) / 2 * OpenGL::GetHeight();
 }
 
 #endif

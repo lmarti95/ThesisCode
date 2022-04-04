@@ -32,7 +32,7 @@ int main()
 	testNs.push_back(20);
 	testNs.push_back(25);
 
-	Benchmark b;
+	/*Benchmark b;
 
 	b.SetRepeat(100);
 
@@ -93,7 +93,7 @@ int main()
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{
 		delete ea;
-	}
+	}*/
 
 #if GRAPHICS
 
@@ -120,8 +120,14 @@ int main()
 
 
 	{
-		int N = 50;
-		MST* mst = new MST(N, "20_50.mst");
+		Benchmark b;
+		/*int N = 50;
+		MST* mst = new MST(N, "20_50.mst");*/
+
+
+		int N = 21;
+		MST* mst = new MST(N, "7_21.mst");
+
 		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, mst);
 
 		sd5->SetDelay(0);
