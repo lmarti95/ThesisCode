@@ -12,8 +12,7 @@ Jump::Jump(int aN, int aGapSize, JumpType aType) : CostFunction(aN)
 
 Jump::Jump(const Jump& aOld) : CostFunction(aOld)
 {
-	double temp = aOld.mSum;
-	mSum = temp;
+	mSum = 0;
 	mGapSize = aOld.mGapSize;
 	mType = aOld.mType;
 }
@@ -199,5 +198,23 @@ void Jump::CheckGapSize()
 	{
 		std::cout << "The gap size " << mGapSize << " is to big for bitstring length " << mN << " when using the Offset or OffsetSpike type Jump!";
 		exit(-1);
+	}
+}
+
+std::string Jump::JumpTypeToString()
+{
+	switch(mType)
+	{
+	case JumpType::Original:
+		return "Original";
+		break;
+	case JumpType::Offset:
+		return "Offset";
+		break;
+	case JumpType::OffsetSpike:
+		return "Offset Spike";
+		break;
+	default:
+		break;
 	}
 }

@@ -19,7 +19,7 @@ public:
 	void DeleteWorst();
 
 	std::pair<long long, double> RunEA() override;
-	std::string GetEAName() override { return "(" + std::to_string(mPopulation.size()) + " + 1) GA"; }
+	std::string GetEAName() override { return "(" + std::to_string(mPopulationSize) + " + 1) GA"; }
 	std::vector<int>* GetBitString() override;
 
 	void UpdateBitString();

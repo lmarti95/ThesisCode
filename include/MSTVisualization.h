@@ -6,10 +6,10 @@
 #include "Shape.h"
 #include "MST.h"
 
-class MST_Visualization {
+class MSTVisualization {
 public:
-	MST_Visualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA);
-	~MST_Visualization();
+	MSTVisualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA);
+	~MSTVisualization();
 
 	std::pair<GLfloat, GLfloat> GenerateRandomCoordinates();
 	bool CheckCoordinates(std::pair<GLfloat, GLfloat> aCoordinates);

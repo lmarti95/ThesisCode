@@ -4,8 +4,9 @@
 #include "CostFunction.h"
 #include "HybridGA.h"
 #include "Jump.h"
+#include "Menu.h"
 #include "MST.h"
-#include "MST_Visualization.h"
+#include "MSTVisualization.h"
 #include "MuPlusOneGA.h"
 #include "SASD_OnePlusLambda.h"
 #include "SD_OnePlusOne.h"
@@ -22,7 +23,8 @@
 
 int main()
 {
-	std::cout << "Maximum number of threads used: " << std::thread::hardware_concurrency() << std::endl;
+	Menu m;
+
 
 	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
@@ -98,11 +100,12 @@ int main()
 #if GRAPHICS
 
 	/*{
-		int N = 30;
-		Jump j(N, 4, JumpType::OffsetSpike);
-		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, &j);
+		Benchmark b;
+		int N = 25;
+		Jump j(N, 4, JumpType::Original);
+		cGA* sd5 = new cGA(N, &j, 4);
 
-		sd5->SetDelay(0);
+		sd5->SetDelay(100);
 
 		b.SetRepeat(1);
 		b.ScheduleEA(sd5);
@@ -119,10 +122,10 @@ int main()
 
 
 
-	{
+	/*{
 		Benchmark b;
 		/*int N = 50;
-		MST* mst = new MST(N, "20_50.mst");*/
+		MST* mst = new MST(N, "20_50.mst");
 
 
 		int N = 21;
@@ -130,8 +133,8 @@ int main()
 
 		SD_OnePlusOne* sd5 = new SD_OnePlusOne(N, mst);
 
-		sd5->SetDelay(0);
-
+		sd5->SetDelay(10);
+		
 		b.SetRepeat(1);
 		b.ScheduleEA(sd5);
 
@@ -142,7 +145,7 @@ int main()
 
 		delete mst;
 		
-	}
+	}*/
 
 #endif
 }

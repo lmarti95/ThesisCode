@@ -1,4 +1,4 @@
-#include "MST_Visualization.h"
+#include "MSTVisualization.h"
 
 #if GRAPHICS
 
@@ -9,7 +9,7 @@
 #include <random>
 #include <utility>
 
-MST_Visualization::MST_Visualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA)
+MSTVisualization::MSTVisualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA)
 {
 	mEA = aEA;
 	mCostFunction = aCostFunction;
@@ -32,7 +32,7 @@ MST_Visualization::MST_Visualization(MST* aCostFunction, EvolutionaryAlgorithm* 
 	delete lines;
 }
 
-MST_Visualization::~MST_Visualization()
+MSTVisualization::~MSTVisualization()
 {
 	for(auto& c : *mCircles)
 	{
@@ -42,7 +42,7 @@ MST_Visualization::~MST_Visualization()
 	delete mCircles;
 }
 
-std::pair<GLfloat, GLfloat> MST_Visualization::GenerateRandomCoordinates()
+std::pair<GLfloat, GLfloat> MSTVisualization::GenerateRandomCoordinates()
 {
 	std::random_device dev;
 	std::mt19937 rng(dev());
@@ -60,7 +60,7 @@ std::pair<GLfloat, GLfloat> MST_Visualization::GenerateRandomCoordinates()
 	return std::make_pair(x,y);
 }
 
-bool MST_Visualization::CheckCoordinates(std::pair<GLfloat, GLfloat> aCoordinates)
+bool MSTVisualization::CheckCoordinates(std::pair<GLfloat, GLfloat> aCoordinates)
 {
 	for(auto& c : *mCircles)
 	{
@@ -77,7 +77,7 @@ bool MST_Visualization::CheckCoordinates(std::pair<GLfloat, GLfloat> aCoordinate
 	return true;
 }
 
-void MST_Visualization::GenerateCircles()
+void MSTVisualization::GenerateCircles()
 {
 	mCircles->clear();
 	GLfloat red[3] = {1.0f, 0.0f, 0.0f};
@@ -97,7 +97,7 @@ void MST_Visualization::GenerateCircles()
 	}	
 }
 
-void MST_Visualization::SaveCircles()
+void MSTVisualization::SaveCircles()
 {
 	std::ofstream file;
 	int nodes = mCostFunction->GetNodesNum();
@@ -110,7 +110,7 @@ void MST_Visualization::SaveCircles()
 	file.close();
 }
 
-bool MST_Visualization::ReadInCircles()
+bool MSTVisualization::ReadInCircles()
 {
 	std::ifstream file;
 	int nodes = mCostFunction->GetNodesNum();
@@ -138,7 +138,7 @@ bool MST_Visualization::ReadInCircles()
 	return true;
 }
 
-GLfloat* MST_Visualization::GetVertices()
+GLfloat* MSTVisualization::GetVertices()
 {
 	GLfloat* vertices = new GLfloat[mNumberOfTriangles*9 + mNumberOfLines*6];
 
@@ -177,7 +177,7 @@ GLfloat* MST_Visualization::GetVertices()
 	return vertices;
 }
 
-GLfloat* MST_Visualization::GetColor()
+GLfloat* MSTVisualization::GetColor()
 {
 	GLfloat* color = new GLfloat[mNumberOfTriangles * 9 + mNumberOfLines * 6];
 
@@ -217,7 +217,7 @@ GLfloat* MST_Visualization::GetColor()
 	return color;
 }
 
-std::vector<Shape*>* MST_Visualization::CreateLines()
+std::vector<Shape*>* MSTVisualization::CreateLines()
 {
 	std::vector<Shape*>* lines = new std::vector<Shape*>;
 	GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
@@ -243,12 +243,16 @@ std::vector<Shape*>* MST_Visualization::CreateLines()
 		}
 
 		lines->push_back((Shape*)line);
+
 	}
+
+	
+	delete bitString;
 
 	return lines;
 }
 
-Circle* MST_Visualization::GetCircle(int aID)
+Circle* MSTVisualization::GetCircle(int aID)
 {
 	for(auto& c : *mCircles)
 	{
@@ -261,7 +265,7 @@ Circle* MST_Visualization::GetCircle(int aID)
 	return nullptr;
 }
 
-std::vector<Text> MST_Visualization::CreateWeighTexts()
+std::vector<Text> MSTVisualization::CreateWeighTexts()
 {
 	std::vector<Text> WeightText;
 
@@ -342,12 +346,12 @@ std::vector<Text> MST_Visualization::CreateWeighTexts()
 	return WeightText;
 }
 
-float MST_Visualization::TranslateCoordinateX(double aX)
+float MSTVisualization::TranslateCoordinateX(double aX)
 {
 	return (aX + 1) / 2 * OpenGL::GetWidth();
 }
 
-float MST_Visualization::TranslateCoordinateY(double aY)
+float MSTVisualization::TranslateCoordinateY(double aY)
 {
 	return (-aY + 1) / 2 * OpenGL::GetHeight();
 }

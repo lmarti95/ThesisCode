@@ -18,5 +18,7 @@ protected:
 	int mR;
 	int mEpsilon = 1;
 
+#if GRAPHICS
 	std::mutex mBitStringMutex;
+#endif
 };

@@ -1,35 +1,29 @@
+#include "MSTGenerator.h"
+
 #include <fstream>
 #include <iostream>
 #include <random>
 #include <string>
-#include <utility>
-#include <vector>
 
-struct Edge{
-    int n1;
-    int n2;
-    int weight;
-};
-
-bool CheckConnected(std::vector<Edge>* vectors, int N)
+bool MSTGenerator::CheckConnected(std::vector<Edge>* aVectors, int aNodes)
 {
     bool returnValue = true;
 
-    int* connected = new int[N];
+    int* connected = new int[aNodes];
 
-    for(int i = 0; i < N; ++i)
+    for(int i = 0; i < aNodes; ++i)
     {
         connected[i] = 0;
     }
 
     std::vector<int> visited;
     std::vector<int> visitNext;
-    visitNext.push_back(vectors->at(0).n1);
+    visitNext.push_back(aVectors->at(0).n1);
 
     while(visitNext.size() != 0)
     {
         int visit = visitNext.at(0);
-        for(auto& v : *vectors)
+        for(auto& v : *aVectors)
         {
             if(v.n1 == visit)
             {
@@ -52,8 +46,8 @@ bool CheckConnected(std::vector<Edge>* vectors, int N)
         visitNext.erase(visitNext.begin());
         visited.push_back(visit);
     }
-    
-    for(int i = 0; i < N; ++i)
+
+    for(int i = 0; i < aNodes; ++i)
     {
         if(connected[i] == 0)
         {
@@ -66,27 +60,27 @@ bool CheckConnected(std::vector<Edge>* vectors, int N)
     return returnValue;
 }
 
-void SetAvailable(int* available, int N)
+void MSTGenerator::SetAvailable(int* aAvailable, int aNodes)
 {
-    for(int i = 0; i < N; ++i)
+    for(int i = 0; i < aNodes; ++i)
     {
-        available[i] = 1;
+        aAvailable[i] = 1;
     }
 }
 
-std::vector<Edge> GenerateVectors(int N, int edges)
+std::vector<Edge>* MSTGenerator::GenerateVectors(int aNodes, int aEdges)
 {
-    std::uniform_int_distribution<std::mt19937::result_type> randomN(0, N - 1);
-    std::uniform_int_distribution<std::mt19937::result_type> randomEdge(0, edges - 1);
+    std::uniform_int_distribution<std::mt19937::result_type> randomN(0, aNodes - 1);
+    std::uniform_int_distribution<std::mt19937::result_type> randomEdge(0, aEdges - 1);
     std::random_device dev;
     std::mt19937 rng(dev());
 
-    std::vector<Edge> selectedEdges;
+    std::vector<Edge>* selectedEdges = new std::vector<Edge>;
     std::vector<Edge> possibleEdges;
 
-    for(int i = 0; i < N; ++i)
+    for(int i = 0; i < aNodes; ++i)
     {
-        for(int j = i + 1; j < N; ++j)
+        for(int j = i + 1; j < aNodes; ++j)
         {
             Edge e;
             e.n1 = i;
@@ -96,13 +90,13 @@ std::vector<Edge> GenerateVectors(int N, int edges)
     }
 
     std::shuffle(possibleEdges.begin(), possibleEdges.end(), rng);
-    
-    int* found = new int[N];
-    for(int i = 0; i < N; ++i)
+
+    int* found = new int[aNodes];
+    for(int i = 0; i < aNodes; ++i)
     {
         found[i] = 0;
     }
-    for(int i = 0; i < N; ++i)
+    for(int i = 0; i < aNodes; ++i)
     {
         if(found[i] == 1)
         {
@@ -116,7 +110,7 @@ std::vector<Edge> GenerateVectors(int N, int edges)
                 Edge e = possibleEdges.at(j);
                 found[e.n1] = 1;
                 found[e.n2] = 1;
-                selectedEdges.push_back(e);
+                selectedEdges->push_back(e);
                 possibleEdges.erase(possibleEdges.begin() + j);
                 j--;
                 break;
@@ -125,9 +119,9 @@ std::vector<Edge> GenerateVectors(int N, int edges)
     }
 
     int i = 0;
-    while(selectedEdges.size() != edges)
+    while(selectedEdges->size() != aEdges)
     {
-        selectedEdges.push_back(possibleEdges.at(i));
+        selectedEdges->push_back(possibleEdges.at(i));
         i++;
     }
 
@@ -136,45 +130,34 @@ std::vector<Edge> GenerateVectors(int N, int edges)
     return selectedEdges;
 }
 
-std::vector<Edge> GenerateGraph(int N, int edges)
+std::vector<Edge>* MSTGenerator::GenerateGraph(int aNodes, int aEdges)
 {
-    if(edges < N - 1)
-    {
-        std::cout << "Too few edges specified!" << std::endl;
-        exit(-1);
-    }
+    std::vector<Edge>* vectors = GenerateVectors(aNodes, aEdges);
 
-    if(edges > N*(N - 1)/2)
+    while(!CheckConnected(vectors, aNodes))
     {
-        std::cout << "Too many edges specified!" << std::endl;
-        exit(-1);
-    }
-
-    std::vector<Edge> vectors = GenerateVectors(N, edges);
-
-    while(!CheckConnected(&vectors, N))
-    {
-        vectors = GenerateVectors(N, edges);
+        delete vectors;
+        vectors = GenerateVectors(aNodes, aEdges);
     }
 
     return vectors;
 }
 
-void GenerateWeights(std::vector<Edge>* edges, int from, int to)
+void MSTGenerator::GenerateWeights(std::vector<Edge>* aEdges, int aFrom, int aTo)
 {
-    std::uniform_int_distribution<std::mt19937::result_type> randomWeight(from, to);
+    std::uniform_int_distribution<std::mt19937::result_type> randomWeight(aFrom, aTo);
     std::random_device dev;
     std::mt19937 rng(dev());
 
-    for(unsigned int i = 0; i < edges->size(); ++i)
+    for(unsigned int i = 0; i < aEdges->size(); ++i)
     {
-        edges->at(i).weight = randomWeight(rng);
+        aEdges->at(i).weight = randomWeight(rng);
     }
 }
 
-int CalculateLowestMSTWeight(std::vector<Edge>* edges, int nodesNum)
+int MSTGenerator::CalculateLowestMSTWeight(std::vector<Edge>* aEdges, int aNodesNum)
 {
-    std::sort(edges->begin(), edges->end(), [](Edge e1, Edge e2)
+    std::sort(aEdges->begin(), aEdges->end(), [](Edge e1, Edge e2)
     {
         return e1.weight < e2.weight;
     });
@@ -183,13 +166,13 @@ int CalculateLowestMSTWeight(std::vector<Edge>* edges, int nodesNum)
 
     int sum = 0;
 
-    added.push_back(edges->at(0).n1);
-    added.push_back(edges->at(0).n2);
-    sum += edges->at(0).weight;
+    added.push_back(aEdges->at(0).n1);
+    added.push_back(aEdges->at(0).n2);
+    sum += aEdges->at(0).weight;
 
-    while(added.size() != nodesNum)
+    while(added.size() != aNodesNum)
     {
-        for(auto& e : *edges)
+        for(auto& e : *aEdges)
         {
             bool n1 = !(std::find(added.begin(), added.end(), e.n1) == added.end());
             bool n2 = !(std::find(added.begin(), added.end(), e.n2) == added.end());
@@ -213,42 +196,47 @@ int CalculateLowestMSTWeight(std::vector<Edge>* edges, int nodesNum)
                 break;
             }
         }
-    }   
+    }
 
     return sum;
 }
 
-int main()
+void MSTGenerator::CreateMST(int aNodes, int aEdges)
 {
-    int nodesNum = 7;
-    int edgesNum = 21;
-    std::vector<Edge> edges = GenerateGraph(nodesNum, edgesNum);
-
-    GenerateWeights(&edges, 0, 100);
-
-    for(auto& e : edges)
+    std::string filename = std::to_string(aNodes) + "_" + std::to_string(aEdges) + ".mst";
+    std::ifstream file(filename);
+    if(file.good())
     {
-        std::cout << e.n1 << "\t" << e.n2 << "\t" << e.weight << std::endl;
+        return;
     }
 
-    int sum = CalculateLowestMSTWeight(&edges, nodesNum);
+   std::vector<Edge>* edges = GenerateGraph(aNodes, aEdges);
 
-    std::cout << "Minimum sum: " << sum << std::endl;
+    GenerateWeights(edges, 0, 100);
+
+    SaveMST(edges, aNodes, aEdges);
+
+    delete edges;
+}
+
+void MSTGenerator::SaveMST(std::vector<Edge>* aEdges, int aNodes, int aEdgesNum)
+{
+    int sum = CalculateLowestMSTWeight(aEdges, aNodes);
 
     std::ofstream file;
     std::string mst = ".mst";
-    std::string filename = std::to_string(nodesNum) + "_" + std::to_string(edgesNum) + mst;
+    std::string filename = std::to_string(aNodes) + "_" + std::to_string(aEdgesNum) + mst;
     file.open(filename);
-    file << nodesNum << std::endl;
-    file << edgesNum << std::endl;
+    file << aNodes << std::endl;
+    file << aEdgesNum << std::endl;
     file << sum << std::endl;
 
     std::random_device dev;
     std::mt19937 rng(dev());
 
-    std::shuffle(edges.begin(), edges.end(), rng);
+    std::shuffle(aEdges->begin(), aEdges->end(), rng);
 
-    for(auto& e : edges)
+    for(auto& e : *aEdges)
     {
         file << e.n1 << "\t" << e.n2 << "\t" << e.weight << std::endl;
     }

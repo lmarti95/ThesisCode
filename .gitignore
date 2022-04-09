@@ -364,3 +364,5 @@ out/
 *.vis
 
 output.txt
+
+*.result

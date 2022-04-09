@@ -121,8 +121,8 @@ std::pair<long long, double> HybridGA::RunEA()
 		#endif
 
 		mIterations++;
-		mCostFunction->CalculateSum(offspring);
-		mFitnessValue = mCostFunction->GetFitnessValue(0);
+
+		mFitnessValue = mCostFunction->GetFitnessValue(offspring);
 		
 		delete[] offspring;
 		for(auto& p : parents)

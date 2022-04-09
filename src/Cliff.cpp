@@ -6,8 +6,7 @@ Cliff::Cliff(int aN) : CostFunction(aN)
 
 Cliff::Cliff(const Cliff& aOld) : CostFunction(aOld)
 {
-	double temp = aOld.mSum;
-	mSum = temp;
+	mSum = 0;
 }
 
 double Cliff::GetMaximumFitnessValue()

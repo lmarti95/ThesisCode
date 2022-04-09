@@ -3,10 +3,11 @@
 #if GRAPHICS
 
 #include <chrono>
+#include <mutex>
 
 #include "CoordinateSystem.h"
 #include "EvolutionaryAlgorithm.h"
-#include "MST_Visualization.h"
+#include "MSTVisualization.h"
 
 enum class OpenGLMode{ CoordinateSystem, MST };
 
@@ -46,6 +47,8 @@ public:
 
 	float TranslateCoordinateX(double aX);
 	float TranslateCoordinateY(double aY);
+
+	void SetWeightVisibility(bool aVisibility) { mWeightVisibility = aVisibility; }
 	
 private:
 	static const int mWidth = 800;
@@ -66,7 +69,7 @@ private:
 	int mColorSize;
 
 	CoordinateSystem* mCoordinateSystem;
-	MST_Visualization* mMST;
+	MSTVisualization* mMST;
 
 	GLTtext* mYText;
 	GLTtext* mXText;
@@ -87,6 +90,8 @@ private:
 	std::chrono::steady_clock::time_point mEnd;
 
 	std::vector<Text> mWeightText;
+
+	bool mWeightVisibility = true;
 };
 
 #endif

@@ -116,8 +116,6 @@ void OpenGL::SetWindow()
     }
 
     glViewport(0, 0, screenWidth, screenHeight);
-
-    std::cout << "Opengl version: " << glGetString(GL_VERSION) << std::endl;
 }
 
 void OpenGL::SetShaders()
@@ -253,7 +251,7 @@ void OpenGL::Setup(EvolutionaryAlgorithm* aEA)
     
     if(mMode == OpenGLMode::MST)
     {
-        mMST = new MST_Visualization((dynamic_cast<MST*>(mEA->GetCostFunction())), mEA);
+        mMST = new MSTVisualization((dynamic_cast<MST*>(mEA->GetCostFunction())), mEA);
     }
 
     SetWindow();
@@ -271,7 +269,6 @@ void OpenGL::Draw()
     while(!glfwWindowShouldClose(mWindow) && glfwGetKey(mWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS)
     {
         mStart = std::chrono::steady_clock::now();
-
         glfwPollEvents();
 
         DrawVertices();
@@ -335,7 +332,7 @@ void OpenGL::DrawText()
 
     if(mMode == OpenGLMode::MST)
     {
-        if(mMST->GetWeightVisibility())
+        if(mWeightVisibility)
         {
             auto bitString = mEA->GetBitString();
             for(int i = 0; i < mWeightText.size();++i)
@@ -427,6 +424,9 @@ void OpenGL::Update()
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mMST->GetNumberOfTriangles()*9, sizeof(GLfloat) * mMST->GetNumberOfLines() * 6, color));
 
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+
+        delete color;
+        delete vertices;
     }
 }
 

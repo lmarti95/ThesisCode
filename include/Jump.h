@@ -28,7 +28,7 @@ public:
 
 	void CalculateSum(int* aBitString) override;
 	
-	std::string GetCostFunctionName() override { return "Jump(" +std::to_string(mGapSize) + ")" ; }
+	std::string GetCostFunctionName() override { return "Jump(" +std::to_string(mGapSize) + ") " + JumpTypeToString(); }
 
 	void SetJumpType(JumpType aType);
 	JumpType GetJumpType();
@@ -39,6 +39,8 @@ public:
 
 	void SetSum(double aSum) { mSum = aSum; }
 	double GetSum() override { return mSum; }
+
+	std::string JumpTypeToString();
 private:
 	int mGapSize;
 

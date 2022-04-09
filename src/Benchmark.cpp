@@ -1,6 +1,7 @@
 #include "Benchmark.h"
 
 #include "Jump.h"
+#include "Menu.h"
 
 #include <chrono>
 #include <fstream>
@@ -35,6 +36,26 @@ void Benchmark::FinishThreads()
 
 void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 {
+	bool gotThread = false;
+	while(!gotThread)
+	{
+		mActiveThreadsMutex.lock();
+		if(mActiveThreads < mMaximumThreads)
+		{
+			mActiveThreads++;
+			gotThread = true;;
+			mActiveThreadsMutex.unlock();
+		}
+		else
+		{
+			mActiveThreadsMutex.unlock();
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+		}
+	}
+	Menu::mPrintMutex.lock();
+	std::cout << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << " is now running on N: " << aEA->GetN() << std::endl;
+	Menu::mPrintMutex.unlock();
+
 	long long iterations = 0;
 	double time = 0;
 
@@ -48,7 +69,7 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 		time += result.second;
 	}
 
-	std::string filename = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".txt";
+	std::string filename = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".result";
 
 	SaveEachIteration(iterationsVector, filename);
 
@@ -58,9 +79,9 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 	std::stringstream streamIterations;
 	streamIterations << std::fixed << std::setprecision(0) << averageIteration;
 	std::string iterationsString = streamIterations.str();
-
+	Menu::mPrintMutex.lock();
 	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
-
+	Menu::mPrintMutex.unlock();
 	/*Result* res;
 	
 	if(dynamic_cast<Jump*>(aEA->GetCostFunction()) == nullptr)
@@ -85,24 +106,11 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 
 void Benchmark::ScheduleEA(EvolutionaryAlgorithm* aEA)
 {
-	mPlanToRun++;
-	bool gotThread = false;
-	while(!gotThread)
+	if(mActiveThreads >= mMaximumThreads)
 	{
-		mActiveThreadsMutex.lock();
-		if(mActiveThreads < mMaximumThreads)
-		{
-			mActiveThreads++;
-			gotThread = true;;
-			mActiveThreadsMutex.unlock();
-		}
-		else
-		{
-			mActiveThreadsMutex.unlock();
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-		}
-		
+		std::cout << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << "is scheduled to run on N: " << aEA->GetN() << ", but all threads are active now." << std::endl;
 	}
+	mPlanToRun++;
 	std::thread* t = new std::thread(&Benchmark::RunEA, this, aEA);
 	mThreads.push_back(t);
 }
