@@ -16,10 +16,15 @@ CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
     if(dynamic_cast<Jump*>(mEA->GetCostFunction()) != nullptr)
     {
         mGapSize = dynamic_cast<Jump*>(mEA->GetCostFunction())->GetGapSize();
+        mType == Type::Jump;
+    }
+    else
+    {
+        mType = Type::Cliff;
     }
 
     mScaleX = mEA->GetN();
-    mScaleY = (mEA->GetN()+ mGapSize)*1.2;
+    mScaleY = (mEA->GetN() + mGapSize)*1.2;
 
     bool finished = false;
     int i = 1;
@@ -41,14 +46,14 @@ CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
     CalculateLines();
 }
 
-GLfloat CoordinateSystem::GetLocationXOnCoordinate(int aX)
+GLfloat CoordinateSystem::GetLocationXOnCoordinate(double aX)
 {
     GLfloat step = (0.88f + 0.86f) / mScaleX;
 
     return mXCoordinateXStart + step * aX + 0.02;
 }
 
-GLfloat CoordinateSystem::GetLocationYOnCoordinate(int aY)
+GLfloat CoordinateSystem::GetLocationYOnCoordinate(double aY)
 {
     GLfloat step = (0.88f + 0.86f) / mScaleY;
 
@@ -153,7 +158,7 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
     GLfloat black[3] = {0.0f, 0.0f, 0.0f};
 
     int XLocation = mEA->GetN();
-    if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::OffsetSpike)
+    if(mType == Type::Jump && dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::OffsetSpike)
     {
         XLocation = mEA->GetN() * 3 / 4 + mGapSize / 2;
     }
@@ -166,7 +171,7 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
 
 std::vector<Shape*>* CoordinateSystem::CreateLines()
 {
-    if(dynamic_cast<Jump*>(mEA->GetCostFunction()) != nullptr)
+    if(mType == Type::Jump)
     {
         if(dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::Original)
         {
@@ -182,6 +187,10 @@ std::vector<Shape*>* CoordinateSystem::CreateLines()
         {
             return CreateLinesJumpOffset();
         }
+    }
+    else
+    {
+        return CreateLinesCliff();
     }
 
     return nullptr;
@@ -217,6 +226,19 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOffset()
 
     Line* line3 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 3 / 4 + mGapSize), GetLocationYOnCoordinate(mEA->GetN() * 3 / 4+mGapSize+mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN()+mGapSize), black);
     lines->push_back((Shape*)line3);
+
+    return lines;
+}
+
+std::vector<Shape*>* CoordinateSystem::CreateLinesCliff()
+{
+    std::vector<Shape*>* lines = new std::vector<Shape*>;
+    GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(0), GetLocationXOnCoordinate(mEA->GetN()*2/3), GetLocationYOnCoordinate(mEA->GetN()*2/3), black);
+    lines->push_back((Shape*)line1);
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 2 / 3), GetLocationYOnCoordinate(mEA->GetN() - mEA->GetN()*2/3 + 1/2), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetCostFunction()->GetMaximumFitnessValue()), black);
+    lines->push_back((Shape*)line2);
 
     return lines;
 }

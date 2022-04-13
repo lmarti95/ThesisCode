@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+std::mutex MST::mGetEdgeMutex;
+
 MST::MST(int aN, std::string aFilename) : CostFunction(aN)
 {
 	ReadIn(aFilename);

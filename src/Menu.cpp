@@ -192,8 +192,7 @@ bool Menu::SetupAlgorithm(int aSelected)
 		else
 		{
 			std::lock_guard<std::mutex> lg{mPrintMutex};
-			std::cout << "Type in parent size" << std::endl
-				;
+			std::cout << "Type in parent size" << std::endl;
 		}
 		
 		IntegerInputValidation(&mAditionalSelection, 1);
@@ -273,9 +272,8 @@ bool Menu::SetSelectedCostFunction(int aSelected)
 
 	if(aSelected == 0)
 	{
-		//mCostFunction = new Cliff(mN);
-		std::cout << "Not yet implemented" << std::endl;
-		return false;
+		mCostFunction = new Cliff(mN);
+		return true;
 	}
 
 	if(aSelected == 1)

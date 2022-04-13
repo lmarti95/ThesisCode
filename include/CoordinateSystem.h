@@ -5,13 +5,15 @@
 #include "EvolutionaryAlgorithm.h"
 #include "Shape.h"
 
+enum class Type {Jump, Cliff};
+
 class CoordinateSystem 
 {
 public:
     CoordinateSystem(EvolutionaryAlgorithm* aEA);
 
-    GLfloat GetLocationXOnCoordinate(int aX);
-    GLfloat GetLocationYOnCoordinate(int aY);
+    GLfloat GetLocationXOnCoordinate(double aX);
+    GLfloat GetLocationYOnCoordinate(double aY);
 
     std::vector<Shape*>* CreateX();
     std::vector<Shape*>* CreateY();
@@ -21,6 +23,8 @@ public:
 
     std::vector<Shape*>* CreateLinesJumpOriginal();
     std::vector<Shape*>* CreateLinesJumpOffset();
+
+    std::vector<Shape*>* CreateLinesCliff();
 
     GLfloat* CreateVertices();
     GLfloat* CreateLinesColor();
@@ -63,6 +67,8 @@ private:
 
     int mXCoordinateOffset = 1;
     int mYCoordinateOffset = 1;
+
+    Type mType;
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 #include "CostFunction.h"
 
+#include <mutex>
 #include <vector>
 
 struct Edge{
@@ -32,7 +33,9 @@ public:
 	int GetNodesNum() { return mNodesNum; }
 	int GetEdgesNum() { return mEdgesNum; }
 	int GetMinimumSum() { return mMinimumSum; }
-	std::vector<Edge>* GetEdges() { return &mEdges; }
+	std::vector<Edge>* GetEdges() { std::lock_guard<std::mutex> lg{mGetEdgeMutex}; return &mEdges; }
+
+	static std::mutex mGetEdgeMutex;
 
 private:
 	int mNodesNum;
