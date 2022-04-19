@@ -5,7 +5,7 @@
 class CostFunction
 {
 public:
-	CostFunction(int aN) { mN = aN; }
+	CostFunction(double aN) { mN = aN; }
 
 	CostFunction(const CostFunction& aOld);
 
@@ -18,9 +18,11 @@ public:
 	virtual double GetSum() = 0;
 	virtual void CalculateSum(int* aBitString) = 0;
 
-	void SetN(int aN) { mN = aN; }
-	int GetN() { return mN; }
+	virtual double FitnessValueToSum(double aFitness) = 0;
+
+	void SetN(double aN) { double mN = aN; }
+	double GetN() { return mN; }
 protected:
-	int mN;
+	double mN;
 };
 

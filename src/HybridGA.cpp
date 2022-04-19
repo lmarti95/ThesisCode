@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <chrono>
 
+#include <iostream>
+
 HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, aCostFunction)
 {
 	SetUpPermutation();
@@ -94,6 +96,13 @@ std::pair<long long, double> HybridGA::RunEA()
 					{
 						newFitnessValue = mCostFunction->GetFitnessValue(bitString);
 					}
+
+					#if GRAPHICS
+					{
+						std::lock_guard<std::mutex> lg{mBitStringMutex};
+						std::copy(bitString, bitString + mN, mBitString);
+					}
+					#endif
 
 					if(newFitnessValue > mFitnessValue)
 					{

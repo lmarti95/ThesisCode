@@ -201,6 +201,44 @@ void Jump::CheckGapSize()
 	}
 }
 
+double Jump::FitnessValueToSum(double aFitness)
+{
+	switch(mType)
+	{
+	case JumpType::Original:
+		if(aFitness > mGapSize)
+		{
+			return  aFitness- mGapSize;
+		}
+
+		return mN - aFitness;
+		break;
+	case JumpType::Offset:
+		if(aFitness > mGapSize)
+		{
+			return  aFitness - mGapSize;
+		}
+
+		return mN-(mN/4-mGapSize) - aFitness;
+		break;
+	case JumpType::OffsetSpike:
+		if(aFitness > mGapSize && aFitness != GetMaximumFitnessValue())
+		{
+			return  aFitness - mGapSize;
+		}
+
+		if(aFitness == GetMaximumFitnessValue())
+		{
+			return 3 * mN / 4 + mGapSize / 2;
+		}
+
+		return mN - (mN / 4 - mGapSize) - aFitness;
+		break;
+	default:
+		break;
+	}
+}
+
 std::string Jump::JumpTypeToString()
 {
 	switch(mType)

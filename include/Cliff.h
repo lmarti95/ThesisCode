@@ -22,6 +22,8 @@ public:
 	void SetSum(double aSum) { mSum = aSum; }
 	double GetSum() override { return mSum; }
 
+	double FitnessValueToSum(double aFitness) override;
+
 private:
 #if GRAPHICS
 	std::atomic_long mSum = {0};

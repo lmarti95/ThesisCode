@@ -40,6 +40,8 @@ public:
 	void SetSum(double aSum) { mSum = aSum; }
 	double GetSum() override { return mSum; }
 
+	double FitnessValueToSum(double aFitness) override;
+
 	std::string JumpTypeToString();
 private:
 	int mGapSize;

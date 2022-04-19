@@ -205,7 +205,7 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOriginal()
     Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN() - mGapSize), GetLocationYOnCoordinate(mEA->GetN()), black);
     lines->push_back((Shape*)line1);
 
-    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() - mGapSize), GetLocationYOnCoordinate(mGapSize - 1), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(0), black);
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() - mGapSize), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(0), black);
     lines->push_back((Shape*)line2);
 
     return lines;
@@ -221,7 +221,7 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOffset()
     Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mEA->GetN()*3/4+ mGapSize), black);
     lines->push_back((Shape*)line1);
 
-    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mGapSize - 1), GetLocationXOnCoordinate(mEA->GetN()*3/4+mGapSize), GetLocationYOnCoordinate(0), black);
+    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()*3/4+mGapSize), GetLocationYOnCoordinate(0), black);
     lines->push_back((Shape*)line2);
 
     Line* line3 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 3 / 4 + mGapSize), GetLocationYOnCoordinate(mEA->GetN() * 3 / 4+mGapSize+mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN()+mGapSize), black);
@@ -478,7 +478,10 @@ void CoordinateSystem::CalculateLines()
 GLfloat* CoordinateSystem::ModifyCircle()
 {
     double fitnessValue = mEA->GetFitnessValue();
-    int sum = mEA->GetCostFunction()->GetSum();
+
+    auto bitstring = mEA->GetBitString();
+
+    int sum = mEA->GetCostFunction()->FitnessValueToSum(fitnessValue);
 
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
     Circle* c = new Circle(GetLocationXOnCoordinate(sum), GetLocationYOnCoordinate(fitnessValue), 0.03f, red);

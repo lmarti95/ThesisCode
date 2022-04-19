@@ -35,6 +35,8 @@ public:
 	int GetMinimumSum() { return mMinimumSum; }
 	std::vector<Edge>* GetEdges() { std::lock_guard<std::mutex> lg{mGetEdgeMutex}; return &mEdges; }
 
+	double FitnessValueToSum(double aFitness) override { return -1; }
+
 	static std::mutex mGetEdgeMutex;
 
 private:
