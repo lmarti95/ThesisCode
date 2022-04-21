@@ -108,7 +108,7 @@ void Benchmark::ScheduleEA(EvolutionaryAlgorithm* aEA)
 {
 	if(mActiveThreads >= mMaximumThreads)
 	{
-		std::cout << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << "is scheduled to run on N: " << aEA->GetN() << ", but all threads are active now." << std::endl;
+		std::cout << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << " is scheduled to run on N: " << aEA->GetN() << ", but all threads are active now." << std::endl;
 	}
 	mPlanToRun++;
 	std::thread* t = new std::thread(&Benchmark::RunEA, this, aEA);
