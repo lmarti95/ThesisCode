@@ -378,7 +378,7 @@ bool Menu::SetSelectedCostFunction(int aSelected)
 void Menu::IntegerInputValidation(int* aInput, int aFrom, int aTo, bool aExit)
 {
 	std::cin >> *aInput;
-	while(!std::cin || !(*aInput >= aFrom && *aInput <= aTo || (aExit && *aInput == 9)))
+	while(!std::cin || !((*aInput >= aFrom && *aInput <= aTo) || (aExit && *aInput == 9)))
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -393,6 +393,7 @@ void Menu::IntegerInputValidation(int* aInput, int aFrom, int aTo, bool aExit)
 
 void Menu::OpenWindow(EvolutionaryAlgorithm* aEA)
 {
+	#if GRAPHICS
 	mOpenGLRunning = true;
 	OpenGL og;
 	og.Setup(aEA);
@@ -400,6 +401,7 @@ void Menu::OpenWindow(EvolutionaryAlgorithm* aEA)
 	og.Draw();
 	og.ShutDown();
 	mOpenGLRunning = false;
+	#endif
 }
 
 bool Menu::MSTCheck(int aNodes, int aEdges)

@@ -235,6 +235,7 @@ double Jump::FitnessValueToSum(double aFitness)
 		return mN - (mN / 4 - mGapSize) - aFitness;
 		break;
 	default:
+		return -1;
 		break;
 	}
 }
@@ -253,6 +254,7 @@ std::string Jump::JumpTypeToString()
 		return "Offset Spike";
 		break;
 	default:
+		return "Non existent Jump Type";
 		break;
 	}
 }

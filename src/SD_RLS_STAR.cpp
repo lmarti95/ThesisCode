@@ -42,7 +42,7 @@ std::pair<long long, double> SD_RLS_STAR::RunEA()
 
 		if(!justUpdated)
 		{
-			#ifdef GRAPHICS
+			#if GRAPHICS
 				std::lock_guard<std::mutex> lg{mBitStringMutex};
 			#endif
 
@@ -78,7 +78,7 @@ std::pair<long long, double> SD_RLS_STAR::RunEA()
 			mCostFunction->ApplyChange(change);
 			mFitnessValue = newFitnessValue;
 
-			#ifdef GRAPHICS
+			#if GRAPHICS
 				std::lock_guard<std::mutex> lg{mBitStringMutex};
 			#endif
 			
@@ -93,7 +93,7 @@ std::pair<long long, double> SD_RLS_STAR::RunEA()
 			if(newFitnessValue == mFitnessValue && r == 1)
 			{
 
-			#ifdef GRAPHICS
+			#if GRAPHICS
 					std::lock_guard<std::mutex> lg{mBitStringMutex};
 			#endif
 

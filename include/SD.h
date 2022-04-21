@@ -12,7 +12,9 @@ public:
 
 	void SetEpsilon(int aEpsilon);
 	void RandomizeBitString();
+#if GRAPHICS
 	std::vector<int>* GetBitString();
+#endif
 protected:
 	int* mBitString;
 	int mR;

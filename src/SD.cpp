@@ -25,6 +25,7 @@ void SD::RandomizeBitString()
 	}
 }
 
+#if GRAPHICS
 std::vector<int>* SD::GetBitString()
 {
 	std::lock_guard<std::mutex> lg{mBitStringMutex};
@@ -37,3 +38,4 @@ std::vector<int>* SD::GetBitString()
 
 	return bitString;
 }
+#endif

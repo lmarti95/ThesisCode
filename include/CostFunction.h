@@ -20,7 +20,7 @@ public:
 
 	virtual double FitnessValueToSum(double aFitness) = 0;
 
-	void SetN(double aN) { double mN = aN; }
+	void SetN(double aN) { mN = aN; }
 	double GetN() { return mN; }
 protected:
 	double mN;
