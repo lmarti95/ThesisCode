@@ -19,12 +19,20 @@
 	#include "OpenGL.h"
 #endif
 
+#include <fstream>
 #include <iostream>
+
+bool CheckIfExists(EvolutionaryAlgorithm* aEA)
+{
+	std::string str = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".result";
+
+	std::ifstream f(str.c_str());
+	return f.good();
+}
 
 int main()
 {
-	Menu m;
-
+	//Menu m;
 
 	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
@@ -33,8 +41,14 @@ int main()
 	testNs.push_back(15);
 	testNs.push_back(20);
 	testNs.push_back(25);
+	testNs.push_back(50);
+	testNs.push_back(100);
+	testNs.push_back(200);
+	testNs.push_back(300);
+	testNs.push_back(500);
+	testNs.push_back(1000);
 
-	/*Benchmark b;
+	Benchmark b;
 
 	b.SetRepeat(100);
 
@@ -49,7 +63,7 @@ int main()
 
 			Jump j(N, gapSize, JumpType::Original);
 
-			cGA* sd = new cGA(N, &j, 4);
+			cGA* sd1 = new cGA(N, &j, 4);
 
 			HybridGA* sd2 = new HybridGA(N, &j);
 
@@ -67,7 +81,7 @@ int main()
 
 			SD_OnePlusOne* sd9 = new SD_OnePlusOne(N, &j);
 
-			toDeleteEvolutionaryAlgorithms.push_back(sd);
+			toDeleteEvolutionaryAlgorithms.push_back(sd1);
 			toDeleteEvolutionaryAlgorithms.push_back(sd2);
 			toDeleteEvolutionaryAlgorithms.push_back(sd3);
 			toDeleteEvolutionaryAlgorithms.push_back(sd4);
@@ -77,16 +91,44 @@ int main()
 			toDeleteEvolutionaryAlgorithms.push_back(sd8);
 			toDeleteEvolutionaryAlgorithms.push_back(sd9);
 
-			b.ScheduleEA(sd);
-			b.ScheduleEA(sd2);
-			b.ScheduleEA(sd3);
-			b.ScheduleEA(sd4);
-			b.ScheduleEA(sd5);
-			b.ScheduleEA(sd6);
-			b.ScheduleEA(sd7);
-			b.ScheduleEA(sd8);
-			b.ScheduleEA(sd9);
+			if(!CheckIfExists(sd1))
+			{
+				b.ScheduleEA(sd1);
+			}
 
+			if(!CheckIfExists(sd2))
+			{
+				b.ScheduleEA(sd2);
+			}
+
+			if(!CheckIfExists(sd3))
+			{
+				b.ScheduleEA(sd3);
+			}
+			if(!CheckIfExists(sd4))
+			{
+				b.ScheduleEA(sd4);
+			}
+			if(!CheckIfExists(sd5))
+			{
+				b.ScheduleEA(sd5);
+			}
+			if(!CheckIfExists(sd6))
+			{
+				b.ScheduleEA(sd6);
+			}
+			if(!CheckIfExists(sd7))
+			{
+				b.ScheduleEA(sd7);
+			}
+			if(!CheckIfExists(sd8))
+			{
+				b.ScheduleEA(sd8);
+			}
+			if(!CheckIfExists(sd9))
+			{
+				b.ScheduleEA(sd9);
+			}
 		}
 	}
 
@@ -95,7 +137,7 @@ int main()
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{
 		delete ea;
-	}*/
+	}
 
 #if GRAPHICS
 
