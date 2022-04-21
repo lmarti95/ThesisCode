@@ -116,6 +116,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 		{
 			mR = std::min(mR + 1, mN / 2);
 			u = 0;
+			mStagnationDetection = StagnationDetection::On;
 		}
 		else
 		{

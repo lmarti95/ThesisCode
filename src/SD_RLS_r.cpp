@@ -103,6 +103,7 @@ std::pair<long long, double> SD_RLS_r::RunEA()
 
 		if(u > NoverK(mN, s) * std::log(mR))
 		{
+			mStagnationDetection = StagnationDetection::On;
 			if(s == 1)
 			{
 				if(r < mN / 2)

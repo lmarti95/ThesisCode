@@ -187,6 +187,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				mR = 2;
 				u = 0;
 				stagnationDetection = true;
+				mStagnationDetection = StagnationDetection::On;
 			}
 		}
 

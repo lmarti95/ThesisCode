@@ -78,6 +78,7 @@ private:
 	GLTtext* mBitStringText;
 	GLTtext* mIterationsText;
 	GLTtext* mFitnessValueText;
+	GLTtext* mStagnationDetectionText;
 
 	double mInfoXValue;
 

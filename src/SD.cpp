@@ -4,6 +4,7 @@ SD::SD(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFun
 {
 	mBitString = new int[mN];
 	mR = std::pow(mN, 3 + mEpsilon);
+	mStagnationDetection = StagnationDetection::Off;
 }
 
 SD::~SD()

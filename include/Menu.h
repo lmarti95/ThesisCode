@@ -20,6 +20,7 @@ public:
 	void PrintJumpTypes();
 	void PrintOpenWindow();
 	void PrintShowWeights();
+	void PrintForceShutdown();
 
 	bool SetupAlgorithm(int aSelected);
 	void SetSelectedAlgorithm(int aSelected);

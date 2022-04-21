@@ -6,6 +6,8 @@
 #include <thread>
 #include <random>
 
+enum class StagnationDetection{NotApplicable, Off, On};
+
 class EvolutionaryAlgorithm
 {
 public:
@@ -27,12 +29,14 @@ public:
 	void SetDelay(int aDelay) { mDelay = aDelay; }
 #endif
 
-	int GetN() { return mN; }
+	double GetN() { return mN; }
 
 	double GetFitnessValue() { return mFitnessValue; }
 	long GetIterations() { return mIterations; }
 
 	virtual std::vector<int>* GetBitString() = 0;
+
+	StagnationDetection GetStagnationDetection() { return mStagnationDetection; }
 
 protected:
 
@@ -67,6 +71,8 @@ protected:
 	CostFunction* mCostFunction;
 
 	bool mFitnessChangePossible = false;
+
+	StagnationDetection mStagnationDetection = StagnationDetection::NotApplicable;
 };
 
 inline int EvolutionaryAlgorithm::FlipBitBasedOnPosition(int* aBitString, int aPosition)

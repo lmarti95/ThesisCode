@@ -479,9 +479,7 @@ GLfloat* CoordinateSystem::ModifyCircle()
 {
     double fitnessValue = mEA->GetFitnessValue();
 
-    auto bitstring = mEA->GetBitString();
-
-    int sum = mEA->GetCostFunction()->FitnessValueToSum(fitnessValue);
+    double sum = mEA->GetCostFunction()->FitnessValueToSum(fitnessValue);
 
     GLfloat red[3] = {1.0f, 0.0f, 0.0f};
     Circle* c = new Circle(GetLocationXOnCoordinate(sum), GetLocationYOnCoordinate(fitnessValue), 0.03f, red);

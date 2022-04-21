@@ -219,7 +219,7 @@ double Jump::FitnessValueToSum(double aFitness)
 			return  aFitness - mGapSize;
 		}
 
-		return mN-(mN/4-mGapSize) - aFitness;
+		return mN*3/4+mGapSize - aFitness;
 		break;
 	case JumpType::OffsetSpike:
 		if(aFitness > mGapSize && aFitness != GetMaximumFitnessValue())

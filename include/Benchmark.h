@@ -14,7 +14,7 @@ public:
 	int GetRepeat() { return mRepeat; }
 	void SetRepeat(int aRepeat) { mRepeat = aRepeat; }
 
-	int GetActiveThreads() { return mActiveThreads; }
+	int GetActiveThreads() { std::lock_guard<std::mutex> lg{mActiveThreadsMutex}; return mActiveThreads; }
 
 	int GetMaximumThreads() { return mMaximumThreads; }
 	void SetMaximumThreads(int aMaximumThreads) { mMaximumThreads = aMaximumThreads; }

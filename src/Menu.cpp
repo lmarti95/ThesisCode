@@ -62,6 +62,19 @@ void Menu::ContinousRun()
 
 		if(selected == 9)
 		{
+			if(mBenchmark.GetActiveThreads() > 0)
+			{
+				PrintForceShutdown();
+				IntegerInputValidation(&selected, 0, 1);
+				if(selected == 0)
+				{
+					continue;
+				}
+				else
+				{
+					exit(0);
+				}
+			}
 			return;
 		}
 
@@ -77,7 +90,7 @@ void Menu::ContinousRun()
 				{
 					mPrintMutex.lock();
 					std::cout << std::endl;
-					std::cout << "Specify Iteration Delay" << std::endl;
+					std::cout << "Specify Iteration Delay in ms" << std::endl;
 					mPrintMutex.unlock();
 
 					int delay;
@@ -179,6 +192,15 @@ void Menu::PrintShowWeights()
 	std::cout << "1 - Yes" << std::endl;
 }
 
+void Menu::PrintForceShutdown()
+{
+	std::lock_guard<std::mutex> lg{mPrintMutex};
+	std::cout << std::endl;
+	std::cout << "There are algorithms running, would you like to wait for them to finish or shutdown the program?" << std::endl;
+	std::cout << "0 - Wait" << std::endl;
+	std::cout << "1 - Shutdown" << std::endl;
+}
+
 bool Menu::SetupAlgorithm(int aSelected)
 {
 	if(aSelected == 0 || aSelected == 2 || aSelected == 3)
@@ -200,7 +222,7 @@ bool Menu::SetupAlgorithm(int aSelected)
 	
 	mPrintMutex.lock();
 	std::cout << std::endl;
-	std::cout << "Type in bit string length" << std::endl;
+	std::cout << "Type in bit string length or in case of MST the number of edges" << std::endl;
 	mPrintMutex.unlock();
 	IntegerInputValidation(&mN, 1);
 
@@ -334,12 +356,7 @@ bool Menu::SetSelectedCostFunction(int aSelected)
 
 			IntegerInputValidation(&nodes, 2);
 
-			mPrintMutex.lock();
-			std::cout << std::endl;
-			std::cout << "Type in number of edges" << std::endl;
-			mPrintMutex.unlock();
-
-			IntegerInputValidation(&edges, 1);
+			edges = mN;
 
 			check = MSTCheck(nodes, edges);
 		}
@@ -390,14 +407,14 @@ bool Menu::MSTCheck(int aNodes, int aEdges)
 	if(aEdges < aNodes - 1)
 	{
 		std::lock_guard<std::mutex> lg{mPrintMutex};
-		std::cout << "Too few edges specified!" << std::endl;
+		std::cout << "Too many nodes specified!" << std::endl;
 		return false;
 	}
 
 	if(aEdges > aNodes * (aNodes - 1) / 2)
 	{
 		std::lock_guard<std::mutex> lg{mPrintMutex};
-		std::cout << "Too many edges specified!" << std::endl;
+		std::cout << "Too few nodes specified!" << std::endl;
 		return false;
 	}
 

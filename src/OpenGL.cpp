@@ -56,6 +56,7 @@ void OpenGL::SetInfoText()
 
     mBitStringText = gltCreateText();
     mIterationsText = gltCreateText();
+    mStagnationDetectionText = gltCreateText();
 
     if(mEA->GetN() <= 30)
     {
@@ -459,6 +460,29 @@ void OpenGL::UpdateInfoText()
     std::string fitness = "Fitness: " + std::to_string(roundedFitnessValue);
     gltSetText(mFitnessValueText, fitness.c_str());
     GLCall(gltDrawText2D(mFitnessValueText, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(0.80), 1));
+
+    if(mEA->GetStagnationDetection() != StagnationDetection::NotApplicable)
+    {
+        std::string str;
+        if(mEA->GetStagnationDetection() == StagnationDetection::On)
+        {
+            str = "SD has been used";
+        }
+        else
+        {
+            str = "SD hasn't been used";
+        }
+
+        gltSetText(mStagnationDetectionText, str.c_str());
+
+        double yCoordinate = 0.75;
+        if(mEA->GetN() <= 30)
+        {
+            yCoordinate = 0.7;
+        }
+
+        GLCall(gltDrawText2D(mStagnationDetectionText, TranslateCoordinateX(mInfoXValue), TranslateCoordinateY(yCoordinate), 1));
+    }
 }
 
 void OpenGL::ShutDown()
@@ -487,6 +511,7 @@ void OpenGL::ShutDown()
     gltDeleteText(mBitStringText);
     gltDeleteText(mIterationsText);
     gltDeleteText(mFitnessValueText);
+    gltDeleteText(mStagnationDetectionText);
 
 
     gltTerminate();
