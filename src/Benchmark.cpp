@@ -69,7 +69,7 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 		time += result.second;
 	}
 
-	std::string filename = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".result";
+	std::string filename = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string((int)aEA->GetN()) + ".result";
 
 	SaveEachIteration(iterationsVector, filename);
 

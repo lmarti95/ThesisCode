@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <climits>
 
 #include "Benchmark.h"
 #include "CostFunction.h"

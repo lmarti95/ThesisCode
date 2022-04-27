@@ -34,8 +34,9 @@ public:
 	double GetFitnessValue() { return mFitnessValue; }
 	long GetIterations() { return mIterations; }
 
+#if GRAPHICS
 	virtual std::vector<int>* GetBitString() = 0;
-
+#endif
 	StagnationDetection GetStagnationDetection() { return mStagnationDetection; }
 
 protected:

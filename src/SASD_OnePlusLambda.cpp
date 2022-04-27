@@ -98,7 +98,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 			if(best.second > mFitnessValue)
 			{
-				#ifdef GRAPHICS
+				#if GRAPHICS
 					std::lock_guard<std::mutex> lg{mBitStringMutex};
 				#endif
 
@@ -106,7 +106,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				mBitString = best.first;
 				mFitnessValue = best.second;
 
-				#ifdef GRAPHICS
+				#if GRAPHICS
 					mCostFunction->CalculateSum(mBitString);
 				#endif
 				
@@ -138,14 +138,14 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 				{
 					u = 0;
 				}
-				#ifdef GRAPHICS
+				#if GRAPHICS
 					std::lock_guard<std::mutex> lg{mBitStringMutex};
 				#endif
 
 				delete[] mBitString;
 				mBitString = best.first;
 
-				#ifdef GRAPHICS
+				#if GRAPHICS
 					mCostFunction->CalculateSum(mBitString);
 				#endif
 

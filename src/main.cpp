@@ -24,7 +24,7 @@
 
 bool CheckIfExists(EvolutionaryAlgorithm* aEA)
 {
-	std::string str = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string(aEA->GetN()) + ".result";
+	std::string str = aEA->GetEAName() + "_" + aEA->GetCostFunctionName() + "_" + std::to_string((int)aEA->GetN()) + ".result";
 
 	std::ifstream f(str.c_str());
 	return f.good();
