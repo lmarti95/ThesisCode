@@ -15,7 +15,7 @@ public:
 	std::vector<int>* GetBitString();
 protected:
 	int* mBitString;
-	int mR;
+	const double mR;
 	int mEpsilon = 1;
 
 #if GRAPHICS

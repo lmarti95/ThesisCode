@@ -15,11 +15,11 @@ SASD_OnePlusLambda::~SASD_OnePlusLambda()
 {
 }
 
-bool SASD_OnePlusLambda::CalculateFlipR()
+bool SASD_OnePlusLambda::CalculateFlipR(double aR)
 {
 	std::uniform_real_distribution<> p(0.0, 1.0);
 
-	if(p(mRng) > (double)(mNumeratorMultiplier*mR)/ (double)(mDenominatorMultiplier*mN))
+	if(p(mRng) <= (double)(mNumeratorMultiplier*aR)/ (double)(mDenominatorMultiplier*mN))
 	{
 		return true;
 	}
@@ -28,7 +28,7 @@ bool SASD_OnePlusLambda::CalculateFlipR()
 }
 
 
-std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
+std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings(double aR)
 {
 	std::vector<std::pair<int*, double>>* offsprings = new std::vector<std::pair<int*, double>>;
 
@@ -54,7 +54,7 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 
 		for(int i = 0; i < mN; ++i)
 		{
-			if(CalculateFlipR())
+			if(CalculateFlipR(aR))
 			{
 				FlipBitBasedOnPosition(bitStringPrime, i);
 			}
@@ -68,7 +68,7 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings()
 
 std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 {
-	mR = 1;
+	double r = 1;
 	bool stagnationDetection = false;
 	RandomizeBitString();
 	mCostFunction->CalculateSum(mBitString);
@@ -94,7 +94,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 			mDenominatorMultiplier = 1;
 			mNumeratorMultiplier = 1;
 
-			auto best = SelectBestDeleteRest(CreateOffsprings());
+			auto best = SelectBestDeleteRest(CreateOffsprings(r));
 
 			if(best.second > mFitnessValue)
 			{
@@ -110,15 +110,15 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 					mCostFunction->CalculateSum(mBitString);
 				#endif
 				
-				mR = 1;
+				r = 1;
 				stagnationDetection = false;
 				u = 0;
 			}
 			else
 			{
-				if(u > 2 * std::pow((std::exp(1.0) * (double)mN / (double)mR), mR) * std::log(mN * mR) / (double)mLambda)
+				if(u > 2 * std::pow((std::exp(1.0) * (double)mN / (double)r), r) * std::log(mN * mR) / (double)mLambda)
 				{
-					mR = std::min(mR + 1, mN / 2);
+					r = std::min(r + 1, (double)mN / 2);
 					u = 0;
 				}
 
@@ -131,7 +131,7 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 			mNumeratorMultiplier = 1;
 
 			int RRate = -1;
-			auto best = SelectBestDeleteRest(CreateOffsprings(), &RRate);
+			auto best = SelectBestDeleteRest(CreateOffsprings(r), &RRate);
 			if(best.second >= mFitnessValue)
 			{
 				if(best.second > mFitnessValue)
@@ -161,30 +161,30 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 			{
 				if(mCoin(mRng))
 				{
-					mR = mR / 2;
+					r = r / 2;
 				}
 				else
 				{
-					mR = 2 * mR;
+					r = 2 * r;
 				}
 			}
 			else
 			{
 				if(mLastRRate == 0)
 				{
-					mR = mR / 2;
+					r = r / 2;
 				}
 				else
 				{
-					mR = mR * 2;
+					r = r * 2;
 				}
 			}
 
-			mR = std::min(std::max(2, mR), mN / 4);
+			r = std::min(std::max((double)2, r), (double)mN / 4);
 
-			if(u > 2 * std::pow((std::exp(1.0) * (double)mN / (double)mR), mR) * std::log(mN * mR) / (double)mLambda)
+			if(u > 2 * std::pow((std::exp(1.0) * (double)mN / (double)r), r) * std::log(mN * mR) / (double)mLambda)
 			{
-				mR = 2;
+				r = 2;
 				u = 0;
 				stagnationDetection = true;
 				mStagnationDetection = StagnationDetection::On;

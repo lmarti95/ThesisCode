@@ -1,9 +1,8 @@
 #include "SD.h"
 
-SD::SD(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction)
+SD::SD(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction), mR(std::pow(mN, 3 + mEpsilon))
 {
 	mBitString = new int[mN];
-	mR = std::pow(mN, 3 + mEpsilon);
 	mStagnationDetection = StagnationDetection::Off;
 }
 

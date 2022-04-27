@@ -16,11 +16,11 @@ SD_OnePlusOne::~SD_OnePlusOne()
 {
 }
 
-bool SD_OnePlusOne::CalculateFlipR()
+bool SD_OnePlusOne::CalculateFlipR(double aR)
 {
 	std::uniform_real_distribution<> p(0.0, 1.0);
 
-	if(p(mRng) > (double)mR / (double)mN)
+	if(p(mRng) <= aR / (double)mN)
 	{
 		return true;
 	}
@@ -31,7 +31,7 @@ bool SD_OnePlusOne::CalculateFlipR()
 
 std::pair<long long, double> SD_OnePlusOne::RunEA()
 {
-	mR = 1;
+	double r = 1;
 	RandomizeBitString();
 	mCostFunction->CalculateSum(mBitString);
 	mFitnessValue = mCostFunction->GetFitnessValue(0);
@@ -71,7 +71,7 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 
 		for(int i = 0; i < mN; ++i)
 		{
-			if(CalculateFlipR())
+			if(CalculateFlipR(r))
 			{
 				change+=FlipBitBasedOnPosition(bitStringPrime, i);
 			}
@@ -96,12 +96,12 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 			mFitnessValue = newFitnessValue;
 			std::copy(bitStringPrime, bitStringPrime + mN, mBitString);
 			justUpdated = true;
-			mR = 1;
+			r = 1;
 			u = 0;
 		}
 		else
 		{
-			if(newFitnessValue == mFitnessValue && mR == 1)
+			if(newFitnessValue == mFitnessValue && r == 1)
 			{
 				#if GRAPHICS
 					std::lock_guard<std::mutex> lg{mBitStringMutex};
@@ -111,16 +111,14 @@ std::pair<long long, double> SD_OnePlusOne::RunEA()
 				justUpdated = true;
 			}
 		}
-
-		if(u > 2* std::pow((std::exp(1.0)*mN/mR),mR)* std::log(mN*mR))
+		double firstPart = std::pow((std::exp(1.0) * mN / r), r);
+		double secondPart = std::log(mN * mR);
+		double calculated = 2 * firstPart * secondPart;
+		if(u > calculated)
 		{
-			mR = std::min(mR + 1, mN / 2);
+			r = std::min(r + 1, (double)mN / 2);
 			u = 0;
 			mStagnationDetection = StagnationDetection::On;
-		}
-		else
-		{
-			mR++;
 		}
 
 		#if GRAPHICS

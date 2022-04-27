@@ -9,8 +9,8 @@ public:
 	SASD_OnePlusLambda(int aN, CostFunction* aCostFunction, int aLambda);
 	~SASD_OnePlusLambda();
 
-	bool CalculateFlipR();
-	std::vector<std::pair<int*, double>>* CreateOffsprings();
+	bool CalculateFlipR(double aR);
+	std::vector<std::pair<int*, double>>* CreateOffsprings(double aR);
 
 	std::pair<long long, double> RunEA() override;
 	std::string GetEAName() override { return "SASD-(1+" + std::to_string(mLambda) + ")"; }
