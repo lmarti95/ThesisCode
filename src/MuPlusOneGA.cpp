@@ -56,10 +56,19 @@ std::pair<int*, double> MuPlusOneGA::CreateRandomBitStringFromParents()
 
 int* MuPlusOneGA::Mutate(int* aBitString)
 {
-	long next = GetNextPosition(mN - 1);
-	if(next != -1)
+	for(int i = 0; i < mN; ++i)
 	{
-		FlipBits(aBitString, next);
+		if(mRandomN(mRng) < 3)
+		{
+			if(aBitString[i] == 0)
+			{
+				aBitString[i] = 1;
+			}
+			else
+			{
+				aBitString[i] = 0;
+			}
+		}
 	}
 
 	return aBitString;

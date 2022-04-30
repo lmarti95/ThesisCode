@@ -32,9 +32,9 @@ bool CheckIfExists(EvolutionaryAlgorithm* aEA)
 
 int main()
 {
-	//Menu m;
+	Menu m;
 
-	std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
+	/*std::vector<EvolutionaryAlgorithm*> toDeleteEvolutionaryAlgorithms;
 
 	std::vector<int> testNs;
 	testNs.push_back(12);
@@ -137,5 +137,5 @@ int main()
 	for(auto& ea : toDeleteEvolutionaryAlgorithms)
 	{
 		delete ea;
-	}
+	}*/
 }
