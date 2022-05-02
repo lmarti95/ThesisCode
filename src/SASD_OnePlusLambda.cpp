@@ -68,7 +68,7 @@ std::vector<std::pair<int*, double>>* SASD_OnePlusLambda::CreateOffsprings(doubl
 
 std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 {
-	double r = 1;
+	double r = 2;
 	bool stagnationDetection = false;
 	RandomizeBitString();
 	mCostFunction->CalculateSum(mBitString);
