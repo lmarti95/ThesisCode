@@ -12,7 +12,6 @@
 #include "SD_OnePlusOne.h"
 #include "SD_RLS.h"
 #include "SD_RLS_m.h"
-#include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
 
 #if GRAPHICS
@@ -75,11 +74,9 @@ int main()
 
 			SD_RLS_m* sd6 = new SD_RLS_m(N, &j);
 
-			SD_RLS_r* sd7 = new SD_RLS_r(N, &j);
+			SD_RLS_STAR* sd7 = new SD_RLS_STAR(N, &j);
 
-			SD_RLS_STAR* sd8 = new SD_RLS_STAR(N, &j);
-
-			SD_OnePlusOne* sd9 = new SD_OnePlusOne(N, &j);
+			SD_OnePlusOne* sd8 = new SD_OnePlusOne(N, &j);
 
 			toDeleteEvolutionaryAlgorithms.push_back(sd1);
 			toDeleteEvolutionaryAlgorithms.push_back(sd2);
@@ -89,7 +86,6 @@ int main()
 			toDeleteEvolutionaryAlgorithms.push_back(sd6);
 			toDeleteEvolutionaryAlgorithms.push_back(sd7);
 			toDeleteEvolutionaryAlgorithms.push_back(sd8);
-			toDeleteEvolutionaryAlgorithms.push_back(sd9);
 
 			if(!CheckIfExists(sd1))
 			{
@@ -124,10 +120,6 @@ int main()
 			if(!CheckIfExists(sd8))
 			{
 				b.ScheduleEA(sd8);
-			}
-			if(!CheckIfExists(sd9))
-			{
-				b.ScheduleEA(sd9);
 			}
 		}
 	}

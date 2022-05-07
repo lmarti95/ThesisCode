@@ -29,7 +29,7 @@ public:
 private:
 	void RunEA(EvolutionaryAlgorithm* aEA);
 
-	int mRepeat = 100;
+	int mRepeat = 1000;
 
 	std::mutex mActiveThreadsMutex;
 	int mActiveThreads = 0;

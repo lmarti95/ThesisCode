@@ -14,7 +14,6 @@
 #include "SD_OnePlusOne.h"
 #include "SD_RLS.h"
 #include "SD_RLS_m.h"
-#include "SD_RLS_r.h"
 #include "SD_RLS_STAR.h"
 
 #include <iostream>
@@ -58,7 +57,7 @@ void Menu::ContinousRun()
 	while(true)
 	{
 		PrintAlgorithmChoices();
-		IntegerInputValidation(&selected, 0, 9);
+		IntegerInputValidation(&selected, 0, 7, true);
 
 		if(selected == 9)
 		{
@@ -140,8 +139,7 @@ void Menu::PrintAlgorithmChoices()
 	std::cout << "4 - SD-(1+1)" << std::endl;
 	std::cout << "5 - SD-RLS" << std::endl;
 	std::cout << "6 - SD-RLS^m" << std::endl;
-	std::cout << "7 - SD-RLS^r" << std::endl;
-	std::cout << "8 - SD-RLS*" << std::endl;
+	std::cout << "7 - SD-RLS*" << std::endl;
 	std::cout << "9 - Exit" << std::endl;
 }
 
@@ -271,9 +269,6 @@ void Menu::SetSelectedAlgorithm(int aSelected)
 			mEA = new SD_RLS_m(mN, mCostFunction);
 			break;
 		case 7:
-			mEA = new SD_RLS_r(mN, mCostFunction);
-			break;
-		case 8:
 			mEA = new SD_RLS_STAR(mN, mCostFunction);
 			break;
 	}
