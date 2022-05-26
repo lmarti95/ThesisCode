@@ -14,8 +14,6 @@ enum class OpenGLMode{ CoordinateSystem, MST };
 class OpenGL
 {
 public:
-
-
 	void Setup(EvolutionaryAlgorithm* aEA);
 	void SetText();
 	void SetInfoText();

@@ -181,9 +181,9 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 	return std::make_pair(iterations, elapsedSeconds.count());
 }
 
+#if GRAPHICS
 void MuPlusOneGA::UpdateBitString()
 {
-#if GRAPHICS
 
 	mFitnessValue = mPopulation.at(0).second;
 
@@ -200,8 +200,9 @@ void MuPlusOneGA::UpdateBitString()
 
 	mBitString = bitString;
 	mCostFunction->CalculateSum(mBitString);
-#endif
 }
+
+#endif
 
 std::vector<int>* MuPlusOneGA::GetBitString()
 {

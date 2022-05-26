@@ -13,10 +13,6 @@
 
 Benchmark::~Benchmark()
 {
-	for(auto& res : mResults)
-	{
-		delete res;
-	}
 }
 
 void Benchmark::FinishThreads()
@@ -82,21 +78,6 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 	Menu::mPrintMutex.lock();
 	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
 	Menu::mPrintMutex.unlock();
-	/*Result* res;
-	
-	if(dynamic_cast<Jump*>(aEA->GetCostFunction()) == nullptr)
-	{
-		res = new Result(averageIteration, averageTime, mRepeat, aEA->GetCostFunctionName(), aEA->GetEAName(), aEA->GetN());
-	}
-	else
-	{
-		res = new Result(averageIteration, averageTime, mRepeat, aEA->GetCostFunctionName(), aEA->GetEAName(), aEA->GetN(), dynamic_cast<Jump*>(aEA->GetCostFunction())->GetGapSize(), dynamic_cast<Jump*>(aEA->GetCostFunction())->GetJumpTypeString());
-	}
-
-	mResultsMutex.lock();
-	mResults.push_back(res);
-	mResultsMutex.unlock();*/
-
 
 	mActiveThreadsMutex.lock();
 	mFinished++;
@@ -162,21 +143,6 @@ void Benchmark::SavePlot(std::vector<int> aX, std::vector<double> aY, std::strin
 	file.close();
 
 	std::cout << aTitle << ".txt was created" << std::endl;
-}
-
-void Benchmark::SaveResults(std::string aFilename)
-{
-	FinishThreads();
-
-	std::ofstream file;
-	file.open(aFilename);
-	for(auto& res : mResults)
-	{
-		file << res->GetResult();
-		file << std::endl;
-	}
-
-	file.close();
 }
 
 void Benchmark::SaveEachIteration(std::vector<long> aIterations, std::string aFilename)

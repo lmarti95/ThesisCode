@@ -2,6 +2,7 @@
 
 #include "CostFunction.h"
 
+#include <cmath>
 #include <mutex>
 #include <vector>
 
@@ -20,14 +21,14 @@ public:
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;
-	double GetFitnessValue(int aChange) { return -1; };
+	double GetFitnessValue(int aChange) { return (double)-1*std::pow(mM, 4); };
 	void ApplyChange(int aChange) override {}
 	std::string GetCostFunctionName() override { return "MST"; }
 
 	void CalculateSum(int* aBitString) override{}
-	double GetSum() override { return -1; }
+	double GetSum() override { return (double)-1 * std::pow(mM, 4); }
 
-	void visitEdge(int* aBitString, int aEdge, int* aConnected);
+	void VisitEdge(int* aBitString, int aEdge, int* aConnected);
 	int ConnectedComponents(int* aBitString);
 
 	int GetNodesNum() { return mNodesNum; }
@@ -35,7 +36,7 @@ public:
 	int GetMinimumSum() { return mMinimumSum; }
 	std::vector<Edge>* GetEdges() { std::lock_guard<std::mutex> lg{mGetEdgeMutex}; return &mEdges; }
 
-	double FitnessValueToSum(double aFitness) override { return -1; }
+	double FitnessValueToSum(double aFitness) override { return (double)-1 * std::pow(mM, 4); }
 
 	static std::mutex mGetEdgeMutex;
 

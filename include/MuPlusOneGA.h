@@ -22,7 +22,11 @@ public:
 	std::string GetEAName() override { return "(" + std::to_string(mPopulationSize) + " + 1) GA"; }
 	std::vector<int>* GetBitString() override;
 
+#ifdef  GRAPHICS
 	void UpdateBitString();
+#endif
+
+	
 private:
 	int mPopulationSize;
 	std::vector<std::pair<int*, double>> mPopulation;

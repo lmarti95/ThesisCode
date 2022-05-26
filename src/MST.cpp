@@ -1,6 +1,5 @@
 #include "MST.h"
 
-#include <cmath>
 #include <fstream>
 #include <iostream>
 
@@ -44,10 +43,10 @@ void MST::ReadIn(std::string aFilename)
 
 double MST::GetMaximumFitnessValue()
 {
-	return 1/(double)mMinimumSum;
+	return (double)-1*(double)mMinimumSum;
 }
 
-void MST::visitEdge(int* aBitString, int aEdge, int* aConnected)
+void MST::VisitEdge(int* aBitString, int aEdge, int* aConnected)
 {
     if(aConnected[mEdges.at(aEdge).n1] == 0)
     {
@@ -58,7 +57,7 @@ void MST::visitEdge(int* aBitString, int aEdge, int* aConnected)
             {
                 if(mEdges.at(i).n1 == mEdges.at(aEdge).n1 || mEdges.at(i).n2 == mEdges.at(aEdge).n1)
                 {
-                    visitEdge(aBitString, i, aConnected);
+                    VisitEdge(aBitString, i, aConnected);
                 }
             }
         }
@@ -73,7 +72,7 @@ void MST::visitEdge(int* aBitString, int aEdge, int* aConnected)
             {
                 if(mEdges.at(i).n1 == mEdges.at(aEdge).n2 || mEdges.at(i).n2 == mEdges.at(aEdge).n2)
                 {
-                    visitEdge(aBitString, i, aConnected);
+                    VisitEdge(aBitString, i, aConnected);
                 }
             }
         }
@@ -114,7 +113,7 @@ int MST::ConnectedComponents(int* aBitString)
         if(found != -1)
         {
             components++;
-            visitEdge(aBitString, found, connected);
+            VisitEdge(aBitString, found, connected);
         }
         else
         {
@@ -144,5 +143,5 @@ double MST::GetFitnessValue(int* aBitString)
         }
     }
 
-    return  1 / (((double)(components - 1) * std::pow(mM, 2)) + ((double)(edgesSum - (mNodesNum - 1)) * mM) + weightSum);
+    return (double)-1 * (((double)(components - 1) * std::pow(mM, 2)) + ((double)(edgesSum - (mNodesNum - 1)) * mM) + weightSum);
 }

@@ -454,7 +454,7 @@ void OpenGL::UpdateInfoText()
 
     if(mMode == OpenGLMode::MST)
     {
-        roundedFitnessValue = 1/mEA->GetFitnessValue();
+        roundedFitnessValue = (double)-1*mEA->GetFitnessValue();
     }
 
     std::string fitness = "Fitness: " + std::to_string(roundedFitnessValue);

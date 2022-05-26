@@ -194,7 +194,13 @@ std::string Jump::GetJumpTypeString()
 
 void Jump::CheckGapSize()
 {
-	if((mType == JumpType::Offset || mType == JumpType::OffsetSpike) && mGapSize >= mN / 4)
+	if(mGapSize > mN)
+	{
+		std::cout << "The gap size " << mGapSize << " is to big for bitstring length " << mN << std::endl;
+		exit(-1);
+	}
+
+	if((mType == JumpType::Offset || mType == JumpType::OffsetSpike) && mGapSize > mN / 4)
 	{
 		std::cout << "The gap size " << mGapSize << " is to big for bitstring length " << mN << " when using the Offset or OffsetSpike type Jump!";
 		exit(-1);

@@ -328,7 +328,7 @@ bool Menu::SetSelectedCostFunction(int aSelected)
 		int validTo = mN;
 		if(mJumpType != JumpType::Original)
 		{
-			validTo = mN/4-1;
+			validTo = mN/4;
 		}
 		IntegerInputValidation(&mJumpSize, 1, validTo);
 
