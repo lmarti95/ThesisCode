@@ -22,7 +22,7 @@ IF(GRAPHICS)
 	find_package(OpenGL REQUIRED)
 
 	find_library(libglfw NAMES glfw3 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-mingw-w64/)
-	find_library(libglew32 NAMES glew32 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/lib/Release/Win32/)
+	find_library(libglew32 NAMES glew32 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/lib/Release/Win32/mingw/)
 
 ENDIF()
 
