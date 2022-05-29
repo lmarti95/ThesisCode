@@ -5,7 +5,7 @@ project (ThesisCode)
 file(GLOB source
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
