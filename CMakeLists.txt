@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
 IF(NOT WIN32 AND GRAPHICS)
-	message(STATUS "Only on windows the graphics is supported")
+	message(STATUS "Only on windows the graphics is supported!")
 ENDIF()
 
 IF(NOT WIN32 OR NOT GRAPHICS)
