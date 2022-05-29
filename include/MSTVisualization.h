@@ -8,7 +8,7 @@
 
 class MSTVisualization {
 public:
-	MSTVisualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA);
+	MSTVisualization(EvolutionaryAlgorithm* aEA);
 	~MSTVisualization();
 
 	std::pair<GLfloat, GLfloat> GenerateRandomCoordinates();

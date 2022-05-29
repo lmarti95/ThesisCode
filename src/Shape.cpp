@@ -2,6 +2,8 @@
 
 #include "Shape.h"
 
+#include <math.h>
+
 //Shape
 
 Shape::Shape(GLfloat* aColor)

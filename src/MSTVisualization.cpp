@@ -9,10 +9,10 @@
 #include <random>
 #include <utility>
 
-MSTVisualization::MSTVisualization(MST* aCostFunction, EvolutionaryAlgorithm* aEA)
+MSTVisualization::MSTVisualization(EvolutionaryAlgorithm* aEA)
 {
 	mEA = aEA;
-	mCostFunction = aCostFunction;
+	mCostFunction = dynamic_cast<MST*>(aEA->GetCostFunction());
 	mCircles = new std::vector<Circle*>;
 
 	if(!ReadInCircles())

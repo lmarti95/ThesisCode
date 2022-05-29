@@ -49,7 +49,7 @@ private:
 
 	std::vector<std::thread*> mThreads;
 #if GRAPHICS
-	std::atomic<bool> mOpenGLRunning = false;
+	std::atomic<bool> mOpenGLRunning = {false};
 	bool mWeightVisibility = false;
 #endif
 };

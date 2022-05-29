@@ -252,7 +252,7 @@ void OpenGL::Setup(EvolutionaryAlgorithm* aEA)
     
     if(mMode == OpenGLMode::MST)
     {
-        mMST = new MSTVisualization((dynamic_cast<MST*>(mEA->GetCostFunction())), mEA);
+        mMST = new MSTVisualization(mEA);
     }
 
     SetWindow();

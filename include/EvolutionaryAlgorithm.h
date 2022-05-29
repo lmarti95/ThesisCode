@@ -53,7 +53,7 @@ protected:
 	int mN;
 
 #if GRAPHICS
-	std::atomic<double> mFitnessValue = 0;
+	std::atomic<double> mFitnessValue = {0};
 	std::atomic_long mIterations = {0};
 	int mDelay = 0;
 #else
