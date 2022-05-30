@@ -18,7 +18,6 @@ IF(NOT WIN32 OR NOT GRAPHICS)
 ENDIF()
 
 IF(GRAPHICS)
-
 	find_package(OpenGL REQUIRED)
 
 	find_library(libglfw NAMES glfw3 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-mingw-w64/)
