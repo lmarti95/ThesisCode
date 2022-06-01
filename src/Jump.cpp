@@ -95,24 +95,24 @@ double Jump::GetOffsetFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
-	if(sum <= 3*mN/4 || sum >= 3*mN/4+mGapSize)
+	if(sum <= mN/4*3 || sum >= mN/4*3+mGapSize)
 	{
 		return  sum + mGapSize;
 	}
 
-	return 3*mN/4+mGapSize-sum;
+	return mN/4*3+mGapSize-sum;
 }
 
 double Jump::GetOffsetFitnessValue(int aChange)
 {
 	double sum = mSum + aChange;
 
-	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <=  mN / 4*3 || sum >=  mN / 4*3 + mGapSize)
 	{
 		return  sum + mGapSize;
 	}
 
-	return 3 * mN / 4 + mGapSize - sum;
+	return  mN / 4*3 + mGapSize - sum;
 }
 
 double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
@@ -124,34 +124,34 @@ double Jump::GetOffsetSpikeFitnessValue(int* aBitString)
 		sum += aBitString[i];
 	}
 
-	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <=  mN / 4*3 || sum >=  mN / 4*3 + mGapSize)
 	{
 		return sum + mGapSize;
 	}
 
-	if(sum == 3 * mN / 4 + mGapSize / 2)
+	if(sum ==  mN / 4*3 + mGapSize / 2)
 	{
 		return mN + mGapSize + 1;
 	}
 
-	return 3 * mN / 4 + mGapSize - sum;
+	return  mN / 4*3 + mGapSize - sum;
 }
 
 double Jump::GetOffsetSpikeFitnessValue(int aChange)
 {
 	double sum = mSum + aChange;
 
-	if(sum <= 3 * mN / 4 || sum >= 3 * mN / 4 + mGapSize)
+	if(sum <=  mN / 4*3 || sum >=  mN / 4*3 + mGapSize)
 	{
 		return sum + mGapSize;
 	}
 
-	if(sum == 3 * mN / 4 + mGapSize / 2)
+	if(sum ==  mN / 4*3 + mGapSize / 2)
 	{
 		return mN + mGapSize + 1;
 	}
 
-	return 3 * mN / 4 + mGapSize - sum;
+	return  mN / 4*3 + mGapSize - sum;
 }
 
 void Jump::CalculateSum(int* aBitString)
@@ -225,7 +225,7 @@ double Jump::FitnessValueToSum(double aFitness)
 			return  aFitness - mGapSize;
 		}
 
-		return mN*3/4+mGapSize - aFitness;
+		return mN/4*3+mGapSize - aFitness;
 		break;
 	case JumpType::OffsetSpike:
 		if(aFitness > mGapSize && aFitness != GetMaximumFitnessValue())
@@ -235,7 +235,7 @@ double Jump::FitnessValueToSum(double aFitness)
 
 		if(aFitness == GetMaximumFitnessValue())
 		{
-			return 3 * mN / 4 + mGapSize / 2;
+			return  mN / 4*3 + mGapSize / 2;
 		}
 
 		return mN - (mN / 4 - mGapSize) - aFitness;

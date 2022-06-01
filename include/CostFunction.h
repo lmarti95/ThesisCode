@@ -25,6 +25,6 @@ public:
 	void SetN(double aN) { mN = aN; }
 	double GetN() { return mN; }
 protected:
-	double mN;
+	int mN;
 };
 

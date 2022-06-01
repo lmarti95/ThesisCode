@@ -11,7 +11,7 @@ Cliff::Cliff(const Cliff& aOld) : CostFunction(aOld)
 
 double Cliff::GetMaximumFitnessValue()
 {
-	return (double)mN - (double)mN / 3 + 0.5;
+	return (double)(mN - mN / 3) + 0.5;
 }
 
 double Cliff::GetFitnessValue(int* aBitString)
@@ -25,24 +25,24 @@ double Cliff::GetFitnessValue(int* aBitString)
 
 	mSum = sum;
 
-	if(sum < 2 * mN / 3)
+	if(sum <= mN / 3 * 2)
 	{
 		return  sum;
 	}
 
-	return sum - mN / 3 + 0.5;
+	return (double)(sum - mN / 3) + 0.5;
 }
 
 double Cliff::GetFitnessValue(int aChange)
 {
 	double sum = mSum + aChange;
 
-	if(sum < 2 * mN / 3)
+	if(sum <=  mN / 3*2)
 	{
 		return  sum;
 	}
 
-	return sum - mN / 3 + 0.5;
+	return (double)(sum - mN / 3) + 0.5;
 }
 
 void Cliff::CalculateSum(int* aBitString)

@@ -218,13 +218,13 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesJumpOffset()
 
     mEA->GetCostFunction();
 
-    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mEA->GetN()*3/4+ mGapSize), black);
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate((int)mEA->GetN()/4*3), GetLocationYOnCoordinate((int)mEA->GetN()/4*3+ mGapSize), black);
     lines->push_back((Shape*)line1);
 
-    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN()*3/4), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate(mEA->GetN()*3/4+mGapSize), GetLocationYOnCoordinate(0), black);
+    Line* line2 = new Line(GetLocationXOnCoordinate((int)mEA->GetN()/4*3), GetLocationYOnCoordinate(mGapSize), GetLocationXOnCoordinate((int)mEA->GetN()/4*3+mGapSize), GetLocationYOnCoordinate(0), black);
     lines->push_back((Shape*)line2);
 
-    Line* line3 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 3 / 4 + mGapSize), GetLocationYOnCoordinate(mEA->GetN() * 3 / 4+mGapSize+mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetN()+mGapSize), black);
+    Line* line3 = new Line(GetLocationXOnCoordinate((int)mEA->GetN() / 4*3 + mGapSize), GetLocationYOnCoordinate((int)mEA->GetN() / 4*3+mGapSize+mGapSize), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate((int)mEA->GetN()+mGapSize), black);
     lines->push_back((Shape*)line3);
 
     return lines;
@@ -235,9 +235,11 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesCliff()
     std::vector<Shape*>* lines = new std::vector<Shape*>;
     GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(0), GetLocationXOnCoordinate(mEA->GetN()*2/3), GetLocationYOnCoordinate(mEA->GetN()*2/3), black);
+
+    Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(0), GetLocationXOnCoordinate((int)mEA->GetN()/3*2), GetLocationYOnCoordinate((int)mEA->GetN()/3*2), black);
     lines->push_back((Shape*)line1);
-    Line* line2 = new Line(GetLocationXOnCoordinate(mEA->GetN() * 2 / 3), GetLocationYOnCoordinate(mEA->GetN() - mEA->GetN()*2/3 + 1/2), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetCostFunction()->GetMaximumFitnessValue()), black);
+    double asd = (double)((int)mEA->GetN()/3*2 - (int)mEA->GetN() / 3) + (double)1 / 2;
+    Line* line2 = new Line(GetLocationXOnCoordinate((int)mEA->GetN() / 3*2), GetLocationYOnCoordinate(asd), GetLocationXOnCoordinate(mEA->GetN()), GetLocationYOnCoordinate(mEA->GetCostFunction()->GetMaximumFitnessValue()), black);
     lines->push_back((Shape*)line2);
 
     return lines;
