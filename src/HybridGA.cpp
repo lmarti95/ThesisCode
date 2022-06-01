@@ -18,6 +18,11 @@ HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, a
 #endif
 }
 
+HybridGA::~HybridGA()
+{
+	delete mCostFunction;
+}
+
 void HybridGA::SetUpPermutation()
 {
 	for(int i = 0; i < mN; ++i)

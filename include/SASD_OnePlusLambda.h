@@ -7,7 +7,7 @@ class SASD_OnePlusLambda : public SD
 {
 public:
 	SASD_OnePlusLambda(int aN, CostFunction* aCostFunction, int aLambda);
-	~SASD_OnePlusLambda();
+	~SASD_OnePlusLambda() override;
 
 	bool CalculateFlipR(double aR);
 	std::vector<std::pair<int*, double>>* CreateOffsprings(double aR);

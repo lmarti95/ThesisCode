@@ -16,6 +16,7 @@ class MST : public CostFunction
 {
 public:
 	MST(int aN, std::string aFilename);
+	~MST() override{};
 
 	void ReadIn(std::string aFilename);
 

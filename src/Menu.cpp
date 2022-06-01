@@ -42,6 +42,7 @@ Menu::~Menu()
 
 	for(auto& ea : mEAs)
 	{
+		std::cout << "Menu delete called" << std::endl;
 		delete ea;
 	}
 

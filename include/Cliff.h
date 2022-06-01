@@ -8,8 +8,9 @@ class Cliff : public CostFunction
 {
 public:
 	Cliff(int aN);
-
 	Cliff(const Cliff& aOld);
+	
+	~Cliff() override {};
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;

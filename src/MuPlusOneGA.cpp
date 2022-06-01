@@ -12,6 +12,7 @@ MuPlusOneGA::MuPlusOneGA(int aN, CostFunction* aCostFunction, int aPopulation) :
 
 MuPlusOneGA::~MuPlusOneGA()
 {
+	delete mCostFunction;
 	DeletePopulation();
 }
 

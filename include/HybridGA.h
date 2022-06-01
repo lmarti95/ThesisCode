@@ -9,6 +9,7 @@ class HybridGA : public GeneticAlgorithm
 {
 public:
 	HybridGA(int aN, CostFunction* aCostFunction);
+	~HybridGA() override;
 
 	void SetUpPermutation();
 	int* MajorityVoting(std::vector<int*> aParents);

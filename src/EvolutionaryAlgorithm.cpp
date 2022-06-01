@@ -25,11 +25,6 @@ EvolutionaryAlgorithm::EvolutionaryAlgorithm(int aN, CostFunction* aCostFunction
 	}
 }
 
-EvolutionaryAlgorithm::~EvolutionaryAlgorithm()
-{
-	delete mCostFunction;
-}
-
 void EvolutionaryAlgorithm::CopyCostFunction(CostFunction* aCostFunction)
 {
 	if(dynamic_cast<Jump*>(aCostFunction) != nullptr)

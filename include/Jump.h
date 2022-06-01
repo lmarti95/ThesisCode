@@ -10,8 +10,9 @@ class Jump : public CostFunction
 {
 public:
 	Jump(int aN, int aGapSize, JumpType aType = JumpType::Original);
-
 	Jump(const Jump& aOld);
+	
+	~Jump() override{};
 
 	double GetMaximumFitnessValue() override;
 	double GetFitnessValue(int* aBitString) override;

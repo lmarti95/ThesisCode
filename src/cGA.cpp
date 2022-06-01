@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+#include<iostream>
+
 cGA::cGA(int N, CostFunction* aCostFunction, int aMu) : GeneticAlgorithm(N, aCostFunction)
 {
 	mMu = aMu;
@@ -14,6 +16,9 @@ cGA::cGA(int N, CostFunction* aCostFunction, int aMu) : GeneticAlgorithm(N, aCos
 
 cGA::~cGA()
 {
+	delete mCostFunction;
+	
+	std::cout << "Delete run" << std::endl;
 	delete[] mF;
 
 #if GRAPHICS

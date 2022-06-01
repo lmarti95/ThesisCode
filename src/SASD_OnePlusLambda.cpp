@@ -13,6 +13,7 @@ SASD_OnePlusLambda::SASD_OnePlusLambda(int aN, CostFunction* aCostFunction, int 
 
 SASD_OnePlusLambda::~SASD_OnePlusLambda()
 {
+	delete mCostFunction;
 }
 
 bool SASD_OnePlusLambda::CalculateFlipR(double aR)
@@ -75,8 +76,6 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 	mFitnessValue = mCostFunction->GetFitnessValue(0);
 
 	mIterations = 0;
-
-	int* bitStringPrime = new int[mN];
 
 	double maximumFitnessValue = mCostFunction->GetMaximumFitnessValue();
 
@@ -149,6 +148,8 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 					mCostFunction->CalculateSum(mBitString);
 				#endif
 
+				delete[] mBitString;
+
 				mFitnessValue = best.second;
 				mLastRRate = RRate;
 			}
@@ -198,8 +199,6 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsedSeconds = end - start;
-
-	delete[] bitStringPrime;
 
 	long long iterations = mIterations;
 

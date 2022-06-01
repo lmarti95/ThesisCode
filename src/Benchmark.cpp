@@ -24,6 +24,7 @@ void Benchmark::FinishThreads()
 	for(auto& t : mThreads)
 	{
 		t->join();
+		delete t;
 	}
 
 	mPlanToRun = 0;

@@ -8,6 +8,8 @@ public:
 	CostFunction(double aN) { mN = aN; }
 
 	CostFunction(const CostFunction& aOld);
+	
+	virtual ~CostFunction() {};
 
 	virtual double GetMaximumFitnessValue() = 0;
 	virtual double GetFitnessValue(int* aBitString) = 0;

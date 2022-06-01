@@ -8,7 +8,7 @@ class SD : public EvolutionaryAlgorithm
 {
 public:
 	SD(int aN, CostFunction* aCostFunction);
-	~SD();
+	virtual ~SD() {};
 
 	void SetEpsilon(int aEpsilon);
 	void RandomizeBitString();

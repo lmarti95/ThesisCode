@@ -14,6 +14,8 @@ SD_OnePlusOne::SD_OnePlusOne(int aN, CostFunction* aCostFunction) : SD(aN, aCost
 
 SD_OnePlusOne::~SD_OnePlusOne()
 {
+	delete mCostFunction;
+	delete[] mBitString;
 }
 
 bool SD_OnePlusOne::CalculateFlipR(double aR)

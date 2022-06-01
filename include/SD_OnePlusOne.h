@@ -7,7 +7,7 @@ class SD_OnePlusOne : public SD
 {
 public:
 	SD_OnePlusOne(int aN, CostFunction* aCostFunction);
-	~SD_OnePlusOne();
+	~SD_OnePlusOne() override;
 
 	bool CalculateFlipR(double aR);
 

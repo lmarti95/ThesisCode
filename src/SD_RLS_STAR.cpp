@@ -13,6 +13,8 @@ SD_RLS_STAR::SD_RLS_STAR(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunc
 
 SD_RLS_STAR::~SD_RLS_STAR()
 {
+	delete mCostFunction;
+	delete[] mBitString;
 }
 
 std::pair<long long, double> SD_RLS_STAR::RunEA()

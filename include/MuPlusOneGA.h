@@ -9,7 +9,7 @@ class MuPlusOneGA : public GeneticAlgorithm
 {
 public:
 	MuPlusOneGA(int aN, CostFunction* aCostFunction, int aPopulation);
-	~MuPlusOneGA();
+	~MuPlusOneGA() override;
 
 	void CreateInitialPopulation();
 	void DeletePopulation();

@@ -6,11 +6,6 @@ SD::SD(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFun
 	mStagnationDetection = StagnationDetection::Off;
 }
 
-SD::~SD()
-{
-	delete[] mBitString;
-}
-
 void SD::SetEpsilon(int aEpsilon)
 {
 	mEpsilon = aEpsilon;

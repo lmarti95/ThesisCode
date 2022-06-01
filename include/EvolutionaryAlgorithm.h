@@ -12,7 +12,7 @@ class EvolutionaryAlgorithm
 {
 public:
 	EvolutionaryAlgorithm(int N, CostFunction* aCostFunction);
-	~EvolutionaryAlgorithm();
+	virtual ~EvolutionaryAlgorithm() {};
 
 	EvolutionaryAlgorithm(const EvolutionaryAlgorithm&) = delete;
 	EvolutionaryAlgorithm& operator= (const EvolutionaryAlgorithm&) = delete;

@@ -14,6 +14,8 @@ SD_RLS::SD_RLS(int aN, CostFunction* aCostFunction) : SD(aN, aCostFunction)
 
 SD_RLS::~SD_RLS()
 {
+	delete mCostFunction;
+	delete[] mBitString;
 }
 
 std::pair<long long, double> SD_RLS::RunEA()
