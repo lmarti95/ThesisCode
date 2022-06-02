@@ -79,6 +79,7 @@ void Menu::ContinousRun()
 
 		if(SetupAlgorithm(selected))
 		{
+			mBenchmark.SetRepeat(100);
 #if GRAPHICS
 			if(!mOpenGLRunning)
 			{

@@ -33,6 +33,7 @@ void Benchmark::FinishThreads()
 
 void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 {
+	int repeat = mRepeat;
 	bool gotThread = false;
 	while(!gotThread)
 	{
@@ -58,7 +59,7 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 
 	std::vector<long> iterationsVector;
 
-	for(int i = 0; i < mRepeat; ++i)
+	for(int i = 0; i < repeat; ++i)
 	{
 		auto result = aEA->RunEA();
 		iterationsVector.push_back(result.first);
@@ -70,14 +71,14 @@ void Benchmark::RunEA(EvolutionaryAlgorithm* aEA)
 
 	SaveEachIteration(iterationsVector, filename);
 
-	double averageIteration = iterations / (double)mRepeat;
-	double averageTime = time / (double)mRepeat;
+	double averageIteration = iterations / (double)repeat;
+	double averageTime = time / (double)repeat;
 
 	std::stringstream streamIterations;
 	streamIterations << std::fixed << std::setprecision(0) << averageIteration;
 	std::string iterationsString = streamIterations.str();
 	Menu::mPrintMutex.lock();
-	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(mRepeat) << " times on N: " << aEA->GetN() << std::endl;
+	std::cout << iterationsString << " average iterations in " << averageTime << "s on average with " << aEA->GetEAName() << " on " << aEA->GetCostFunctionName() << ", ran it " << std::to_string(repeat) << " times on N: " << aEA->GetN() << std::endl;
 	Menu::mPrintMutex.unlock();
 
 	mActiveThreadsMutex.lock();
