@@ -148,8 +148,6 @@ std::pair<long long, double> SASD_OnePlusLambda::RunEA()
 					mCostFunction->CalculateSum(mBitString);
 				#endif
 
-				delete[] mBitString;
-
 				mFitnessValue = best.second;
 				mLastRRate = RRate;
 			}
