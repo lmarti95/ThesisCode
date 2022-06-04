@@ -94,7 +94,7 @@ long EvolutionaryAlgorithm::GetNextPosition(long aPos)
 
 std::pair<int*, double> EvolutionaryAlgorithm::SelectBestDeleteRest(std::vector<std::pair<int*, double>>* aMutations, int* aRRate)
 {
-	double highestFitnesssValue = 0;
+	double highestFitnesssValue = mCostFunction->GetFitnessValue(0);
 	for(auto& offspring : *aMutations)
 	{
 		if(highestFitnesssValue < offspring.second)

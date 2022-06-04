@@ -45,7 +45,7 @@ void ReadIn(std::string aFilename, int aCategory)
 
 int main()
 {
-    ReadIn("SD-RLS_Jump(2) Original_400.result", 1);
+    ReadIn("SD-RLS_m_Jump(2) Original_400.result", 1);
     ReadIn("SD-RLS-STAR_Jump(2) Original_400.result", 2);
 
     std::sort(datas.begin(), datas.end(), [](Data d1, Data d2)
@@ -53,15 +53,16 @@ int main()
             return d1.number < d2.number;
         });
 
+
     for(int i = 0; i < n1 + n2; ++i)
     {
         if(datas.at(i).category == 1)
         {
-            T1 += i;
+            T1 += i + 1;
         }
         else
         {
-            T2 += i;
+            T2 += i + 1;
         }
     }
 
