@@ -160,7 +160,7 @@ std::vector<Shape*>* CoordinateSystem::CreateOnBoardShapes()
     int XLocation = mEA->GetN();
     if(mType == Type::Jump && dynamic_cast<Jump*>(mEA->GetCostFunction())->GetJumpType() == JumpType::OffsetSpike)
     {
-        XLocation = mEA->GetN() * 3 / 4 + mGapSize / 2;
+        XLocation = (int)mEA->GetN() / 4*3 + mGapSize / 2;
     }
 
     Circle* c2 = new Circle(GetLocationXOnCoordinate(XLocation), GetLocationYOnCoordinate(mEA->GetCostFunction()->GetMaximumFitnessValue()), 0.02f, black);
