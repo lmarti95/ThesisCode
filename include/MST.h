@@ -24,7 +24,7 @@ public:
 	double GetFitnessValue(int* aBitString) override;
 	double GetFitnessValue(int aChange) { return (double)-1*std::pow(mM, 4); };
 	void ApplyChange(int aChange) override {}
-	std::string GetCostFunctionName() override { return "MST"; }
+	std::string GetCostFunctionName() override { return "MST(" + std::to_string(mNodesNum) + ")"; }
 
 	void CalculateSum(int* aBitString) override{}
 	double GetSum() override { return (double)-1 * std::pow(mM, 4); }
