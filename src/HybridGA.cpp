@@ -15,6 +15,10 @@ HybridGA::HybridGA(int aN, CostFunction* aCostFunction) : GeneticAlgorithm(aN, a
 
 #if GRAPHICS
 	mBitString = new int[mN];
+	for(int i = 0; i < mN; ++i)
+	{
+		mBitString[i] = 0;
+	}
 #endif
 }
 

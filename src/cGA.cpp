@@ -9,6 +9,10 @@ cGA::cGA(int N, CostFunction* aCostFunction, int aMu) : GeneticAlgorithm(N, aCos
 
 #if GRAPHICS
 	mBitString = new int[mN];
+	for(int i = 0; i < mN; ++i)
+	{
+		mBitString[i] = 0;
+	}
 #endif
 }
 

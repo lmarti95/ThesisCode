@@ -35,6 +35,6 @@ private:
 
 #ifdef GRAPHICS
 	std::mutex mBitStringMutex;
-	int* mBitString;
+	int* mBitString = nullptr;
 #endif
 };

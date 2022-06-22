@@ -487,10 +487,12 @@ void OpenGL::UpdateInfoText()
 
 void OpenGL::ShutDown()
 {
-
-    gltDeleteText(mYText);
-    gltDeleteText(mXText);
-
+    if(mMode == OpenGLMode::CoordinateSystem)
+    {
+        gltDeleteText(mYText);
+        gltDeleteText(mXText);
+    }
+    
     for(auto& t : mXValuesText)
     {
         gltDeleteText(t.gltText);

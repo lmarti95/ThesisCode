@@ -185,7 +185,6 @@ std::pair<long long, double> MuPlusOneGA::RunEA()
 #if GRAPHICS
 void MuPlusOneGA::UpdateBitString()
 {
-
 	mFitnessValue = mPopulation.at(0).second;
 
 	int* bitString = mPopulation.at(0).first;
@@ -213,7 +212,14 @@ std::vector<int>* MuPlusOneGA::GetBitString()
 
 	for(int i = 0; i < mN; ++i)
 	{
-		bitString->push_back(mBitString[i]);
+		if(mBitString == nullptr)
+		{
+			bitString->push_back(0);
+		}
+		else
+		{
+			bitString->push_back(mBitString[i]);
+		}
 	}
 
 	return bitString;

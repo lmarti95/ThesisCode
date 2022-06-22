@@ -3,6 +3,14 @@
 SD::SD(int aN, CostFunction* aCostFunction) : EvolutionaryAlgorithm(aN, aCostFunction), mR(std::pow(mN, 3 + mEpsilon))
 {
 	mBitString = new int[mN];
+
+#if GRAPHICS
+	for(int i = 0; i < mN; ++i)
+	{
+		mBitString[i] = 0;
+	}
+#endif
+
 	mStagnationDetection = StagnationDetection::Off;
 }
 
