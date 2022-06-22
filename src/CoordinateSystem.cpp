@@ -16,7 +16,7 @@ CoordinateSystem::CoordinateSystem(EvolutionaryAlgorithm* aEA)
     if(dynamic_cast<Jump*>(mEA->GetCostFunction()) != nullptr)
     {
         mGapSize = dynamic_cast<Jump*>(mEA->GetCostFunction())->GetGapSize();
-        mType == Type::Jump;
+        mType = Type::Jump;
     }
     else
     {
@@ -190,6 +190,7 @@ std::vector<Shape*>* CoordinateSystem::CreateLines()
     }
     else
     {
+        
         return CreateLinesCliff();
     }
 
@@ -234,7 +235,6 @@ std::vector<Shape*>* CoordinateSystem::CreateLinesCliff()
 {
     std::vector<Shape*>* lines = new std::vector<Shape*>;
     GLfloat black[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-
 
     Line* line1 = new Line(GetLocationXOnCoordinate(0), GetLocationYOnCoordinate(0), GetLocationXOnCoordinate((int)mEA->GetN()/3*2), GetLocationYOnCoordinate((int)mEA->GetN()/3*2), black);
     lines->push_back((Shape*)line1);
